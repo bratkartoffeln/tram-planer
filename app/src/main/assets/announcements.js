@@ -11,10 +11,51 @@
   const gongPath = 'audio/chimes/ding_dong.mp3';
   const noticeGong = 'audio/chimes/dong_dong_ding.mp3';
   const phrase = name => `audio/phrases/${name}.mp3`;
+  const recordedAliases = {
+    'Lutherkirche/SWE': 'Lutherkirche Stadtwerke',
+    'Boyneburgufer': 'Boyneburg Ufer',
+    'Stadtmuseum/Kaisersaal': 'Stadtmuseum Kaisersaal',
+    'S-Finanzzentrum': 'Sparkassen Finanzzentrum',
+    'Vilniuser Straße': 'Vilniusser Straße',
+    'Volkenroder Weg': 'Volkenrodaer Weg'
+  };
+  const recordingKey = name => String(name).toLowerCase().normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9]/g, '');
+  window.recordedStopPath = name => {
+    const mapping = window.STOP_ANNOUNCEMENTS || {};
+    const recordedName = recordedAliases[name] || name;
+    if (Object.prototype.hasOwnProperty.call(mapping, recordedName)) return mapping[recordedName];
+    const key = recordingKey(recordedName);
+    const matches = Object.keys(mapping).filter(candidate => recordingKey(candidate) === key);
+    return matches.length === 1 ? mapping[matches[0]] : null;
+  };
+  let driverEffect = false;
+  const effects = new Set(['door_open','door_close','emergency','traffic','passenger','finish','back']);
+  window.stopDriverSound = () => { if (driverEffect) window.cancelStopAnnouncement(); };
+  window.playDriverSound = async id => {
+    if (!effects.has(id)) return;
+    window.cancelStopAnnouncement();
+    if (state.settings.cockpit_muted) return;
+    driverEffect = true;
+    const expectedTicket = ticket;
+    const path = `audio/effects/${id}.mp3`;
+    try {
+      if (nativeAvailable()) {
+        window.AndroidAnnouncements.playSequence('Fahrpult: '+id, JSON.stringify([path]));
+        return;
+      }
+      await audioContext().resume();
+      const buffer = await loadBuffer(path);
+      if (expectedTicket === ticket) await playBuffer(buffer, expectedTicket);
+      if (expectedTicket === ticket) driverEffect = false;
+    } catch (error) {
+      if (expectedTicket === ticket) { driverEffect = false; window.onAnnouncementError('Der Fahrpult-Sound konnte nicht abgespielt werden.'); }
+    }
+  };
 
   // The driver's current stop is also the arrival event in this simulation.
   window.buildStopAnnouncement = (name, trip = state.active) => {
-    const stop = (window.STOP_ANNOUNCEMENTS || {})[name];
+    const stop = window.recordedStopPath(name);
     if (!stop) return null;
     const paths = [gongPath, phrase('naechste_haltestelle'), stop];
     if (name === 'Hauptbahnhof') {
@@ -24,7 +65,9 @@
         paths.push(noticeGong, phrase('fahrt_endet_hier'));
       }
     } else if (name === 'Anger') {
-      paths.push(phrase('next_stop_town_hall'), noticeGong, phrase('umstieg_alle_stadtbahnlinien'));
+      paths.push(noticeGong, phrase('umstieg_alle_stadtbahnlinien'));
+    } else if (name === 'Fischmarkt/Rathaus') {
+      paths.push(phrase('next_stop_town_hall'));
     }
     return paths;
   };
@@ -79,6 +122,7 @@
   };
 
   window.cancelStopAnnouncement = () => {
+    driverEffect = false;
     ++ticket;
     clearTimeout(timer);
     timer = null;
@@ -88,7 +132,6 @@
       source.disconnect();
     }
     playing.clear();
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
     if (window.AndroidAnnouncements && typeof window.AndroidAnnouncements.stop === 'function') {
       window.AndroidAnnouncements.stop();
     }
@@ -110,34 +153,10 @@
     });
   }
 
-  function speakCustomStop(name) {
-    if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
-      throw new Error('Für diesen Haltestellennamen ist keine deutsche Sprachausgabe verfügbar.');
-    }
-    const voices = window.speechSynthesis.getVoices().filter(voice => /^de(?:-|_)/i.test(voice.lang));
-    voices.sort((a, b) => {
-      const score = voice => (voice.localService ? 10 : 0) +
-        (/Kerstin|Katja|Anna|Marlene|Vicki|female|weiblich/i.test(voice.name) ? 20 : 0);
-      return score(b) - score(a);
-    });
-    const utterance = new SpeechSynthesisUtterance(`Nächste Haltestelle, ${name}.`);
-    utterance.lang = 'de-DE';
-    utterance.rate = 0.94;
-    if (voices[0]) utterance.voice = voices[0];
-    utterance.onerror = event => {
-      if (!['canceled', 'interrupted'].includes(event.error)) {
-        window.onAnnouncementError('Die deutsche Sprachausgabe ist auf diesem Gerät nicht verfügbar.');
-      }
-    };
-    window.speechSynthesis.speak(utterance);
-  }
-
   async function playAnnouncement(name, expectedTicket) {
     const paths = window.buildStopAnnouncement(name);
     if (!paths) {
-      // Imported, unrecorded station names retain the existing speech fallback.
-      if (window.AndroidAnnouncements?.play) window.AndroidAnnouncements.play(name, '');
-      else speakCustomStop(name);
+      window.onAnnouncementError(`Für „${name}“ ist keine Aufnahme vorhanden.`);
       return;
     }
     if (nativeAvailable()) {

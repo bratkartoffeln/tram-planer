@@ -57,12 +57,12 @@ async function openPage({seed=null,native=true,frozen=true,now=BASE,viewport={wi
       localStorage.setItem(key,JSON.stringify(seed));
       localStorage.setItem('__integration_seeded','1');
     }
-    window.__qaAudio=[];window.__qaSequences=[];
+    window.__qaAudio=[];window.__qaSequences=[];window.__qaEffects=[];
     window.__qaExport=null;
     window.AndroidBackup={save:json=>{window.__qaExport=JSON.parse(json);}};
     if(native) window.AndroidAnnouncements={
       play:(name,path)=>window.__qaAudio.push({event:'play',name,path,at:Date.now()}),
-      playSequence:(name,json)=>{const paths=JSON.parse(json);window.__qaSequences.push({name,paths});window.__qaAudio.push({event:'play',name,path:paths[2],at:Date.now()});},
+      playSequence:(name,json)=>{const paths=JSON.parse(json);if(name.startsWith('Fahrpult: ')){window.__qaEffects.push({name,paths});return;}window.__qaSequences.push({name,paths});window.__qaAudio.push({event:'play',name,path:paths[2],at:Date.now()});},
       stop:()=>window.__qaAudio.push({event:'stop',at:Date.now()})
     };
     if(traceAudio) {
@@ -138,7 +138,7 @@ async function testCancellation(label,action,verify) {
 
 (async()=>{
   fs.mkdirSync(OUTPUT,{recursive:true});
-  const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.png':'image/png','.wav':'audio/wav','.mp3':'audio/mpeg'};
+  const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.jpg':'image/jpeg','.png':'image/png','.wav':'audio/wav','.mp3':'audio/mpeg'};
   server=http.createServer((request,response)=>{
     try {
       const requestPath=decodeURIComponent(new URL(request.url,'http://localhost').pathname);
@@ -151,7 +151,7 @@ async function testCancellation(label,action,verify) {
   });
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   origin='http://127.0.0.1:'+server.address().port;
-  browser=await playwright.chromium.launch({headless:true,executablePath:BROWSER,args:['--no-sandbox']});
+  browser=await playwright.chromium.launch({headless:true,executablePath:BROWSER,args:['--no-sandbox',...(process.platform==='win32'?['--disable-gpu','--in-process-gpu']:[])]});
 
   await run('Fahrplan erstellen, Abfahrt verpflichtend vorbereiten, Start und Ansage exakt nach 1 Sekunde',async()=>{
     const {context,page}=await openPage();
@@ -252,7 +252,7 @@ async function testCancellation(label,action,verify) {
     } finally { await context.close(); }
   });
 
-  await testCancellation('vorheriger Halt',page=>page.getByRole('button',{name:'← Zurück',exact:true}).click(),async page=>assert.equal((await readState(page)).active.position,0));
+  await testCancellation('vorheriger Halt',page=>page.getByRole('button',{name:'Zurück',exact:true}).click(),async page=>assert.equal((await readState(page)).active.position,0));
   await testCancellation('andere Ansicht',page=>page.locator('#nav button[data-view="home"]').click());
   await testCancellation('Android-Zurücktaste',page=>page.evaluate(()=>window.appBack()));
   await testCancellation('Fahrt beenden',page=>page.getByRole('button',{name:'Fahrt beenden',exact:true}).click(),async page=>assert.equal((await readState(page)).active,null));
@@ -371,7 +371,8 @@ async function testCancellation(label,action,verify) {
       {line:'5',previous:'Anger',name:'Hauptbahnhof',expected:[...hbf,'audio/chimes/dong_dong_ding.mp3',phrase('fahrt_endet_hier')]},
       {line:'2',previous:'Anger',name:'Hauptbahnhof',expected:hbf},
       {line:'5',previous:'Robert-Koch-Straße',name:'Hauptbahnhof',expected:hbf},
-      {line:'5',previous:'Hauptbahnhof',name:'Anger',expected:[...prefix,announcementMap.Anger,phrase('next_stop_town_hall'),'audio/chimes/dong_dong_ding.mp3',phrase('umstieg_alle_stadtbahnlinien')]}
+      {line:'5',previous:'Hauptbahnhof',name:'Anger',expected:[...prefix,announcementMap.Anger,'audio/chimes/dong_dong_ding.mp3',phrase('umstieg_alle_stadtbahnlinien')]},
+      {line:'2',previous:'Anger',name:'Fischmarkt/Rathaus',expected:[...prefix,announcementMap['Fischmarkt/Rathaus'],phrase('next_stop_town_hall')]}
     ];
     for(const scenario of scenarios){
       const seed=stateFixture({active:true});
@@ -408,8 +409,13 @@ async function testCancellation(label,action,verify) {
       },allAudioPaths);
       assert.equal(decoded.length,100);
       assert(decoded.every(file=>file.bytes>44&&file.duration>0.2&&file.channels>=1));
-      const missingNames=await page.evaluate(()=>[...new Set(Object.values(ROUTES).flatMap(route=>route.stops))].filter(name=>!window.STOP_ANNOUNCEMENTS[name]));
-      assert.deepEqual(missingNames,[]);
+      const coverage=await page.evaluate(()=>[...new Set(Object.values(ROUTES).flatMap(route=>route.stops))].map(name=>({name,path:recordedStopPath(name),chain:buildStopAnnouncement(name)})));
+      for(const stop of coverage){
+        if(stop.path){assert(allAudioPaths.includes(stop.path),stop.name+' must use a bundled recording');assert.equal(stop.chain[2],stop.path);}
+        else assert.equal(stop.chain,null,stop.name+' must stay silent without a recording');
+      }
+      for(const name of ['Lutherkirche/SWE','Boyneburgufer','Stadtmuseum/Kaisersaal'])assert(coverage.find(stop=>stop.name===name)?.path,name+' alias must resolve');
+      assert.equal(await page.evaluate(()=>buildStopAnnouncement('Unbekannte Testhaltestelle')),null);
       await page.locator('#nav button[data-view="driver"]').click();
       await page.locator('#nextStopBtn').click();
       await page.waitForFunction(()=>window.__qaSources.filter(event=>event.event==='start').length>=3,null,{timeout:15000});
@@ -434,7 +440,7 @@ async function testCancellation(label,action,verify) {
       await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
       const cached=await page.evaluate(async()=>{
         const names=await caches.keys();
-        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.1'));
+        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.1-photo-recordings-7'));
         return (await cache.keys()).map(request=>new URL(request.url).pathname);
       });
       const required=['/','/index.html','/app.js','/announcements.js','/manifest.webmanifest','/icon-192.png','/icon-512.png','/audio/announcements-data.js','/audio/announcements.json','/audio/catalog.json',...allAudioPaths.map(file=>'/'+file)];

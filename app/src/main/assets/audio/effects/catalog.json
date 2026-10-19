@@ -1,0 +1,46 @@
+[
+  {
+    "id": "door_open",
+    "file": "audio/effects/door_open.mp3",
+    "duration": 2.9499773242630387,
+    "sha256": "1c0dd164311f6607ddaf1ad296755f441958aad5fbe3ba3c986c3edb1dbc4ab5"
+  },
+  {
+    "id": "door_close",
+    "file": "audio/effects/door_close.mp3",
+    "duration": 5,
+    "sha256": "6037e493bbdb768ba43f1c55c4196e6ae1de418ee7b45413382680049d483e10"
+  },
+  {
+    "id": "emergency",
+    "file": "audio/effects/emergency.mp3",
+    "duration": 2.200045351473923,
+    "sha256": "a91f3f1e7394c12cc1226c900e8dcc142f1fbf72d835796732201426b68c8902"
+  },
+  {
+    "id": "traffic",
+    "file": "audio/effects/traffic.mp3",
+    "duration": 6.5,
+    "sha256": "bdfad3407eed6db74fae2df047421f0100c6090b44919b9439eb5cf8af35d842"
+  },
+  {
+    "id": "passenger",
+    "file": "audio/effects/passenger.mp3",
+    "duration": 1.2899773242630386,
+    "sha256": "be8546f6e74e055592a373062fa1f9e05efa226f80a4eab2aad7ba2d0f75a5f6"
+  },
+  {
+    "id": "finish",
+    "file": "audio/effects/finish.mp3",
+    "duration": 3.203673469387755,
+    "sha256": "28b558eb99a01367039eb4ec8296f69e6007efe8ac16045913896d46c52db82a"
+  },
+  {
+    "id": "back",
+    "file": "audio/effects/back.mp3",
+    "duration": 5.015555555555555,
+    "sha256": "7ace6500bd807b7ed28b4ebe888ba964b12ecb876d9796b20d98caee8c302b8c",
+    "sourceType": "provided-recording",
+    "title": "Back To The Future Chimes Jingle sound - single"
+  }
+]

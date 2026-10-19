@@ -1,8 +1,28 @@
 # Ansagen und Gongs ab Version 6.2.1
 
+## Fahrpult-Sounds (19.10.2026)
+
+Die sieben Effekte unter `audio/effects/` sind lokal enthalten und werden auch von der PWA offline gespeichert. `audio/effects/catalog.json` enthält Dauer und SHA-256. MP3, mono, 44.100 Hz, 96 kbit/s; der nachträglich bereitgestellte Back-Jingle bleibt unverändert in Stereo, 48.000 Hz, 192 kbit/s. Die neuen Effekte verändern die gelieferten Sprachaufnahmen nicht.
+
+| Taste | Datei | Herkunft und Bearbeitung |
+| --- | --- | --- |
+| Türen öffnen | `door_open.mp3` | [Tram doors open and close hiss and beeping](https://commons.wikimedia.org/wiki/File:Tram_doors_open_and_close_hiss_and_beeping.ogg), stephan, 07.05.2007, Public Domain. Kölner Straßenbahn, Ausschnitt 0,15–3,10 s, weich ein-/ausgeblendet, Pegel angepasst. |
+| Türen schließen | `door_close.mp3` | Dieselbe Aufnahme, Ausschnitt 10,00–13,90 s, nach drei selbst synthetisierten Warnpieptönen (1.568 Hz). Gesamtdauer fünf Sekunden. |
+| Notfall | `emergency.mp3` | Eigene Synthese: sechs kurze alternierende Signale mit 880/660 Hz. Kein genormtes oder verbindliches EVAG-Notfallsignal. |
+| Stau | `traffic.mp3` | [Audio sound of a busy traffic in Porthacourt](https://commons.wikimedia.org/wiki/File:Audio_sound_of_a_busy_traffic_in_Porthacourt.ogg), ElemePodcast, 27.03.2026, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Ausschnitt 2,00–8,50 s, Pegel reduziert; mit [Car Horn](https://commons.wikimedia.org/wiki/File:Car_Horn.wav), 15HPanska_Ruttner_Jan, 28.02.2019, [CC0](https://creativecommons.org/publicdomain/zero/1.0/), gemischt. |
+| Fahrgastanzeige | `passenger.mp3` | Eigener vorhandener Ding-Dong, auf 20 % Amplitude reduziert und tiefpassgefiltert. |
+| Fahrt beenden / Ziel erreichen | `finish.mp3` | Original Windows XP Shutdown, Microsoft, aus dem [Winhistory-Archiv](https://www.winhistory.de/more/winstart/winstart_en.htm), [WAV-Download](https://www.winhistory.de/more/winstart/down/winxpshutdown.wav). Amplitude auf 75 % reduziert. Proprietärer Microsoft-Sound; keine CC- oder Public-Domain-Lizenz behauptet. |
+| Zurück | `back.mp3` | Während der Bearbeitung im Projekt bereitgestellte Aufnahme, unverändert übernommen. ID3-Titel: „Back To The Future Chimes Jingle sound - single“, Laufzeit 5,02 s. Melodie: „Back to the Future“, Alan Silvestri. Die externe Herkunft und eine Lizenz der Aufnahme sind im Projekt nicht angegeben; es wird keine freie Lizenz behauptet. |
+
+Die Urheber- und Lizenzhinweise sind auch direkt im Fahrpult unter „Tonquellen“ zugänglich. „Tastentöne aus“ schaltet nur die neuen Effekte stumm; Haltestellenansagen bleiben aktiv. Neue Soundaktionen ersetzen vorherige Wiedergaben. Verlassen des Fahrermodus, Hintergrundwechsel und „Nächster Halt“ brechen laufende Effekte ab. Modaldialoge stoppen ihren Sound beim Schließen. Die Türlogik bleibt unverändert: Türen müssen vor dem nächsten Halt geschlossen sein.
+
+Erneute Erzeugung: Quelldateien als `tram-doors.ogg`, `car-horn.wav`, `traffic.ogg` und `xp-shutdown.wav` unter `build/audio-sources/` ablegen, dann `node scripts/generate-driver-sounds.cjs`. Dafür FFmpeg im PATH bereitstellen oder `FFMPEG_PATH` setzen. Der Generator übergibt PCM direkt im Speicher an den MP3-Encoder; WAV-Dateien werden nicht mehr ausgeliefert. Die Wikimedia-Originaldateien sind auf den jeweiligen Beschreibungsseiten verlinkt. Anschließend die Assets synchronisieren. Browserprüfung: `node tests/cockpit.cjs`, Screenshots und Pegelbericht unter `build/qa-cockpit/`.
+
+Der bereitgestellte Back-Jingle wird aus `build/audio-sources/back-provided.mp3` oder der über `DRIVER_BACK_SOUND` angegebenen MP3-Datei unverändert übernommen. Ohne diese Quelldatei erzeugt der Generator als Ersatz neun Noten des Hauptthemas: F4, B♭3, E4, F4, G4, F4, D4, B♭3, E4; 4,22 s, Tempo 176. Dieser Ersatz wurde visuell anhand der [offiziellen Partitur, Arbeitsblatt 7, gedruckte Seite 13 / PDF-Seite 15](https://www.backtothefuturemusical.com/pdfs/education/new/section-2-screen-to-stage-post-show-materials.pdf) geprüft. Die gebundene E4-Note wird gehalten.
+
 Alle 98 MP3-Aufnahmen stammen unverändert aus dem vom Nutzer bereitgestellten Archiv tram-planer-ansagen.zip. Die Originalnamen, lesbaren Bezeichnungen, neuen Dateipfade und SHA-256-Prüfsummen stehen in app/src/main/assets/audio/catalog.json. Auch derzeit nicht benötigte Aufnahmen und beide Varianten von „Nächste Haltestelle“ werden mitgeliefert und offline gespeichert.
 
-Die älteren vollständigen Piper-Ansagen und WAV-Dateien wurden entfernt. Die Zuordnung aller 89 aufgenommenen Haltestellen steht in audio/announcements.json. Für nicht aufgenommene Namen aus importierten Fahrplänen bleibt die vorhandene System-Sprachausgabe als Reserve erhalten.
+Die älteren vollständigen Piper-Ansagen und WAV-Dateien wurden entfernt. Die Zuordnung aller 89 aufgenommenen Haltestellen steht in audio/announcements.json. Es wird ausschließlich mit vorhandenen Aufnahmen gearbeitet. Sprachsynthese ist in Android und PWA entfernt. Abweichende Schreibweisen und die Zuordnungen Lutherkirche/SWE → Lutherkirche Stadtwerke, Boyneburgufer → Boyneburg Ufer und Stadtmuseum/Kaisersaal → Stadtmuseum Kaisersaal werden auf die vorhandenen Dateien abgebildet. Für nicht aufgenommene Namen bleibt die Ansage stumm und ein Hinweis erscheint.
 
 ## Reihenfolge
 
@@ -11,9 +31,11 @@ Eine Sekunde nach „Nächster Halt“ beginnt die Ansage der oben angezeigten H
 - Normal: Ding-Dong → Nächste Haltestelle → Haltestellenname.
 - Hauptbahnhof: Ding-Dong → Nächste Haltestelle → Hauptbahnhof → Next stop Central Station → Umsteigemöglichkeit zum Stadtbus und zum Busbahnhof.
 - Linie 5, direkt vom Anger zum Hauptbahnhof: anschließend Dong-Dong-Ding → Sehr geehrte Fahrgäste, diese Fahrt endet hier. Bitte alle aussteigen.
-- Anger: Ding-Dong → Nächste Haltestelle → Anger → Next stop Town Hall → Dong-Dong-Ding → Umsteigemöglichkeit zu allen Stadtbahnlinien (vollständige gelieferte Aufnahme).
+- Anger: Ding-Dong → Nächste Haltestelle → Anger → Dong-Dong-Ding → Umsteigemöglichkeit zu allen Stadtbahnlinien (vollständige gelieferte Aufnahme).
+- Fischmarkt: Ding-Dong → Nächste Haltestelle → "Fischmarkt/Radhaus" → Next stop Town Hall
+- Lutherkirche/SWE: Ding-Dong → Nächste Haltestelle → vorhandene Aufnahme „Lutherkirche Stadtwerke“ (`audio/stops/lutherkirche_stadtwerke.mp3`). Der Name aus dem Netzplan wird dafür auf den Namen der Aufnahme abgebildet; es wird keine neue Sprachdatei erzeugt.
 
-Im Archiv gibt es keine Aufnahme mit dem Wortlaut „Nächster Halt“. Beide als Präfix benannten Dateien sagen „Nächste Haltestelle“; aktiv ist die Aufnahme mit der ursprünglichen Endung 004921. „Next stop Town Hall“ wird wie angefordert am Anger verwendet.
+Im Archiv gibt es keine Aufnahme mit dem Wortlaut „Nächster Halt“. Beide als Präfix benannten Dateien sagen „Nächste Haltestelle“; aktiv ist die Aufnahme mit der ursprünglichen Endung 004921.
 
 Der Wechsel zum oben angezeigten aktuellen Halt gilt in dieser Simulation als Ankunft. Die Zusatzansage der Linie 5 hängt von der eingetragenen Liniennummer und der unmittelbar vorherigen Haltestelle ab. Es wird keine zusätzliche Streckenvorlage erstellt.
 

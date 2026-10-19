@@ -14,9 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
-import android.speech.tts.Voice;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
@@ -42,7 +39,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -66,13 +62,7 @@ public class MainActivity extends Activity {
     private MediaPlayer player;
     private AudioManager audioManager;
     private AudioFocusRequest focusRequest;
-    private TextToSpeech textToSpeech;
-    private boolean ttsInitialized;
-    private boolean ttsReady;
     private long announcementGeneration;
-    private String pendingSpeech;
-    private long pendingSpeechGeneration;
-    private Runnable speechTimeout;
     private byte[] pendingBackup;
     private ValueCallback<Uri[]> fileCallback;
 
@@ -120,7 +110,6 @@ public class MainActivity extends Activity {
         webView.addJavascriptInterface(new AnnouncementBridge(), "AndroidAnnouncements");
         webView.addJavascriptInterface(new BackupBridge(), "AndroidBackup");
         webView.loadUrl(APP_URL);
-        initializeSpeech();
 
         if (Build.VERSION.SDK_INT >= 33) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
@@ -202,7 +191,7 @@ public class MainActivity extends Activity {
                     JSONArray paths = new JSONArray(json);
                     if (paths.length() < 1 || paths.length() > 12) throw new IllegalArgumentException();
                     for (int i = 0; i < paths.length(); i++) {
-                        if (!paths.getString(i).matches("audio/(stops|phrases|chimes)/[a-z0-9_-]+\\.mp3")) {
+                        if (!paths.getString(i).matches("audio/(stops|phrases|chimes|effects)/[a-z0-9_-]+\\.mp3")) {
                             throw new IllegalArgumentException();
                         }
                     }
@@ -250,7 +239,7 @@ public class MainActivity extends Activity {
             return;
         }
         String path = assetPath == null ? "" : assetPath;
-        if (!path.isEmpty() && !path.matches("audio/stops/[a-z0-9_-]+\\.(wav|mp3|ogg)")) {
+        if (!path.matches("audio/stops/[a-z0-9_-]+\\.mp3")) {
             failAnnouncement("Die Audiodatei der Haltestelle ist ungültig.", generation);
             return;
         }
@@ -259,12 +248,8 @@ public class MainActivity extends Activity {
             return;
         }
         playAsset("audio/chimes/ding_dong.mp3", generation, () -> {
-            if (path.isEmpty()) {
-                speakStop(stopName, generation);
-            } else {
-                playAsset(path, generation, () -> finishAnnouncement(generation),
-                        () -> speakStop(stopName, generation));
-            }
+            playAsset(path, generation, () -> finishAnnouncement(generation),
+                    () -> failAnnouncement("Die Aufnahme der Haltestelle konnte nicht abgespielt werden.", generation));
         }, () -> failAnnouncement("Der Ding-Dong-Ton konnte nicht abgespielt werden.", generation));
     }
 
@@ -319,110 +304,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void initializeSpeech() {
-        try {
-            textToSpeech = new TextToSpeech(this, result -> mainHandler.post(() -> {
-                if (destroyed) return;
-                ttsInitialized = true;
-                if (result == TextToSpeech.SUCCESS && textToSpeech != null) {
-                    try {
-                        textToSpeech.setAudioAttributes(ANNOUNCEMENT_ATTRIBUTES);
-                        textToSpeech.setSpeechRate(0.92f);
-                        textToSpeech.setPitch(1.04f);
-                        Voice selected = chooseOfflineGermanVoice(textToSpeech.getVoices(), textToSpeech.getDefaultVoice());
-                        if (selected != null) ttsReady = textToSpeech.setVoice(selected) == TextToSpeech.SUCCESS;
-                        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-                            @Override public void onStart(String id) { }
-                            @Override public void onDone(String id) {
-                                mainHandler.post(() -> {
-                                    if (id.equals(utteranceId(announcementGeneration))) finishAnnouncement(announcementGeneration);
-                                });
-                            }
-                            @Override public void onError(String id) {
-                                mainHandler.post(() -> {
-                                    if (id.equals(utteranceId(announcementGeneration))) {
-                                        failAnnouncement("Die deutsche Offline-Sprachausgabe konnte die Haltestelle nicht vorlesen.", announcementGeneration);
-                                    }
-                                });
-                            }
-                        });
-                    } catch (RuntimeException exception) {
-                        ttsReady = false;
-                    }
-                }
-                if (pendingSpeech != null && pendingSpeechGeneration == announcementGeneration) {
-                    String stop = pendingSpeech;
-                    clearPendingSpeech();
-                    speakStop(stop, announcementGeneration);
-                }
-            }));
-        } catch (RuntimeException exception) {
-            ttsInitialized = true;
-            ttsReady = false;
-        }
-    }
-
-    /** Android has no standardized gender field; prefer known female voice names when available. */
-    private static Voice chooseOfflineGermanVoice(Set<Voice> voices, Voice defaultVoice) {
-        if (voices == null) return null;
-        Voice best = null;
-        int bestScore = Integer.MIN_VALUE;
-        for (Voice voice : voices) {
-            if (voice.isNetworkConnectionRequired() || !"de".equals(voice.getLocale().getLanguage())) continue;
-            if (voice.getFeatures() != null && voice.getFeatures().contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED)) continue;
-            String name = voice.getName().toLowerCase(Locale.ROOT);
-            int score = voice.getQuality() - voice.getLatency();
-            if ("DE".equals(voice.getLocale().getCountry())) score += 2000;
-            if (voice.equals(defaultVoice)) score += 1000;
-            if (name.contains("female") || name.contains("frau") || name.contains("katja")
-                    || name.contains("hedda") || name.contains("vicki") || name.contains("anna")) score += 10000;
-            if (score > bestScore || (score == bestScore && (best == null || voice.getName().compareTo(best.getName()) < 0))) {
-                best = voice;
-                bestScore = score;
-            }
-        }
-        return best;
-    }
-
-    private String utteranceId(long generation) {
-        return "stop-" + generation;
-    }
-
-    private void speakStop(String stopName, long generation) {
-        if (generation != announcementGeneration || !resumed || destroyed) return;
-        if (!ttsInitialized) {
-            clearPendingSpeech();
-            pendingSpeech = stopName;
-            pendingSpeechGeneration = generation;
-            speechTimeout = () -> {
-                if (generation == announcementGeneration && pendingSpeech != null) {
-                    failAnnouncement("Die Android-Sprachausgabe ist noch nicht bereit. Bitte die Offline-Stimme in den Android-Einstellungen prüfen.", generation);
-                }
-            };
-            mainHandler.postDelayed(speechTimeout, 8000);
-            return;
-        }
-        if (!ttsReady || textToSpeech == null) {
-            failAnnouncement("Keine deutsche Offline-Stimme installiert. Bitte in den Android-Einstellungen eine deutsche Sprachausgabe herunterladen.", generation);
-            return;
-        }
-        try {
-            Bundle params = new Bundle();
-            params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 1.0f);
-            int result = textToSpeech.speak("Nächste Haltestelle " + stopName,
-                    TextToSpeech.QUEUE_FLUSH, params, utteranceId(generation));
-            if (result != TextToSpeech.SUCCESS) failAnnouncement("Die Haltestellenansage konnte nicht gestartet werden.", generation);
-        } catch (RuntimeException exception) {
-            failAnnouncement("Die deutsche Offline-Sprachausgabe ist nicht verfügbar.", generation);
-        }
-    }
-
-    private void clearPendingSpeech() {
-        pendingSpeech = null;
-        if (speechTimeout != null) mainHandler.removeCallbacks(speechTimeout);
-        speechTimeout = null;
-    }
-
     private void releasePlayer() {
         MediaPlayer old = player;
         player = null;
@@ -436,11 +317,7 @@ public class MainActivity extends Activity {
 
     private void stopAnnouncement() {
         announcementGeneration++;
-        clearPendingSpeech();
         releasePlayer();
-        if (textToSpeech != null) {
-            try { textToSpeech.stop(); } catch (RuntimeException ignored) { }
-        }
         if (audioManager != null && focusRequest != null) {
             audioManager.abandonAudioFocusRequest(focusRequest);
             focusRequest = null;
@@ -596,10 +473,6 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         destroyed = true;
         stopAnnouncement();
-        if (textToSpeech != null) {
-            textToSpeech.shutdown();
-            textToSpeech = null;
-        }
         if (fileCallback != null) {
             fileCallback.onReceiveValue(null);
             fileCallback = null;
