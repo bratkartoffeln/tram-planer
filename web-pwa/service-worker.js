@@ -1,8 +1,10 @@
 'use strict';
 const CACHE_PREFIX = 'fahrplan-manager-tablet-';
-const CACHE = CACHE_PREFIX + 'v6.2.1';
+const CACHE = CACHE_PREFIX + 'v6.2.1-photo-recordings-7';
 const ASSETS = [
-  './', './index.html', './app.js', './announcements.js',
+  './', './index.html', './app.js', './announcements.js', './erfurt-network.js', './line-editor.js',
+  './cockpit.js', './cockpit.css', './images/tram-cockpit.jpg', './images/credits.json', './audio/effects/catalog.json',
+  ...['door_open','door_close','emergency','traffic','passenger','finish','back'].map(id=>'./audio/effects/'+id+'.mp3'),
   './manifest.webmanifest', './icon-192.png', './icon-512.png',
   './audio/announcements-data.js', './audio/announcements.json', './audio/catalog.json',
   './audio/chimes/ding_dong.mp3', './audio/chimes/dong_dong_ding.mp3'

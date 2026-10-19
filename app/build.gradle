@@ -26,6 +26,6 @@ android {
     }
 
     androidResources {
-        noCompress += ['wav', 'mp3', 'ogg']
+        noCompress += ['mp3', 'ogg']
     }
 }
