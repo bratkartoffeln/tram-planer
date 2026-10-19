@@ -1,0 +1,590 @@
+[
+  {
+    "original": "wevolabs-nachste-haltestelle-20261019-004527.mp3",
+    "file": "audio/phrases/naechste_haltestelle_alternative.mp3",
+    "title": "Nächste Haltestelle",
+    "sha256": "c130bb25375cb93b33236527e5aacdb1750701071736855f7d729ededeb5f85d"
+  },
+  {
+    "original": "wevolabs-umsteigemoglichkeit-zum-stadtbus-und-zum-20261019-014027.mp3",
+    "file": "audio/phrases/umstieg_stadtbus_busbahnhof.mp3",
+    "title": "Umsteigemöglichkeit zum Stadtbus und zum Busbahnhof",
+    "sha256": "c5e174bcd24cc2b451727101e6d4ddd736b3d51e549cd86247abfd94ad9f579b"
+  },
+  {
+    "original": "wevolabs-next-stop-central-station-20261019-013851.mp3",
+    "file": "audio/phrases/next_stop_central_station.mp3",
+    "title": "Next stop, Central Station",
+    "sha256": "036d8bd31ffc6d7c59552f07949c5c0344bb6e44d617d11367aba0c31ebfa7dd"
+  },
+  {
+    "original": "wevolabs-next-stop-town-hall-20261019-013826.mp3",
+    "file": "audio/phrases/next_stop_town_hall.mp3",
+    "title": "Next stop, Town Hall",
+    "sha256": "f0d8c8e29c076dd582761372423c9a07a8542b40892e3da13c30d0922a64aedf"
+  },
+  {
+    "original": "wevolabs-umsteigemoglichkeit-zu-allen-stadtbahnli-20261019-013722.mp3",
+    "file": "audio/phrases/umstieg_alle_stadtbahnlinien.mp3",
+    "title": "Umsteigemöglichkeit zu allen Stadtbahnlinien",
+    "sha256": "9203504cec8d8a8443b466b735be131399589608bc2030614f6e1b69db64962f"
+  },
+  {
+    "original": "wevolabs-sehr-geehrte-fahrgaste-diese-fahrt-endet-20261019-013618.mp3",
+    "file": "audio/phrases/fahrt_endet_hier.mp3",
+    "title": "Sehr geehrte Fahrgäste, diese Fahrt endet hier. Bitte alle aussteigen.",
+    "sha256": "a289b7fb5a14db833539af4a966cf5e19804a38905cd585e25f2d7f8aae2f663"
+  },
+  {
+    "original": "wevolabs-zoopark-20261019-013519.mp3",
+    "file": "audio/stops/zoopark.mp3",
+    "title": "Zoopark",
+    "sha256": "fda9bec40dee4b646d1ed31c69655521cf74151a43dadca6c64a16b420eeb916"
+  },
+  {
+    "original": "wevolabs-witterda-er-weg-20261019-013508.mp3",
+    "file": "audio/stops/witterdaer_weg.mp3",
+    "title": "Witterdaer Weg",
+    "sha256": "e8b23f7608d95fd4d9b5779b80cac1db9a671b20f820f6819ea519d9ce0594f0"
+  },
+  {
+    "original": "wevolabs-windischholzhausen-x-fab-20261019-013422.mp3",
+    "file": "audio/stops/windischholzhausen_x_fab.mp3",
+    "title": "Windischholzhausen X Fab",
+    "sha256": "6aaaa7fa5f1990917c3bc07753b0e31e90eb4f02b9c9e7e5919555974af9887d"
+  },
+  {
+    "original": "wevolabs-wendenstra-e-20261019-013350.mp3",
+    "file": "audio/stops/wendenstrasse.mp3",
+    "title": "Wendenstraße",
+    "sha256": "cfb221e3e1576368ceaf4978bdf21089a592c3796b0b820083de4ac1e2de0233"
+  },
+  {
+    "original": "wevolabs-webergasse-andreaskirche-20261019-013337.mp3",
+    "file": "audio/stops/webergasse_andreaskirche.mp3",
+    "title": "Webergasse Andreaskirche",
+    "sha256": "08f1465b835cebb3280eb6cc768189481a636fb341adf8005a454a93f068bb8d"
+  },
+  {
+    "original": "wevolabs-warschauer-stra-e-20261019-013324.mp3",
+    "file": "audio/stops/warschauer_strasse.mp3",
+    "title": "Warschauer Straße",
+    "sha256": "46a7875c2b89cbf2d8ed5e6af7fbf7a65a7cc02dbfc4115407d1a377e0d551b9"
+  },
+  {
+    "original": "wevolabs-waltergropius-schule-20261019-013312.mp3",
+    "file": "audio/stops/walter_gropius_schule.mp3",
+    "title": "Walter-Gropius-Schule",
+    "sha256": "4a9e57f4aadeac2c60c12f84b045b442458182c56db1b3ac3829270d2f5b9de6"
+  },
+  {
+    "original": "wevolabs-wagenfeldstra-e-20261019-013238.mp3",
+    "file": "audio/stops/wagenfeldstrasse.mp3",
+    "title": "Wagenfeldstraße",
+    "sha256": "47675fe8c9a78ad04a017dad6847fac157ff81cc5423e391569ee238247e5e71"
+  },
+  {
+    "original": "wevolabs-volkenroder-weg-20261019-013215.mp3",
+    "file": "audio/stops/volkenrodaer_weg.mp3",
+    "title": "Volkenrodaer Weg",
+    "sha256": "db247ce209f54f7408c0898564f81e46448784ef4ab469f7bc7ce87c51a7f914"
+  },
+  {
+    "original": "wevolabs-vilniusser-stra-e-20261019-013204.mp3",
+    "file": "audio/stops/vilniusser_strasse.mp3",
+    "title": "Vilniusser Straße",
+    "sha256": "b0054df00d156424a0c2ebdab99763272aaf935f8fcc993bce5d902f665f77e4"
+  },
+  {
+    "original": "wevolabs-urbicher-kreuz-20261019-013147.mp3",
+    "file": "audio/stops/urbicher_kreuz.mp3",
+    "title": "Urbicher Kreuz",
+    "sha256": "9ac8a332524f593aacd6900144fbf2769b349e3e8477e56a7725536285f97bff"
+  },
+  {
+    "original": "wevolabs-universitat-20261019-013134.mp3",
+    "file": "audio/stops/universitaet.mp3",
+    "title": "Universität",
+    "sha256": "8dcd182b494a1739706e3a76b5ddcefa5c226292feba27659beb1e0f97d3db3b"
+  },
+  {
+    "original": "wevolabs-thuringenhalle-20261019-013058.mp3",
+    "file": "audio/stops/thueringenhalle.mp3",
+    "title": "Thüringenhalle",
+    "sha256": "20a005262979e798b3ecf2aefc0462b7bb2d3eb8b14a8aeb2ccea4c3d2463e58"
+  },
+  {
+    "original": "wevolabs-theater-20261019-013047.mp3",
+    "file": "audio/stops/theater.mp3",
+    "title": "Theater",
+    "sha256": "0bbfc20f8be859bb2ba131b68ce91959384f9080d5642098b9dddb0e3918d205"
+  },
+  {
+    "original": "wevolabs-stra-e-der-nationen-20261019-013036.mp3",
+    "file": "audio/stops/strasse_der_nationen.mp3",
+    "title": "Straße Der Nationen",
+    "sha256": "c13954989662a42db9f9515005013f829fbaa58555f153c94367fbcf271e3d9e"
+  },
+  {
+    "original": "wevolabs-steigerstra-e-20261019-013024.mp3",
+    "file": "audio/stops/steigerstrasse.mp3",
+    "title": "Steigerstraße",
+    "sha256": "02b03b5edfe1ddba2f8ebcf3bf107b933aa3b71eb4843405a444257964f1cfab"
+  },
+  {
+    "original": "wevolabs-stadtmuseum-kaisersaal-20261019-013010.mp3",
+    "file": "audio/stops/stadtmuseum_kaisersaal.mp3",
+    "title": "Stadtmuseum Kaisersaal",
+    "sha256": "6f8930bdd894d081d7c64c68211fe0dba14dfe589445729c6977c6977ad5ce5e"
+  },
+  {
+    "original": "wevolabs-sparkassen-finanzzentrum-20261019-012950.mp3",
+    "file": "audio/stops/sparkassen_finanzzentrum.mp3",
+    "title": "Sparkassen Finanzzentrum",
+    "sha256": "e0c4b5f3c6849c7abf7a0b90c59d47ebc20c6f579e5c5c78d0f4619e5b5e3638"
+  },
+  {
+    "original": "wevolabs-salinenstra-e-20261019-012903.mp3",
+    "file": "audio/stops/salinenstrasse.mp3",
+    "title": "Salinenstraße",
+    "sha256": "6813fd542c5113a6a1c320fbc1da2c36d8b0bd4c25f1238b5f8b7160b13c2a40"
+  },
+  {
+    "original": "wevolabs-roter-berg-20261019-012853.mp3",
+    "file": "audio/stops/roter_berg.mp3",
+    "title": "Roter Berg",
+    "sha256": "ae7d6ea6164bd5711c3d9594da950d70d219e9608886c97350c3d50daf2ee886"
+  },
+  {
+    "original": "wevolabs-riethstra-e-20261019-012843.mp3",
+    "file": "audio/stops/riethstrasse.mp3",
+    "title": "Riethstraße",
+    "sha256": "aab9d2ca7eb4bfffa302723d87682f1c7c83c301a7dda9c8b4da55b90cfd8463"
+  },
+  {
+    "original": "wevolabs-rieth-20261019-012832.mp3",
+    "file": "audio/stops/rieth.mp3",
+    "title": "Rieth",
+    "sha256": "65ee1b855b0a959d0c40b143ab4e6a5ad6cdc16c0a9b1fcca876b5d06ba1a746"
+  },
+  {
+    "original": "wevolabs-puschkien-stra-e-20261019-012821.mp3",
+    "file": "audio/stops/puschkinstrasse.mp3",
+    "title": "Puschkinstraße",
+    "sha256": "9a2497ac2dff668127bb29a839a5e38a9a6406aa421ed568cf29266cda138182"
+  },
+  {
+    "original": "wevolabs-parkplatz-messe-20261019-012755.mp3",
+    "file": "audio/stops/parkplatz_messe.mp3",
+    "title": "Parkplatz Messe",
+    "sha256": "6dd968d4e3429592b0f6dcb6c79bd2659dcc49bced336f0f94e312fee6b973df"
+  },
+  {
+    "original": "wevolabs-p-r-platz-messe-20261019-012719.mp3",
+    "file": "audio/stops/p_r_platz_messe.mp3",
+    "title": "P R Platz Messe",
+    "sha256": "0759f11746d0f70cb7e3709f53238e169c11c45ad7e6153971c6bf3035620bdf"
+  },
+  {
+    "original": "wevolabs-orionstra-e-20261019-012558.mp3",
+    "file": "audio/stops/orionstrasse.mp3",
+    "title": "Orionstraße",
+    "sha256": "99deccba6dea16feed5c94cb7c005527ecdf7b06cb16d08f395f520b80779cad"
+  },
+  {
+    "original": "wevolabs-nibelungenweg-20261019-012545.mp3",
+    "file": "audio/stops/nibelungenweg.mp3",
+    "title": "Nibelungenweg",
+    "sha256": "db0b6257c53c49998b9b91890f631cebc996f10ce16f5a6543581a5e138d6088"
+  },
+  {
+    "original": "wevolabs-mittelhauser-stra-e-20261019-012534.mp3",
+    "file": "audio/stops/mittelhauser_strasse.mp3",
+    "title": "Mittelhauser Straße",
+    "sha256": "12ab0ba236624f979f8d3af9e235ef917da856fc0a494deaedd8a4ddb2ee7492"
+  },
+  {
+    "original": "wevolabs-milchinselstra-e-20261019-012523.mp3",
+    "file": "audio/stops/milchinselstrasse.mp3",
+    "title": "Milchinselstraße",
+    "sha256": "4851181a79028b3614a0dbf1679dc163116191175169f711d9ee830a9ae3116f"
+  },
+  {
+    "original": "wevolabs-melchendorfer-markt-20261019-012512.mp3",
+    "file": "audio/stops/melchendorfer_markt.mp3",
+    "title": "Melchendorfer Markt",
+    "sha256": "aa2a7ee3e1c19adfa494c377383e19a685c08170177d99991534a6ec3e073897"
+  },
+  {
+    "original": "wevolabs-mdr-kinderkanal-20261019-012456.mp3",
+    "file": "audio/stops/mdr_kinderkanal.mp3",
+    "title": "Mdr Kinderkanal",
+    "sha256": "9b60a474affbf54cab24f227597bc98016066b535ac68e6374b331c468a00289"
+  },
+  {
+    "original": "wevolabs-messe-20261019-012332.mp3",
+    "file": "audio/stops/messe.mp3",
+    "title": "Messe",
+    "sha256": "5369adf0e12859c427930853829d48c51a10ac8a691c01e6d22ef7f032ba2c85"
+  },
+  {
+    "original": "wevolabs-marcel-breuer-ring-20261019-012304.mp3",
+    "file": "audio/stops/marcel_breuer_ring.mp3",
+    "title": "Marcel Breuer Ring",
+    "sha256": "28b1147d5f8356f11f7ddd61599cbf3f48af65161a5c7443dce4897809fd1f7b"
+  },
+  {
+    "original": "wevolabs-mainzer-stra-e-20261019-012248.mp3",
+    "file": "audio/stops/mainzer_strasse.mp3",
+    "title": "Mainzer Straße",
+    "sha256": "9990f11d423f34160187aaa6c30905adb8b050752e1db8ee41b9990135b53625"
+  },
+  {
+    "original": "wevolabs-lutherkirche-stadtwerke-20261019-012233.mp3",
+    "file": "audio/stops/lutherkirche_stadtwerke.mp3",
+    "title": "Lutherkirche Stadtwerke",
+    "sha256": "5e861fc6b591ec12af2a6606ea637a4ba97723b8b7004a55cdff662624ac793d"
+  },
+  {
+    "original": "wevolabs-leipziger-platz-20261019-012119.mp3",
+    "file": "audio/stops/leipziger_platz.mp3",
+    "title": "Leipziger Platz",
+    "sha256": "3b5ef09b0fe110c5ed491693854bfb98ba9e1a1447f708d68fc3588551bef89d"
+  },
+  {
+    "original": "wevolabs-lange-brucke-20261019-012050.mp3",
+    "file": "audio/stops/lange_bruecke.mp3",
+    "title": "Lange Brücke",
+    "sha256": "5bce7affdb127bbbe8d93dd1205beb3b96689411169f456e50155e63e554b923"
+  },
+  {
+    "original": "wevolabs-krampfertor-20261019-012035.mp3",
+    "file": "audio/stops/krampfertor.mp3",
+    "title": "Krampfertor",
+    "sha256": "2d0fc5001455f9e932be79c14e30fa9bfc5790a2b9851f1cfec43c6d8957ac4c"
+  },
+  {
+    "original": "wevolabs-krampfer-garten-20261019-012012.mp3",
+    "file": "audio/stops/krampfer_gaerten.mp3",
+    "title": "Krämpfer Gärten",
+    "sha256": "970af62c2ef2e0412300300e556bca62fa066e9b96be5763545c10e369f956b3"
+  },
+  {
+    "original": "wevolabs-klinikum-20261019-011929.mp3",
+    "file": "audio/stops/klinikum.mp3",
+    "title": "Klinikum",
+    "sha256": "59bb78eac4c85db4209922d2cd7e90ae25226ac0cb2962a274ee01e577b72f38"
+  },
+  {
+    "original": "wevolabs-katho-lisches-krankenhaus-20261019-011911.mp3",
+    "file": "audio/stops/katholisches_krankenhaus.mp3",
+    "title": "Katholisches Krankenhaus",
+    "sha256": "1bb51b2ff1bdb57a4c7f73cc117082f346ac472cb7d6e2dffc2ff8c008e3833a"
+  },
+  {
+    "original": "wevolabs-karl-marx-platz-20261019-011659.mp3",
+    "file": "audio/stops/karl_marx_platz.mp3",
+    "title": "Karl Marx Platz",
+    "sha256": "2b693a4e2386c89ce5122a37cf3871b06f6d7d6495690d0b0a344c0bae8e9bb8"
+  },
+  {
+    "original": "wevolabs-kaffeetrichter-20261019-011645.mp3",
+    "file": "audio/stops/kaffeetrichter.mp3",
+    "title": "Kaffeetrichter",
+    "sha256": "c1b1895fac7ef7cd5c2c073d873520decf49bb72ea73d395b088060f01e9dd39"
+  },
+  {
+    "original": "wevolabs-justizzentrum-20261019-011630.mp3",
+    "file": "audio/stops/justizzentrum.mp3",
+    "title": "Justizzentrum",
+    "sha256": "08c796bfd916b0f43cf12a9f28a09f4d6fda04444b3c4278ec6aa8562da0d546"
+  },
+  {
+    "original": "wevolabs-ilversgehofener-platz-20261019-011616.mp3",
+    "file": "audio/stops/ilversgehofener_platz.mp3",
+    "title": "Ilversgehofener Platz",
+    "sha256": "fe336cbfa229fa724a92032bef80283e714067633b8fb8dfa53a148fb163b9e4"
+  },
+  {
+    "original": "wevolabs-hochheimer-stra-e-20261019-011559.mp3",
+    "file": "audio/stops/hochheimer_strasse.mp3",
+    "title": "Hochheimer Straße",
+    "sha256": "2fff6283480b6b6f64fb6e9c1f38b7cd5398ebf0c7cc877a91dbdd4ea3556a74"
+  },
+  {
+    "original": "wevolabs-hirschgarten-20261019-011448.mp3",
+    "file": "audio/stops/hirschgarten.mp3",
+    "title": "Hirschgarten",
+    "sha256": "71ebb1b76c5616d677ac1a4fd135968afab684222e1c6907879713b6c810f7d1"
+  },
+  {
+    "original": "wevolabs-hauptfriedhof-20261019-011433.mp3",
+    "file": "audio/stops/hauptfriedhof.mp3",
+    "title": "Hauptfriedhof",
+    "sha256": "7d4b614db487e98584336af85ad4ecf65adb47407157060deacc64c590ddc037"
+  },
+  {
+    "original": "wevolabs-hanse-platz-fh-20261019-011422.mp3",
+    "file": "audio/stops/hanseplatz_fh.mp3",
+    "title": "Hanseplatz/FH",
+    "sha256": "c37cc48bdb4f56f12a187ed591ab9fe682f8cdcf09c083018ee52b824c714147"
+  },
+  {
+    "original": "wevolabs-grubenstra-e-20261019-011401.mp3",
+    "file": "audio/stops/grubenstrasse.mp3",
+    "title": "Grubenstraße",
+    "sha256": "b813379c34a84043a4db0c61902c2df26e51528dfd90e2f77b171f188e1e84d2"
+  },
+  {
+    "original": "wevolabs-greifswalder-stra-e-20261019-011347.mp3",
+    "file": "audio/stops/greifswalder_strasse.mp3",
+    "title": "Greifswalder Straße",
+    "sha256": "eaafb447d3db3e40083eca8c5b55769d6258ec15cd473dd41e286de2df97b540"
+  },
+  {
+    "original": "wevolabs-gothaer-platz-20261019-011330.mp3",
+    "file": "audio/stops/gothaer_platz.mp3",
+    "title": "Gothaer Platz",
+    "sha256": "5dcb64fa92df8f1be3c5e67b8815f119707b2b089fe9657b6019c3e93c79eaf8"
+  },
+  {
+    "original": "wevolabs-gorkistra-e-20261019-011314.mp3",
+    "file": "audio/stops/gorkistrasse.mp3",
+    "title": "Gorkistraße",
+    "sha256": "589724b6c7c39c115f201cc1711ad9270890e04244c36c003fe8fa11ef4bc81b"
+  },
+  {
+    "original": "wevolabs-geschwister-scholl-stra-e-20261019-011302.mp3",
+    "file": "audio/stops/geschwister_scholl_strasse.mp3",
+    "title": "Geschwister Scholl Straße",
+    "sha256": "7654cdda42924d624898aa6fcc5e0fd146075fcdb4322d5086cf523ad5259841"
+  },
+  {
+    "original": "wevolabs-gamstadter-weg-20261019-011248.mp3",
+    "file": "audio/stops/gamstadter_weg.mp3",
+    "title": "Gamstadter Weg",
+    "sha256": "88a6386acd1d0339a537c7a5a9f85be76ac4c7e1d40670f9ee0558ddd173ea12"
+  },
+  {
+    "original": "wevolabs-flughafen-airport-20261019-011210.mp3",
+    "file": "audio/stops/flughafen_airport.mp3",
+    "title": "Flughafen Airport",
+    "sha256": "16e833de28505862dab5c72280b3fcef33992d55bf7d787af42651d1caba2a41"
+  },
+  {
+    "original": "wevolabs-europa-platz-20261019-011155.mp3",
+    "file": "audio/stops/europa_platz.mp3",
+    "title": "Europa Platz",
+    "sha256": "0a8b38985e0666417f18bc9a5d760954338030e2627a8a7de1a4ae9750606482"
+  },
+  {
+    "original": "wevolabs-egapark-20261019-011106.mp3",
+    "file": "audio/stops/egapark.mp3",
+    "title": "Egapark",
+    "sha256": "215bdc64b1849022a159c8b3cb71e0e11fa2fb150e4e651eb88a89a745a2eb21"
+  },
+  {
+    "original": "wevolabs-drosselberg-20261019-011053.mp3",
+    "file": "audio/stops/drosselberg.mp3",
+    "title": "Drosselberg",
+    "sha256": "e491428540e663b4aa4996d2fcd8cbaacaecfb7c79ead4bf9fbe735b92ac1ae6"
+  },
+  {
+    "original": "wevolabs-domplatz-sud-20261019-011032.mp3",
+    "file": "audio/stops/domplatz_sud.mp3",
+    "title": "Domplatz Sud",
+    "sha256": "549adf28f237f13d7f3625911ba969e1a6919f89a05a813ca0104317bd1ee577"
+  },
+  {
+    "original": "wevolabs-domplatz-nord-20261019-011017.mp3",
+    "file": "audio/stops/domplatz_nord.mp3",
+    "title": "Domplatz Nord",
+    "sha256": "9f5590f248dd689adc8407e70184f5ff60220840f04ffafcecf374ca1cab966b"
+  },
+  {
+    "original": "wevolabs-bunsenstra-e-20261019-010846.mp3",
+    "file": "audio/stops/bunsenstrasse.mp3",
+    "title": "Bunsenstraße",
+    "sha256": "ad929018d6b9d8b7efa7f027b2d4b992ccbf99c46960b8a111e7deb9dd8d49b3"
+  },
+  {
+    "original": "wevolabs-bruhler-garten-20261019-010829.mp3",
+    "file": "audio/stops/bruehler_garten.mp3",
+    "title": "Brühler Garten",
+    "sha256": "50b6ca6cf5e1d6a3cc5583de307654b10d1a8586db04763cfe6a1ebbc795c608"
+  },
+  {
+    "original": "wevolabs-boyneburg-ufer-20261019-010813.mp3",
+    "file": "audio/stops/boyneburg_ufer.mp3",
+    "title": "Boyneburg Ufer",
+    "sha256": "0423c6f0ffa66c197eaf8ace58a082d26a796c99e0811d7ad7e4af8231fcd059"
+  },
+  {
+    "original": "wevolabs-buropark-airfurt-20261019-010739.mp3",
+    "file": "audio/stops/bueropark_airfurt.mp3",
+    "title": "Büropark Airfurt",
+    "sha256": "dbe5a89491e957ffabac0758317aafcaed196ee95cf5b9c7b5224a34aa6fd862"
+  },
+  {
+    "original": "wevolabs-bindersleben-20261019-010708.mp3",
+    "file": "audio/stops/bindersleben.mp3",
+    "title": "Bindersleben",
+    "sha256": "7d43985a393721909fbf4d774196664b691ee582bc1e8c0c19c7c57bdec643fb"
+  },
+  {
+    "original": "wevolabs-berliner-stra-e-20261019-010622.mp3",
+    "file": "audio/stops/berliner_strasse.mp3",
+    "title": "Berliner Straße",
+    "sha256": "eb9561635b7e92a57d5280dcd54fa676b307fccdde00343277a853e0dbad4e41"
+  },
+  {
+    "original": "wevolabs-bautzener-weg-20261019-010602.mp3",
+    "file": "audio/stops/bautzener_weg.mp3",
+    "title": "Bautzener Weg",
+    "sha256": "3baf05d7427c463ac6e656f469eb4d42e71f046d95598a894fc4fe2b065605f4"
+  },
+  {
+    "original": "wevolabs-baumerstra-e-20261019-010552.mp3",
+    "file": "audio/stops/baeumerstrasse.mp3",
+    "title": "Bäumerstraße",
+    "sha256": "2db874ada5129dbbaca7d5194aa7234c6e56899dbec36bde65d195adf887dcde"
+  },
+  {
+    "original": "wevolabs-augustinerkloster-20261019-010526.mp3",
+    "file": "audio/stops/augustinerkloster.mp3",
+    "title": "Augustinerkloster",
+    "sha256": "86b560ad27151522ec4867813cb1945c5925d0e30fd14d18be64317d0498110b"
+  },
+  {
+    "original": "wevolabs-augustfrohlichstra-e-20261019-010458.mp3",
+    "file": "audio/stops/august_froelich_strasse.mp3",
+    "title": "August-Frölich-Straße",
+    "sha256": "b5dcb8b9f78569e880c6c9177145771bea3bb897e2cacec2eb9ae0ee8d26b71b"
+  },
+  {
+    "original": "wevolabs-anger-brunnen-20261019-010422.mp3",
+    "file": "audio/stops/anger_brunnen.mp3",
+    "title": "Anger Brunnen",
+    "sha256": "dc71a62c54ef03790f707a9818527c98795ddabbd9488f13987ebc96fd3d1dbe"
+  },
+  {
+    "original": "wevolabs-an-der-laahche-20261019-010357.mp3",
+    "file": "audio/stops/an_der_lache.mp3",
+    "title": "An der Lache",
+    "sha256": "4c79709d05f36787772d0c6fa3b12d1143b8c52c6ede5d59c8bb71c6fa22d20d"
+  },
+  {
+    "original": "wevolabs-am-kreuzchen-20261019-010327.mp3",
+    "file": "audio/stops/am_kreuzchen.mp3",
+    "title": "Am Kreuzchen",
+    "sha256": "382ff2437e2f21999448234968b80303742b2bda4e810e61e45083ef25860e39"
+  },
+  {
+    "original": "wevolabs-betriebshof-melchendorf-20261019-010028.mp3",
+    "file": "audio/stops/melchendorf_betriebshof.mp3",
+    "title": "Melchendorf Betriebshof",
+    "sha256": "3b6f0cb4dd0af9c81d44b278f217eb75911aa42d8956b03b68b954ce30c92c64"
+  },
+  {
+    "original": "wevolabs-melchendorf-20261019-005941.mp3",
+    "file": "audio/stops/melchendorf.mp3",
+    "title": "Melchendorf",
+    "sha256": "66eb9a8d2977800a08f259a54d6e0bf221e82042f8632214a6358cb5cb4c9a3d"
+  },
+  {
+    "original": "wevolabs-domplatz-20261019-005921.mp3",
+    "file": "audio/stops/domplatz.mp3",
+    "title": "Domplatz",
+    "sha256": "9d44e026bf5fa25407e51b7b07988f9df844fc5c6db7b9c6dfede8b23c8fcc39"
+  },
+  {
+    "original": "wevolabs-fischmarkt-rathaus-20261019-005858.mp3",
+    "file": "audio/stops/fischmarkt_rathaus.mp3",
+    "title": "Fischmarkt/Rathaus",
+    "sha256": "2fab0ddcbed9bf9b9051f0d83cc1e23d9827293f919c5aaad90803724d62ad55"
+  },
+  {
+    "original": "wevolabs-anger-20261019-005819.mp3",
+    "file": "audio/stops/anger.mp3",
+    "title": "Anger",
+    "sha256": "eaf72f763f7287ab2c5ba4fe2fc8e62eb714712275f2d7f5cef1a04786a54a76"
+  },
+  {
+    "original": "wevolabs-next-stop-20261019-005721.mp3",
+    "file": "audio/phrases/next_stop.mp3",
+    "title": "Next stop",
+    "sha256": "de2a3b747e6628fc9dc04f64bbe5ac08be1c6593177cf2669f8179edfb5a5f61"
+  },
+  {
+    "original": "wevolabs-train-station-20261019-005703.mp3",
+    "file": "audio/phrases/train_station.mp3",
+    "title": "Train station",
+    "sha256": "621a4d1f10b31b8a36bbceaca041429e4d0fb8ada5ff40322a62112276d6a31f"
+  },
+  {
+    "original": "wevolabs-hauptbahnhof-20261019-005426.mp3",
+    "file": "audio/stops/hauptbahnhof.mp3",
+    "title": "Hauptbahnhof",
+    "sha256": "d50a49d25b40585c93f7176f19ca83c54654441c1e018210b311a0b5e3dd2be5"
+  },
+  {
+    "original": "wevolabs-robert-koch-stra-e-20261019-005344.mp3",
+    "file": "audio/stops/robert_koch_strasse.mp3",
+    "title": "Robert-Koch-Straße",
+    "sha256": "0b5d872f9f2d349dc1f3bc26d85c5100e81012b4c38149c345c23598423abd6c"
+  },
+  {
+    "original": "wevolabs-tschaikoffskiestra-e-20261019-005330.mp3",
+    "file": "audio/stops/tschaikowskistrasse.mp3",
+    "title": "Tschaikowskistraße",
+    "sha256": "bed7945120ab6ceb6a1d000328fab1be1687657983d7291f66368a2fe1292a3b"
+  },
+  {
+    "original": "wevolabs-stadion-ost-20261019-005241.mp3",
+    "file": "audio/stops/stadion_ost.mp3",
+    "title": "Stadion Ost",
+    "sha256": "3d2c64383581b0538590bf0964a3b583f6d43927a400459c99ce4d0e18438854"
+  },
+  {
+    "original": "wevolabs-am-schwemm-bach-20261019-005222.mp3",
+    "file": "audio/stops/am_schwemmbach.mp3",
+    "title": "Am Schwemmbach",
+    "sha256": "77a7337a2fb00ab3253268abcc73e8896a62c095c3f7fe3eecd45cec232df1dc"
+  },
+  {
+    "original": "wevolabs-sozialversicherungszentrum-20261019-005122.mp3",
+    "file": "audio/stops/sozialversicherungszentrum.mp3",
+    "title": "Sozialversicherungszentrum",
+    "sha256": "3fccb7682656885eb3273bce5d9a0bcb7bede85c5bef1899ed95d5b6d2111766"
+  },
+  {
+    "original": "wevolabs-bluhcherstra-e-20261019-005100.mp3",
+    "file": "audio/stops/bluecherstrasse.mp3",
+    "title": "Blücherstraße",
+    "sha256": "fff172538a7f21e307d1fd1946f1583a6028f63d4b70033330f5fcfa7e8f3244"
+  },
+  {
+    "original": "wevolabs-abzweig-wiesenhugel-20261019-005020.mp3",
+    "file": "audio/stops/abzweig_wiesenhuegel.mp3",
+    "title": "Abzweig Wiesenhügel",
+    "sha256": "a957b3ea57b878a176e572d5d0d0b023dd928574984a8231f96c7d0974dc0bdb"
+  },
+  {
+    "original": "wevolabs-farber-waidweg-20261019-004953.mp3",
+    "file": "audio/stops/faerberwaidweg.mp3",
+    "title": "Färberwaidweg",
+    "sha256": "e1239903e5af0c33588407461fc9a150f6b6ecc4dd9bced7820e8eb6e56455f2"
+  },
+  {
+    "original": "wevolabs-nachste-haltestelle-20261019-004921.mp3",
+    "file": "audio/phrases/naechste_haltestelle.mp3",
+    "title": "Nächste Haltestelle",
+    "sha256": "e873b80521d82bc51e1d756fa0d5753c8ed168a9ed6d01b5639443d9e6efee7a"
+  },
+  {
+    "original": "wevolabs-wiesenhugel-20261019-004906.mp3",
+    "file": "audio/stops/wiesenhuegel.mp3",
+    "title": "Wiesenhügel",
+    "sha256": "6ee9f4560988d79a884e10f91eb412f98f751f825d9f1475c06239c7ec50c2ad"
+  }
+]

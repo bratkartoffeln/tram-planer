@@ -1,18 +1,19 @@
 'use strict';
 const CACHE_PREFIX = 'fahrplan-manager-tablet-';
-const CACHE = CACHE_PREFIX + 'v6.2.0';
+const CACHE = CACHE_PREFIX + 'v6.2.1';
 const ASSETS = [
   './', './index.html', './app.js', './announcements.js',
   './manifest.webmanifest', './icon-192.png', './icon-512.png',
-  './audio/announcements-data.js', './audio/announcements.json', './audio/ding-dong.wav'
+  './audio/announcements-data.js', './audio/announcements.json', './audio/catalog.json',
+  './audio/chimes/ding_dong.mp3', './audio/chimes/dong_dong_ding.mp3'
 ];
 
 self.addEventListener('install', event => event.waitUntil((async () => {
   const cache = await caches.open(CACHE);
-  const response = await fetch('./audio/announcements.json', {cache: 'no-store'});
+  const response = await fetch('./audio/catalog.json', {cache: 'no-store'});
   if (!response.ok) throw new Error('The announcement list could not be loaded.');
   const announcements = await response.json();
-  const audioPaths = Object.values(announcements).map(path => './' + path);
+  const audioPaths = announcements.map(item => './' + item.file);
   await cache.addAll([...ASSETS, ...audioPaths]);
   await self.skipWaiting();
 })()));
