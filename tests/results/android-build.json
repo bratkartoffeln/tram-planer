@@ -1,0 +1,255 @@
+{
+  "version": "6.2.0",
+  "versionCode": 620,
+  "minSdk": 26,
+  "targetSdk": 35,
+  "compileSdk": 35,
+  "signerCertificateSha256": "e63079f2770ecda9a86a22f30a20af124bc04d5000c3d6782c36a41a0f53cc6d",
+  "verification": "Compiled with official Android SDK 35; APK signature and ZIP alignment verified. Android runtime not available in this environment.",
+  "artifacts": [
+    {
+      "filename": "FahrplanManager_Tablet_v6.2.0.apk",
+      "package": "de.meistererwat.fahrplanmanager",
+      "sha256": "e3d901cfa89ad0ab79ebc9e1ce10deb363fcf71618228284d192e5feb4f5fea2",
+      "bytes": 1489369,
+      "assetFilesMatched": 26,
+      "scriptReferencesVerified": 3,
+      "audio": [
+        {
+          "asset": "assets/audio/ding-dong.wav",
+          "seconds": 1.1,
+          "sampleRate": 44100,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/abzweig_wiesenhuegel.wav",
+          "seconds": 3.062,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/am_schwemmbach.wav",
+          "seconds": 2.355,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/anger.wav",
+          "seconds": 1.967,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/bluecherstrasse.wav",
+          "seconds": 2.758,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/domplatz.wav",
+          "seconds": 2.46,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/faerberwaidweg.wav",
+          "seconds": 2.72,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/fischmarkt_rathaus.wav",
+          "seconds": 3.024,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/hauptbahnhof.wav",
+          "seconds": 2.704,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/melchendorf.wav",
+          "seconds": 2.272,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/melchendorf_betriebshof.wav",
+          "seconds": 3.216,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/robert_koch_strasse.wav",
+          "seconds": 2.88,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/sozialversicherungszentrum.wav",
+          "seconds": 3.566,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/stadion_ost.wav",
+          "seconds": 2.816,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/tschaikowskistrasse.wav",
+          "seconds": 3.149,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/wiesenhuegel.wav",
+          "seconds": 2.656,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        }
+      ]
+    },
+    {
+      "filename": "FahrplanManager_Tablet_v6.2.0_Parallel.apk",
+      "package": "de.meistererwat.fahrplanmanager.preview",
+      "sha256": "17d1c4f11633e2295f0a39e66a0c5d8b43b5cd1b3255eb1310096a5987000c31",
+      "bytes": 1489369,
+      "assetFilesMatched": 26,
+      "scriptReferencesVerified": 3,
+      "audio": [
+        {
+          "asset": "assets/audio/ding-dong.wav",
+          "seconds": 1.1,
+          "sampleRate": 44100,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/abzweig_wiesenhuegel.wav",
+          "seconds": 3.062,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/am_schwemmbach.wav",
+          "seconds": 2.355,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/anger.wav",
+          "seconds": 1.967,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/bluecherstrasse.wav",
+          "seconds": 2.758,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/domplatz.wav",
+          "seconds": 2.46,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/faerberwaidweg.wav",
+          "seconds": 2.72,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/fischmarkt_rathaus.wav",
+          "seconds": 3.024,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/hauptbahnhof.wav",
+          "seconds": 2.704,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/melchendorf.wav",
+          "seconds": 2.272,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/melchendorf_betriebshof.wav",
+          "seconds": 3.216,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/robert_koch_strasse.wav",
+          "seconds": 2.88,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/sozialversicherungszentrum.wav",
+          "seconds": 3.566,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/stadion_ost.wav",
+          "seconds": 2.816,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/tschaikowskistrasse.wav",
+          "seconds": 3.149,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        },
+        {
+          "asset": "assets/audio/stops/wiesenhuegel.wav",
+          "seconds": 2.656,
+          "sampleRate": 16000,
+          "channels": 1,
+          "uncompressed": true
+        }
+      ]
+    }
+  ]
+}

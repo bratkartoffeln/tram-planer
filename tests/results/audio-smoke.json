@@ -1,0 +1,273 @@
+{
+  "decoded": [
+    {
+      "path": "audio/ding-dong.wav",
+      "bytes": 97064,
+      "duration": 1.1,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/wiesenhuegel.wav",
+      "bytes": 85036,
+      "duration": 2.6559863945578233,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/faerberwaidweg.wav",
+      "bytes": 87084,
+      "duration": 2.72,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/abzweig_wiesenhuegel.wav",
+      "bytes": 98022,
+      "duration": 3.061791383219955,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/bluecherstrasse.wav",
+      "bytes": 88306,
+      "duration": 2.758185941043084,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/sozialversicherungszentrum.wav",
+      "bytes": 114168,
+      "duration": 3.566371882086168,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/am_schwemmbach.wav",
+      "bytes": 75390,
+      "duration": 2.3545578231292517,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/stadion_ost.wav",
+      "bytes": 90156,
+      "duration": 2.815986394557823,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/tschaikowskistrasse.wav",
+      "bytes": 100816,
+      "duration": 3.1491156462585033,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/robert_koch_strasse.wav",
+      "bytes": 92204,
+      "duration": 2.88,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/hauptbahnhof.wav",
+      "bytes": 86572,
+      "duration": 2.7039909297052156,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/anger.wav",
+      "bytes": 63000,
+      "duration": 1.9673696145124717,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/fischmarkt_rathaus.wav",
+      "bytes": 96812,
+      "duration": 3.0239909297052154,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/domplatz.wav",
+      "bytes": 78764,
+      "duration": 2.46,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/melchendorf_betriebshof.wav",
+      "bytes": 102956,
+      "duration": 3.2159863945578233,
+      "channels": 1,
+      "sampleRate": 44100
+    },
+    {
+      "path": "audio/stops/melchendorf.wav",
+      "bytes": 72748,
+      "duration": 2.2719954648526075,
+      "channels": 1,
+      "sampleRate": 44100
+    }
+  ],
+  "sources": [
+    {
+      "event": "start",
+      "id": 1,
+      "at": 1486.2999999988824,
+      "duration": 1.1,
+      "sampleRate": 44100
+    },
+    {
+      "event": "start",
+      "id": 2,
+      "at": 2585.9000000003725,
+      "duration": 2.72,
+      "sampleRate": 44100
+    },
+    {
+      "event": "ended",
+      "id": 1,
+      "at": 2586
+    },
+    {
+      "event": "stop",
+      "id": 2,
+      "at": 2636
+    },
+    {
+      "event": "ended",
+      "id": 2,
+      "at": 2647.5999999996275
+    },
+    {
+      "event": "start",
+      "id": 3,
+      "at": 3641.5,
+      "duration": 1.1,
+      "sampleRate": 44100
+    },
+    {
+      "event": "stop",
+      "id": 3,
+      "at": 3688.7999999988824
+    },
+    {
+      "event": "ended",
+      "id": 3,
+      "at": 3697.2999999988824
+    }
+  ],
+  "cached": [
+    "/",
+    "/index.html",
+    "/app.js",
+    "/announcements.js",
+    "/manifest.webmanifest",
+    "/icon-192.png",
+    "/icon-512.png",
+    "/audio/announcements-data.js",
+    "/audio/announcements.json",
+    "/audio/ding-dong.wav",
+    "/audio/stops/wiesenhuegel.wav",
+    "/audio/stops/faerberwaidweg.wav",
+    "/audio/stops/abzweig_wiesenhuegel.wav",
+    "/audio/stops/bluecherstrasse.wav",
+    "/audio/stops/sozialversicherungszentrum.wav",
+    "/audio/stops/am_schwemmbach.wav",
+    "/audio/stops/stadion_ost.wav",
+    "/audio/stops/tschaikowskistrasse.wav",
+    "/audio/stops/robert_koch_strasse.wav",
+    "/audio/stops/hauptbahnhof.wav",
+    "/audio/stops/anger.wav",
+    "/audio/stops/fischmarkt_rathaus.wav",
+    "/audio/stops/domplatz.wav",
+    "/audio/stops/melchendorf_betriebshof.wav",
+    "/audio/stops/melchendorf.wav"
+  ],
+  "offlineAudio": [
+    {
+      "path": "audio/ding-dong.wav",
+      "status": 200,
+      "bytes": 97064
+    },
+    {
+      "path": "audio/stops/wiesenhuegel.wav",
+      "status": 200,
+      "bytes": 85036
+    },
+    {
+      "path": "audio/stops/faerberwaidweg.wav",
+      "status": 200,
+      "bytes": 87084
+    },
+    {
+      "path": "audio/stops/abzweig_wiesenhuegel.wav",
+      "status": 200,
+      "bytes": 98022
+    },
+    {
+      "path": "audio/stops/bluecherstrasse.wav",
+      "status": 200,
+      "bytes": 88306
+    },
+    {
+      "path": "audio/stops/sozialversicherungszentrum.wav",
+      "status": 200,
+      "bytes": 114168
+    },
+    {
+      "path": "audio/stops/am_schwemmbach.wav",
+      "status": 200,
+      "bytes": 75390
+    },
+    {
+      "path": "audio/stops/stadion_ost.wav",
+      "status": 200,
+      "bytes": 90156
+    },
+    {
+      "path": "audio/stops/tschaikowskistrasse.wav",
+      "status": 200,
+      "bytes": 100816
+    },
+    {
+      "path": "audio/stops/robert_koch_strasse.wav",
+      "status": 200,
+      "bytes": 92204
+    },
+    {
+      "path": "audio/stops/hauptbahnhof.wav",
+      "status": 200,
+      "bytes": 86572
+    },
+    {
+      "path": "audio/stops/anger.wav",
+      "status": 200,
+      "bytes": 63000
+    },
+    {
+      "path": "audio/stops/fischmarkt_rathaus.wav",
+      "status": 200,
+      "bytes": 96812
+    },
+    {
+      "path": "audio/stops/domplatz.wav",
+      "status": 200,
+      "bytes": 78764
+    },
+    {
+      "path": "audio/stops/melchendorf_betriebshof.wav",
+      "status": 200,
+      "bytes": 102956
+    },
+    {
+      "path": "audio/stops/melchendorf.wav",
+      "status": 200,
+      "bytes": 72748
+    }
+  ]
+}
