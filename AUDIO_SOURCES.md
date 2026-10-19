@@ -1,5 +1,11 @@
 # Ansagen und Gongs ab Version 6.2.1
 
+## Ergänzte Haltestellenaufnahmen in 6.2.2
+
+Die sieben am 19.10.2026 vom Nutzer ergänzten MP3-Dateien werden unverändert verwendet: Bergstraße (`bergstrasse.mp3`), Bundesarbeitsgericht (`bundes_arbeitsgericht.mp3`), Humboldtstraße (`humboldtstrasse.mp3`), Landtag/Stadion Nord (`landtag_stadion_nord.mp3`), Löberwallgraben (`loberwallgraben.mp3`), Ringelberg (`ringelberg.mp3`) und Thüringen-Park (`thuringen-park.mp3`). Sie liegen unter `audio/stops/`. Weitere Herkunfts- oder Lizenzangaben wurden für diese Dateien nicht mitgeliefert.
+
+Damit enthält die Zuordnung 96 aufgenommene Haltestellennamen; alle 93 unterschiedlichen Haltestellen der eingebauten Streckenvorlagen sind einschließlich ihrer Namensvarianten abgedeckt. Der Ansagenkatalog enthält nun 105 gelieferte Aufnahmen, zusätzlich zu den beiden Gongs und sieben Fahrpulteffekten. Dateinamen und SHA-256-Prüfsummen der Ergänzungen stehen in `audio/catalog.json`; der Offline-Cache enthält auch diese Dateien. Die Ansagefolge bleibt Ding-Dong → Nächste Haltestelle → Haltestellenname. Es wird keine Sprachsynthese verwendet.
+
 ## Fahrpult-Sounds (19.10.2026)
 
 Die sieben Effekte unter `audio/effects/` sind lokal enthalten und werden auch von der PWA offline gespeichert. `audio/effects/catalog.json` enthält Dauer und SHA-256. MP3, mono, 44.100 Hz, 96 kbit/s; der nachträglich bereitgestellte Back-Jingle bleibt unverändert in Stereo, 48.000 Hz, 192 kbit/s. Die neuen Effekte verändern die gelieferten Sprachaufnahmen nicht.

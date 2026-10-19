@@ -1,6 +1,6 @@
 'use strict';
 const CACHE_PREFIX = 'fahrplan-manager-tablet-';
-const CACHE = CACHE_PREFIX + 'v6.2.1-photo-recordings-7';
+const CACHE = CACHE_PREFIX + 'v6.2.2-recordings-complete';
 const ASSETS = [
   './', './index.html', './app.js', './announcements.js', './erfurt-network.js', './line-editor.js',
   './cockpit.js', './cockpit.css', './images/tram-cockpit.jpg', './images/credits.json', './audio/effects/catalog.json',

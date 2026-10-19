@@ -586,5 +586,54 @@
     "file": "audio/stops/wiesenhuegel.mp3",
     "title": "Wiesenhügel",
     "sha256": "6ee9f4560988d79a884e10f91eb412f98f751f825d9f1475c06239c7ec50c2ad"
+  },
+  {
+    "original": "bergstrasse.mp3",
+    "file": "audio/stops/bergstrasse.mp3",
+    "title": "Bergstraße",
+    "sha256": "46e393052ad952c06f5400990bf06d15587e91eaabc15c4efee5801b3021e588",
+    "sourceType": "provided-recording"
+  },
+  {
+    "original": "bundes_arbeitsgericht.mp3",
+    "file": "audio/stops/bundes_arbeitsgericht.mp3",
+    "title": "Bundesarbeitsgericht",
+    "sha256": "a6b047f65112d33017dd6f1ac32db0ab7d671cd5437ae8dd9bbb535a99d3bb5b",
+    "sourceType": "provided-recording"
+  },
+  {
+    "original": "humboldtstrasse.mp3",
+    "file": "audio/stops/humboldtstrasse.mp3",
+    "title": "Humboldtstraße",
+    "sha256": "1dbda46e8d9434d0211c29101a7fb890e4686eb33c348e6989f618857ba6eaee",
+    "sourceType": "provided-recording"
+  },
+  {
+    "original": "landtag_stadion_nord.mp3",
+    "file": "audio/stops/landtag_stadion_nord.mp3",
+    "title": "Landtag/Stadion Nord",
+    "sha256": "905211f352bd270b4de7dafbe2d236c9a3d89e4c674aa4b38e62391221e63e0f",
+    "sourceType": "provided-recording"
+  },
+  {
+    "original": "loberwallgraben.mp3",
+    "file": "audio/stops/loberwallgraben.mp3",
+    "title": "Löberwallgraben",
+    "sha256": "ca0f6e2c549c1c02d924d5acab18104dc72a82fcce9d3218295bacb7903fe3c5",
+    "sourceType": "provided-recording"
+  },
+  {
+    "original": "ringelberg.mp3",
+    "file": "audio/stops/ringelberg.mp3",
+    "title": "Ringelberg",
+    "sha256": "e40584f8c3ad81ccaa10419985ac78482d2b2afd0b339d2f89fc117825249248",
+    "sourceType": "provided-recording"
+  },
+  {
+    "original": "thuringen-park.mp3",
+    "file": "audio/stops/thuringen-park.mp3",
+    "title": "Thüringen-Park",
+    "sha256": "b246cd9c4ed84cd17bcab812e16659232bf59ae03ce36243c10c2761f3b4609a",
+    "sourceType": "provided-recording"
   }
 ]
