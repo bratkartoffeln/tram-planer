@@ -33,6 +33,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -191,6 +192,32 @@ public class MainActivity extends Activity {
 
     public final class AnnouncementBridge {
         @JavascriptInterface
+        public void playSequence(String stopName, String json) {
+            mainHandler.post(() -> {
+                if (!resumed || !isTrustedPage()) return;
+                stopAnnouncement();
+                final long generation = announcementGeneration;
+                try {
+                    if (json == null || json.length() > 8192) throw new IllegalArgumentException();
+                    JSONArray paths = new JSONArray(json);
+                    if (paths.length() < 1 || paths.length() > 12) throw new IllegalArgumentException();
+                    for (int i = 0; i < paths.length(); i++) {
+                        if (!paths.getString(i).matches("audio/(stops|phrases|chimes)/[a-z0-9_-]+\\.mp3")) {
+                            throw new IllegalArgumentException();
+                        }
+                    }
+                    if (!requestAnnouncementFocus()) {
+                        failAnnouncement("Die Ansage konnte keinen Audiozugriff erhalten.", generation);
+                        return;
+                    }
+                    playSequenceItem(paths, 0, generation);
+                } catch (Exception exception) {
+                    failAnnouncement("Die Ansage enthält eine ungültige Audiodatei.", generation);
+                }
+            });
+        }
+
+        @JavascriptInterface
         public void play(String stopName, String assetPath) {
             mainHandler.post(() -> {
                 if (resumed && isTrustedPage()) playAnnouncement(stopName, assetPath);
@@ -201,6 +228,17 @@ public class MainActivity extends Activity {
         public void stop() {
             mainHandler.post(MainActivity.this::stopAnnouncement);
         }
+    }
+
+    private void playSequenceItem(JSONArray paths, int index, long generation) {
+        if (generation != announcementGeneration || !resumed || destroyed) return;
+        if (index >= paths.length()) {
+            finishAnnouncement(generation);
+            return;
+        }
+        playAsset(paths.optString(index), generation,
+                () -> playSequenceItem(paths, index + 1, generation),
+                () -> failAnnouncement("Eine Audiodatei der Ansage konnte nicht abgespielt werden.", generation));
     }
 
     private void playAnnouncement(String rawStopName, String assetPath) {
@@ -220,7 +258,7 @@ public class MainActivity extends Activity {
             failAnnouncement("Die Ansage konnte keinen Audiozugriff erhalten. Bitte nach dem laufenden Anruf erneut versuchen.", generation);
             return;
         }
-        playAsset("audio/ding-dong.wav", generation, () -> {
+        playAsset("audio/chimes/ding_dong.mp3", generation, () -> {
             if (path.isEmpty()) {
                 speakStop(stopName, generation);
             } else {

@@ -20,6 +20,10 @@ const BROWSER = process.env.FAHRPLAN_BROWSER_PATH || '/tmp/fahrplanmanager-playw
 const BASE = Date.parse('2026-10-18T10:00:00+02:00');
 const KEY = 'fm_tablet_state_v1';
 const stopNames = ['Wiesenhügel', 'Färberwaidweg', 'Abzweig Wiesenhügel', 'Blücherstraße', 'Sozialversicherungszentrum', 'Am Schwemmbach', 'Stadion Ost', 'Tschaikowskistraße', 'Robert-Koch-Straße', 'Hauptbahnhof', 'Anger', 'Fischmarkt/Rathaus', 'Domplatz'];
+const audioCatalog = JSON.parse(fs.readFileSync(path.join(ASSETS, 'audio/catalog.json'), 'utf8'));
+const gongPath = 'audio/chimes/ding_dong.mp3';
+const prefixPath = 'audio/phrases/naechste_haltestelle.mp3';
+const allAudioPaths = [gongPath, 'audio/chimes/dong_dong_ding.mp3', ...audioCatalog.map(item=>item.file)];
 const announcementMap = JSON.parse(fs.readFileSync(path.join(ASSETS, 'audio/announcements.json'), 'utf8'));
 const results = [];
 const browserErrors = [];
@@ -53,11 +57,12 @@ async function openPage({seed=null,native=true,frozen=true,now=BASE,viewport={wi
       localStorage.setItem(key,JSON.stringify(seed));
       localStorage.setItem('__integration_seeded','1');
     }
-    window.__qaAudio=[];
+    window.__qaAudio=[];window.__qaSequences=[];
     window.__qaExport=null;
     window.AndroidBackup={save:json=>{window.__qaExport=JSON.parse(json);}};
     if(native) window.AndroidAnnouncements={
       play:(name,path)=>window.__qaAudio.push({event:'play',name,path,at:Date.now()}),
+      playSequence:(name,json)=>{const paths=JSON.parse(json);window.__qaSequences.push({name,paths});window.__qaAudio.push({event:'play',name,path:paths[2],at:Date.now()});},
       stop:()=>window.__qaAudio.push({event:'stop',at:Date.now()})
     };
     if(traceAudio) {
@@ -83,7 +88,7 @@ async function openPage({seed=null,native=true,frozen=true,now=BASE,viewport={wi
     await page.clock.pauseAt(new Date(now));
   }
   await page.goto(origin+'/index.html',{waitUntil:'load'});
-  await page.locator('#appVersion').filter({hasText:'v6.2.0 Android'}).waitFor();
+  await page.locator('#appVersion').filter({hasText:'v6.2.1 Android'}).waitFor();
   return {context,page};
 }
 const readState = page=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);
@@ -133,7 +138,7 @@ async function testCancellation(label,action,verify) {
 
 (async()=>{
   fs.mkdirSync(OUTPUT,{recursive:true});
-  const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.png':'image/png','.wav':'audio/wav'};
+  const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.png':'image/png','.wav':'audio/wav','.mp3':'audio/mpeg'};
   server=http.createServer((request,response)=>{
     try {
       const requestPath=decodeURIComponent(new URL(request.url,'http://localhost').pathname);
@@ -358,13 +363,40 @@ async function testCancellation(label,action,verify) {
     } finally { await context.close(); }
   });
 
+  await run('Hauptbahnhof, Anger und Linie 5 spielen die vollständigen Ansageketten',async()=>{
+    const prefix=[gongPath,prefixPath];
+    const phrase=name=>'audio/phrases/'+name+'.mp3';
+    const hbf=[...prefix,announcementMap.Hauptbahnhof,phrase('next_stop_central_station'),phrase('umstieg_stadtbus_busbahnhof')];
+    const scenarios=[
+      {line:'5',previous:'Anger',name:'Hauptbahnhof',expected:[...hbf,'audio/chimes/dong_dong_ding.mp3',phrase('fahrt_endet_hier')]},
+      {line:'2',previous:'Anger',name:'Hauptbahnhof',expected:hbf},
+      {line:'5',previous:'Robert-Koch-Straße',name:'Hauptbahnhof',expected:hbf},
+      {line:'5',previous:'Hauptbahnhof',name:'Anger',expected:[...prefix,announcementMap.Anger,phrase('next_stop_town_hall'),'audio/chimes/dong_dong_ding.mp3',phrase('umstieg_alle_stadtbahnlinien')]}
+    ];
+    for(const scenario of scenarios){
+      const seed=stateFixture({active:true});
+      seed.active.plan.line=scenario.line;
+      seed.active.plan.stops=[{name:scenario.previous,travel:0,pause:0},{name:scenario.name,travel:2,pause:0}];
+      const {context,page}=await openPage({seed});
+      try{
+        await page.locator('#nav button[data-view="driver"]').click();
+        await page.locator('#nextStopBtn').click();
+        await page.clock.runFor(1000);
+        assert.deepEqual(await page.evaluate(()=>window.__qaSequences),[{name:scenario.name,paths:scenario.expected}]);
+        await page.locator('#nav button[data-view="home"]').click();
+        assert((await page.evaluate(()=>window.__qaAudio)).some(event=>event.event==='stop'));
+      }finally{await context.close();}
+    }
+    return {scenarios:scenarios.length,terminalOnlyForLine5FromAnger:true};
+  });
+
   await run('Echte Audiodateien decodieren, Gong vor Stimme, WebAudio-Abbruch und vollständiger Offlinebetrieb',async()=>{
     const {context,page}=await openPage({seed:stateFixture({active:true}),native:false,frozen:false,traceAudio:true});
     try {
-      const decoded=await page.evaluate(async()=>{
+      const decoded=await page.evaluate(async(audioPaths)=>{
         const ctx=new AudioContext();
         try {
-          return await Promise.all(['audio/ding-dong.wav',...Object.values(window.STOP_ANNOUNCEMENTS)].map(async path=>{
+          return await Promise.all(audioPaths.map(async path=>{
             const response=await fetch(path);
             if(!response.ok)throw new Error(path+': HTTP '+response.status);
             const data=await response.arrayBuffer();
@@ -373,53 +405,55 @@ async function testCancellation(label,action,verify) {
             return {path,bytes,duration:audio.duration,channels:audio.numberOfChannels,sampleRate:audio.sampleRate};
           }));
         } finally { await ctx.close(); }
-      });
-      assert.equal(decoded.length,16);
+      },allAudioPaths);
+      assert.equal(decoded.length,100);
       assert(decoded.every(file=>file.bytes>44&&file.duration>0.2&&file.channels>=1));
       const missingNames=await page.evaluate(()=>[...new Set(Object.values(ROUTES).flatMap(route=>route.stops))].filter(name=>!window.STOP_ANNOUNCEMENTS[name]));
       assert.deepEqual(missingNames,[]);
       await page.locator('#nav button[data-view="driver"]').click();
       await page.locator('#nextStopBtn').click();
-      await page.waitForFunction(()=>window.__qaSources.filter(event=>event.event==='start').length>=2,null,{timeout:15000});
-      const firstChain=await page.evaluate(()=>window.__qaSources.filter(event=>event.event==='start').slice(0,2));
-      const gong=decoded.find(file=>file.path==='audio/ding-dong.wav');
+      await page.waitForFunction(()=>window.__qaSources.filter(event=>event.event==='start').length>=3,null,{timeout:15000});
+      const firstChain=await page.evaluate(()=>window.__qaSources.filter(event=>event.event==='start').slice(0,3));
+      const gong=decoded.find(file=>file.path===gongPath);
+      const prefix=decoded.find(file=>file.path===prefixPath);
       const voice=decoded.find(file=>file.path===announcementMap['Färberwaidweg']);
       assert(Math.abs(firstChain[0].duration-gong.duration)<0.005);
-      assert(Math.abs(firstChain[1].duration-voice.duration)<0.005);
+      assert(Math.abs(firstChain[2].duration-voice.duration)<0.005);
       assert(firstChain[1].at-firstChain[0].at>=gong.duration*1000-80);
+      assert(firstChain[2].at-firstChain[1].at>=prefix.duration*1000-80);
       await page.locator('#nextStopBtn').click();
-      assert((await page.evaluate(()=>window.__qaSources)).some(event=>event.event==='stop'&&event.id===firstChain[1].id));
-      await page.waitForFunction(()=>window.__qaSources.filter(event=>event.event==='start').length>=3,null,{timeout:10000});
-      const secondGong=await page.evaluate(()=>window.__qaSources.filter(event=>event.event==='start')[2]);
+      assert((await page.evaluate(()=>window.__qaSources)).some(event=>event.event==='stop'&&event.id===firstChain[2].id));
+      await page.waitForFunction(()=>window.__qaSources.filter(event=>event.event==='start').length>=4,null,{timeout:10000});
+      const secondGong=await page.evaluate(()=>window.__qaSources.filter(event=>event.event==='start')[3]);
       await page.locator('#nav button[data-view="home"]').click();
       await page.waitForTimeout(Math.ceil(gong.duration*1000)+250);
       const allSources=await page.evaluate(()=>window.__qaSources);
       assert(allSources.some(event=>event.event==='stop'&&event.id===secondGong.id));
-      assert.equal(allSources.filter(event=>event.event==='start').length,3,'cancelled gong must not continue with a spoken announcement');
+      assert.equal(allSources.filter(event=>event.event==='start').length,4,'cancelled gong must not continue with a spoken announcement');
       await page.evaluate(()=>navigator.serviceWorker.ready);
       await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
       const cached=await page.evaluate(async()=>{
         const names=await caches.keys();
-        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.0'));
+        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.1'));
         return (await cache.keys()).map(request=>new URL(request.url).pathname);
       });
-      const required=['/','/index.html','/app.js','/announcements.js','/manifest.webmanifest','/icon-192.png','/icon-512.png','/audio/announcements-data.js','/audio/announcements.json','/audio/ding-dong.wav',...Object.values(announcementMap).map(file=>'/'+file)];
-      assert.equal(required.length,25);
+      const required=['/','/index.html','/app.js','/announcements.js','/manifest.webmanifest','/icon-192.png','/icon-512.png','/audio/announcements-data.js','/audio/announcements.json','/audio/catalog.json',...allAudioPaths.map(file=>'/'+file)];
+      assert.equal(required.length,110);
       assert(required.every(file=>cached.includes(file)),'all shell and audio assets must be cached');
       await context.setOffline(true);
       await page.reload({waitUntil:'load'});
-      await page.locator('#appVersion').filter({hasText:'v6.2.0 Android'}).waitFor();
-      assert.equal(await page.evaluate(()=>Object.keys(window.STOP_ANNOUNCEMENTS).length),15);
-      const offlineAudio=await page.evaluate(async()=>Promise.all(['audio/ding-dong.wav',...Object.values(window.STOP_ANNOUNCEMENTS)].map(async path=>{
+      await page.locator('#appVersion').filter({hasText:'v6.2.1 Android'}).waitFor();
+      assert.equal(await page.evaluate(()=>Object.keys(window.STOP_ANNOUNCEMENTS).length),89);
+      const offlineAudio=await page.evaluate(async(audioPaths)=>Promise.all(audioPaths.map(async path=>{
         const response=await fetch(path);
         return {path,status:response.status,bytes:(await response.arrayBuffer()).byteLength};
-      })));
+      })),allAudioPaths);
       assert(offlineAudio.every(file=>file.status===200&&file.bytes>44));
       await page.locator('#nav button[data-view="driver"]').click();
       assert.equal(await page.locator('#currentStop').innerText(),'Abzweig Wiesenhügel');
       await screenshot(page,'offline-driver');
       fs.writeFileSync(path.join(OUTPUT,'audio-smoke.json'),JSON.stringify({decoded,sources:allSources,cached,offlineAudio},null,2));
-      return {decodedFiles:16,stopNamesCovered:15,gongThenVoice:true,cancelStopsVoiceChain:true,requiredCachedAssets:25,offlineReloadAndAudio:true};
+      return {decodedFiles:100,stopNamesCovered:89,gongThenVoice:true,cancelStopsVoiceChain:true,requiredCachedAssets:110,offlineReloadAndAudio:true};
     } finally { await context.close(); }
   });
 

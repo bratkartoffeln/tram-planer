@@ -1,86 +1,26 @@
-# Haltestellenansagen und Gong
+# Ansagen und Gongs ab Version 6.2.1
 
-## Inhalt und Wiedergabe
+Alle 98 MP3-Aufnahmen stammen unverändert aus dem vom Nutzer bereitgestellten Archiv tram-planer-ansagen.zip. Die Originalnamen, lesbaren Bezeichnungen, neuen Dateipfade und SHA-256-Prüfsummen stehen in app/src/main/assets/audio/catalog.json. Auch derzeit nicht benötigte Aufnahmen und beide Varianten von „Nächste Haltestelle“ werden mitgeliefert und offline gespeichert.
 
-Die APK enthält einen eigenen Ding-Dong sowie vollständige deutsche Ansagen
-für alle 15 unterschiedlichen Haltestellennamen der mitgelieferten Strecken.
-Jede Ansage lautet „Nächste Haltestelle, {Haltestellenname}.“ Der zusammengesetzte
-Name „Fischmarkt/Rathaus“ wird mit einer kurzen Sprechpause zwischen den Namen
-ausgegeben. Die JSON-Zuordnung behält den angezeigten Namen einschließlich
-Schrägstrich unverändert bei.
+Die älteren vollständigen Piper-Ansagen und WAV-Dateien wurden entfernt. Die Zuordnung aller 89 aufgenommenen Haltestellen steht in audio/announcements.json. Für nicht aufgenommene Namen aus importierten Fahrplänen bleibt die vorhandene System-Sprachausgabe als Reserve erhalten.
 
-- Gong: `app/src/main/assets/audio/ding-dong.wav`, 1,10 Sekunden,
-  PCM-WAV, 44.100 Hz, 16 Bit, Mono.
-- Ansagen: `app/src/main/assets/audio/stops/*.wav`, PCM-WAV,
-  16.000 Hz, 16 Bit, Mono.
-- Namenszuordnung: `app/src/main/assets/audio/announcements.json`.
+## Reihenfolge
 
-Die fertigen Audiodateien werden mit der App ausgeliefert. Für ihre Wiedergabe
-sind weder eine Internetverbindung noch nachinstallierte Android-Stimmen nötig.
-Die Audioassets enthalten synthetische Sprache; es handelt sich nicht um
-Originalaufnahmen der EVAG oder um eine nachgeahmte EVAG-Sprecherin.
+Eine Sekunde nach „Nächster Halt“ beginnt die Ansage der oben angezeigten Haltestelle:
 
-## Eigener Gong
+- Normal: Ding-Dong → Nächste Haltestelle → Haltestellenname.
+- Hauptbahnhof: Ding-Dong → Nächste Haltestelle → Hauptbahnhof → Next stop Central Station → Umsteigemöglichkeit zum Stadtbus und zum Busbahnhof.
+- Linie 5, direkt vom Anger zum Hauptbahnhof: anschließend Dong-Dong-Ding → Sehr geehrte Fahrgäste, diese Fahrt endet hier. Bitte alle aussteigen.
+- Anger: Ding-Dong → Nächste Haltestelle → Anger → Next stop Town Hall → Dong-Dong-Ding → Umsteigemöglichkeit zu allen Stadtbahnlinien (vollständige gelieferte Aufnahme).
 
-Der Zweitongong wurde für diese Anwendung durch additive Klangsynthese erzeugt.
-Zwei sanft ausklingende Töne mit 1.046,50 und 783,99 Hz, leisen Obertönen sowie
-kurzen Ein- und Ausblendungen ergeben das Ding-Dong. Dafür wurden keine fremden
-Aufnahmen, Samples oder Ausschnitte verwendet.
+Im Archiv gibt es keine Aufnahme mit dem Wortlaut „Nächster Halt“. Beide als Präfix benannten Dateien sagen „Nächste Haltestelle“; aktiv ist die Aufnahme mit der ursprünglichen Endung 004921. „Next stop Town Hall“ wird wie angefordert am Anger verwendet.
 
-Die Suche nach einem eindeutig freigegebenen Erfurter Originalgong ergab keinen
-unmittelbar nutzbaren Kandidaten. Ein gefundenes Community-Paket nennt zwar
-einen Erfurter/Dresdner Gong, weist aber „Alle Rechte vorbehalten“ aus:
+Der Wechsel zum oben angezeigten aktuellen Halt gilt in dieser Simulation als Ankunft. Die Zusatzansage der Linie 5 hängt von der eingetragenen Liniennummer und der unmittelbar vorherigen Haltestelle ab. Es wird keine zusätzliche Streckenvorlage erstellt.
 
-- <https://reboot.omsi-webdisk.de/file/11559-ansagen-gerolstein-mit-hall-effekt/>
-- Geprüfte offizielle Downloads: <https://www.evag-erfurt.de/evag/home/service/downloads>
+Android spielt eine geprüfte Liste lokaler MP3-Pfade nacheinander ab. Die Webfassung decodiert dieselbe Liste und wartet jeweils auf das Ende des vorherigen Clips. Schnelle Haltewechsel und die vorhandenen Abbruchaktionen stoppen die ganze Kette einschließlich Zusatzhinweisen.
 
-## Deutsche Frauenstimme
+## Eigene Gongs
 
-Die Haltestellenansagen wurden lokal mit **Piper 1.8.0** und der fest ausgewählten
-Stimme **Kerstin / de_DE-kerstin-low** erzeugt. Es gibt bei diesen mitgelieferten
-Dateien keinen Wechsel auf eine zufällig vorhandene Systemstimme. Der Urheber
-beschreibt Kerstins Datensatz ausdrücklich als Aufnahme einer deutschen
-Muttersprachlerin und veröffentlicht ihn unter **CC0 1.0**. Die Model Card nennt
-ebenfalls CC0 für den Datensatz; das Modell wird im Piper-Voices-Repository mit
-MIT-Lizenz bereitgestellt.
+Die beiden Gongs wurden neu durch additive Synthese erstellt. Ding-Dong: 1046,50 / 783,99 Hz. Dong-Dong-Ding: 659,25 / 659,25 / 1046,50 Hz. MP3, Mono, 44,1 kHz, 96 kbit/s. Es wurden keine fremden Gongs verwendet.
 
-- Datensatz und Angabe „Gender: female“:
-  <https://github.com/rhasspy/dataset-voice-kerstin>
-- Datensatzlizenz:
-  <https://github.com/rhasspy/dataset-voice-kerstin/blob/master/LICENSE>
-- Model Card:
-  <https://huggingface.co/rhasspy/piper-voices/blob/v1.0.0/de/de_DE/kerstin/low/MODEL_CARD>
-- Piper-Voices-Repository:
-  <https://huggingface.co/rhasspy/piper-voices>
-- Piper und Python-Schnittstelle:
-  <https://github.com/OHF-Voice/piper1-gpl>
-  <https://github.com/OHF-Voice/piper1-gpl/blob/main/docs/API_PYTHON.md>
-
-Piper steht unter GPL-3.0-or-later und wird ausschließlich bei der Erstellung der
-Audiodateien eingesetzt. Weder die Piper-Laufzeit noch ONNX Runtime oder das
-63-MB-Stimmmodell werden in die APK eingebaut.
-
-## Erstellung und Prüfung
-
-Das Skript `scripts/generate_audio.py` liest die Haltestellennamen aus den
-Streckendefinitionen in `app.js` und erzeugt Gong, Ansagen und JSON-Zuordnung.
-Es prüft die SHA-256-Summen des auf `v1.0.0` festgelegten Stimmmodells und seiner
-Konfiguration. Die Stimme spricht mit moderat reduziertem Tempo
-(`length_scale=1.04`). Unicode-Normalisierung der Lautschrift erhält insbesondere
-das deutsche „ch“ mit der verwendeten Piper-/eSpeak-Version.
-
-Die Audio-Prüfung umfasst die fehlerfreie vollständige Dekodierung mit FFmpeg,
-Dateiformat, Länge, nicht stumme Signalpegel und eine Reserve vor Übersteuerung.
-Die Ergebnisse und Dateiprüfsummen stehen in
-`app/src/main/assets/audio/audio-validation.json`.
-
-Beispiel zum erneuten Erzeugen in einer separaten Python-Umgebung:
-
-```sh
-python -m pip install piper-tts==1.8.0
-python scripts/generate_audio.py --model-dir /tmp/fahrplan_audio_models --download-model
-```
-
-FFmpeg muss installiert sein. Erneute Synthese kann abhängig von Laufzeit und
-Plattform geringfügig andere Wellenformen erzeugen. Die für die App mitgelieferten
-WAV-Dateien sind die geprüften Ausgabeassets.
+Erneute Erzeugung mit Python, numpy und PyAV: python scripts/generate_chimes.py. Das Audioarchiv wird mit python tools/import-audio.py PFAD_ZUM_ZIP importiert. Anschließend python tools/sync-assets.py ausführen. Die MP3-Sprachaufnahmen werden beim Import weder neu codiert noch verändert.

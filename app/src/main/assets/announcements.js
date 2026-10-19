@@ -8,11 +8,30 @@
   let context = null;
   const buffers = new Map();
   const playing = new Set();
-  const gongPath = 'audio/ding-dong.wav';
+  const gongPath = 'audio/chimes/ding_dong.mp3';
+  const noticeGong = 'audio/chimes/dong_dong_ding.mp3';
+  const phrase = name => `audio/phrases/${name}.mp3`;
+
+  // The driver's current stop is also the arrival event in this simulation.
+  window.buildStopAnnouncement = (name, trip = state.active) => {
+    const stop = (window.STOP_ANNOUNCEMENTS || {})[name];
+    if (!stop) return null;
+    const paths = [gongPath, phrase('naechste_haltestelle'), stop];
+    if (name === 'Hauptbahnhof') {
+      paths.push(phrase('next_stop_central_station'), phrase('umstieg_stadtbus_busbahnhof'));
+      const previous = trip?.plan?.stops?.[trip.position - 1]?.name;
+      if (String(trip?.plan?.line).trim() === '5' && previous === 'Anger') {
+        paths.push(noticeGong, phrase('fahrt_endet_hier'));
+      }
+    } else if (name === 'Anger') {
+      paths.push(phrase('next_stop_town_hall'), noticeGong, phrase('umstieg_alle_stadtbahnlinien'));
+    }
+    return paths;
+  };
 
   function nativeAvailable() {
     return window.AndroidAnnouncements &&
-      typeof window.AndroidAnnouncements.play === 'function';
+      typeof window.AndroidAnnouncements.playSequence === 'function';
   }
 
   function audioContext() {
@@ -51,7 +70,8 @@
       // resume() must be called during the button's user gesture, before the
       // one-second timer runs; otherwise mobile browsers can block sound.
       ctx.resume().catch(() => {});
-      const paths = [gongPath, ...Object.values(window.STOP_ANNOUNCEMENTS || {})];
+      const paths = [gongPath, noticeGong, phrase('naechste_haltestelle'),
+        ...Object.values(window.STOP_ANNOUNCEMENTS || {})];
       paths.forEach(path => { loadBuffer(path).catch(() => {}); });
     } catch (error) {
       // Show an error only when an actual announcement is requested.
@@ -113,24 +133,26 @@
   }
 
   async function playAnnouncement(name, expectedTicket) {
-    const path = (window.STOP_ANNOUNCEMENTS || {})[name] || '';
+    const paths = window.buildStopAnnouncement(name);
+    if (!paths) {
+      // Imported, unrecorded station names retain the existing speech fallback.
+      if (window.AndroidAnnouncements?.play) window.AndroidAnnouncements.play(name, '');
+      else speakCustomStop(name);
+      return;
+    }
     if (nativeAvailable()) {
-      window.AndroidAnnouncements.play(name, path);
+      window.AndroidAnnouncements.playSequence(name, JSON.stringify(paths));
       return;
     }
     const ctx = audioContext();
     if (ctx.state !== 'running') {
       throw new Error('Ton ist noch gesperrt. Bitte „Nächster Halt“ erneut antippen.');
     }
-    // Resolve both recordings before starting, so there is no download gap
-    // between the gong and the spoken stop name.
-    const [gong, voice] = await Promise.all([
-      loadBuffer(gongPath), path ? loadBuffer(path) : Promise.resolve(null)
-    ]);
+    // Decode the complete queue first; await each clip's end before the next.
+    const queue = await Promise.all(paths.map(loadBuffer));
     if (expectedTicket !== ticket) return;
-    if (await playBuffer(gong, expectedTicket)) {
-      if (voice) await playBuffer(voice, expectedTicket);
-      else if (expectedTicket === ticket) speakCustomStop(name);
+    for (const buffer of queue) {
+      if (expectedTicket !== ticket || !await playBuffer(buffer, expectedTicket)) break;
     }
   }
 
