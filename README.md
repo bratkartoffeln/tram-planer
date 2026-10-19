@@ -1,8 +1,10 @@
-# Fahrplan Manager Audio – Version 6.2.1
+# Fahrplan Manager Audio – Version 6.2.2
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
 ## Neu
+
+Version 6.2.2 ergänzt die sieben gelieferten Haltestellenaufnahmen für Bergstraße, Bundesarbeitsgericht, Humboldtstraße, Landtag/Stadion Nord, Löberwallgraben, Ringelberg und Thüringen-Park. Damit sind alle 93 Haltestellen der eingebauten Streckenvorlagen mit vorhandenen Aufnahmen abgedeckt, auch offline. Eigene Haltestellen ohne Aufnahme bleiben stumm.
 
 Der Fahrermodus hat ein Fahrpult mit runden farbigen Tastern, Symbolen, Beschriftungen und Türstatusleuchte. Türen, Notfall, Stau, Fahrgastanzeige, Fahrtende und Zurück besitzen eigene offline verfügbare Sounds. Die Effekte lassen sich direkt am Pult stummschalten. Quellen und Bearbeitungen stehen unter „Tonquellen“ und in AUDIO_SOURCES.md. Browserprüfung mit Tondecodierung, Türlogik und mobiler Ansicht: `node tests/cockpit.cjs`.
 
@@ -20,7 +22,7 @@ Die Karte ist schematisch. Haltefolgen stammen aus den offiziellen EVAG-Halteste
 
 ## Installation und Signierung
 
-App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 621.
+App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 622.
 
 Da der frühere private Signierschlüssel nicht verfügbar ist, verwendet diese Fassung eine eigene App-Kennung und einen neu angelegten Schlüssel. Sie kann neben den bisherigen Fassungen installiert werden. Bestehende Daten über Einstellungen → Daten exportieren/importieren übertragen. Künftige Updates dieser Audio-Fassung müssen denselben neuen Schlüssel verwenden.
 
@@ -30,7 +32,7 @@ Der Release-Schlüssel wurde am 19.10.2026 auf ausdrücklichen Wunsch neu angele
 
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.1_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.2_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 

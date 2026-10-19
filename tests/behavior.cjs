@@ -88,7 +88,7 @@ async function openPage({seed=null,native=true,frozen=true,now=BASE,viewport={wi
     await page.clock.pauseAt(new Date(now));
   }
   await page.goto(origin+'/index.html',{waitUntil:'load'});
-  await page.locator('#appVersion').filter({hasText:'v6.2.1 Android'}).waitFor();
+  await page.locator('#appVersion').filter({hasText:'v6.2.2 Android'}).waitFor();
   return {context,page};
 }
 const readState = page=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);
@@ -407,9 +407,10 @@ async function testCancellation(label,action,verify) {
           }));
         } finally { await ctx.close(); }
       },allAudioPaths);
-      assert.equal(decoded.length,100);
+      assert.equal(decoded.length,107);
       assert(decoded.every(file=>file.bytes>44&&file.duration>0.2&&file.channels>=1));
       const coverage=await page.evaluate(()=>[...new Set(Object.values(ROUTES).flatMap(route=>route.stops))].map(name=>({name,path:recordedStopPath(name),chain:buildStopAnnouncement(name)})));
+      assert.deepEqual(coverage.filter(stop=>!stop.path).map(stop=>stop.name),[], 'Every bundled route stop must have a recording');
       for(const stop of coverage){
         if(stop.path){assert(allAudioPaths.includes(stop.path),stop.name+' must use a bundled recording');assert.equal(stop.chain[2],stop.path);}
         else assert.equal(stop.chain,null,stop.name+' must stay silent without a recording');
@@ -440,16 +441,16 @@ async function testCancellation(label,action,verify) {
       await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
       const cached=await page.evaluate(async()=>{
         const names=await caches.keys();
-        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.1-photo-recordings-7'));
+        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.2-recordings-complete'));
         return (await cache.keys()).map(request=>new URL(request.url).pathname);
       });
       const required=['/','/index.html','/app.js','/announcements.js','/manifest.webmanifest','/icon-192.png','/icon-512.png','/audio/announcements-data.js','/audio/announcements.json','/audio/catalog.json',...allAudioPaths.map(file=>'/'+file)];
-      assert.equal(required.length,110);
+      assert.equal(required.length,117);
       assert(required.every(file=>cached.includes(file)),'all shell and audio assets must be cached');
       await context.setOffline(true);
       await page.reload({waitUntil:'load'});
-      await page.locator('#appVersion').filter({hasText:'v6.2.1 Android'}).waitFor();
-      assert.equal(await page.evaluate(()=>Object.keys(window.STOP_ANNOUNCEMENTS).length),89);
+      await page.locator('#appVersion').filter({hasText:'v6.2.2 Android'}).waitFor();
+      assert.equal(await page.evaluate(()=>Object.keys(window.STOP_ANNOUNCEMENTS).length),96);
       const offlineAudio=await page.evaluate(async(audioPaths)=>Promise.all(audioPaths.map(async path=>{
         const response=await fetch(path);
         return {path,status:response.status,bytes:(await response.arrayBuffer()).byteLength};
@@ -459,7 +460,7 @@ async function testCancellation(label,action,verify) {
       assert.equal(await page.locator('#currentStop').innerText(),'Abzweig Wiesenhügel');
       await screenshot(page,'offline-driver');
       fs.writeFileSync(path.join(OUTPUT,'audio-smoke.json'),JSON.stringify({decoded,sources:allSources,cached,offlineAudio},null,2));
-      return {decodedFiles:100,stopNamesCovered:89,gongThenVoice:true,cancelStopsVoiceChain:true,requiredCachedAssets:110,offlineReloadAndAudio:true};
+      return {decodedFiles:107,stopNamesCovered:96,gongThenVoice:true,cancelStopsVoiceChain:true,requiredCachedAssets:117,offlineReloadAndAudio:true};
     } finally { await context.close(); }
   });
 

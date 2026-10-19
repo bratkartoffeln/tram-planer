@@ -1,5 +1,12 @@
 'use strict';
 window.STOP_ANNOUNCEMENTS = Object.freeze({
+  "Bergstraße": "audio/stops/bergstrasse.mp3",
+  "Bundesarbeitsgericht": "audio/stops/bundes_arbeitsgericht.mp3",
+  "Humboldtstraße": "audio/stops/humboldtstrasse.mp3",
+  "Landtag/Stadion Nord": "audio/stops/landtag_stadion_nord.mp3",
+  "Löberwallgraben": "audio/stops/loberwallgraben.mp3",
+  "Ringelberg": "audio/stops/ringelberg.mp3",
+  "Thüringen-Park": "audio/stops/thuringen-park.mp3",
   "Zoopark": "audio/stops/zoopark.mp3",
   "Witterdaer Weg": "audio/stops/witterdaer_weg.mp3",
   "Windischholzhausen X Fab": "audio/stops/windischholzhausen_x_fab.mp3",
