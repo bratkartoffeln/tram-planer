@@ -10,7 +10,7 @@ let proc,server,socket;let seq=0;const pending=new Map();
 async function cdp(method,params={}){const id=++seq;return new Promise((resolve,reject)=>{pending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method,params}));});}
 async function evaluate(expression){const r=await cdp('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw new Error(JSON.stringify(r.exceptionDetails));return r.result.value;}
 async function run(){
- server=http.createServer((req,res)=>{const file=path.join(root,decodeURIComponent(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}fs.readFile(file,(e,b)=>{if(e){res.writeHead(404).end();return;}const ext=path.extname(file);res.setHeader('Content-Type',({'.css':'text/css','.js':'text/javascript','.html':'text/html','.json':'application/json','.mp3':'audio/mpeg','.jpg':'image/jpeg','.png':'image/png'})[ext]||'application/octet-stream');res.end(b);});});
+ server=http.createServer((req,res)=>{const file=path.join(root,decodeURIComponent(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}fs.readFile(file,(e,b)=>{if(e){res.writeHead(404).end();return;}const ext=path.extname(file);res.setHeader('Content-Type',({'.css':'text/css','.js':'text/javascript','.html':'text/html','.json':'application/json','.mp3':'audio/mpeg','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp'})[ext]||'application/octet-stream');res.end(b);});});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
  proc=spawn(browserPath,['--headless=new','--disable-gpu','--in-process-gpu','--no-sandbox','--no-first-run','--no-default-browser-check','--remote-debugging-port='+debugPort,'--user-data-dir='+path.join(output,'profile-'+Date.now()),'about:blank'],{windowsHide:true,stdio:'ignore'});
  let tabs;for(let i=0;i<30;i++){try{tabs=await(await fetch('http://127.0.0.1:'+debugPort+'/json',{signal:AbortSignal.timeout(1000)})).json();break;}catch{await delay(100);}}
@@ -35,6 +35,10 @@ async function run(){
   await evaluate('setNetworkServiceMode('+JSON.stringify(mode)+')');
   assert.deepEqual(await evaluate("(()=>{const linked=new Set([...document.querySelectorAll('.network-link')].flatMap(e=>[e.dataset.from,e.dataset.to]));return Object.keys(ERFURT_NETWORK.positions).filter(n=>!linked.has(n));})()"),[]);
   assert.equal(await evaluate("(()=>{const edges=networkConnections(),seen=new Set(['Anger']);let changed=true;while(changed){changed=false;for(const e of edges){if(seen.has(e.from)&&!seen.has(e.to)){seen.add(e.to);changed=true}if(seen.has(e.to)&&!seen.has(e.from)){seen.add(e.from);changed=true}}}return seen.size===Object.keys(ERFURT_NETWORK.positions).length})()"),true);
+  // Distinct service lines on one section have separate visible midpoints,
+  // while both directions of the same line share a single lane.
+  const lanes=await evaluate(`(()=>{const groups=new Map(),keys=new Set();let duplicate=false;for(const p of document.querySelectorAll('.network-link')){if(keys.has(p.dataset.edge))duplicate=true;keys.add(p.dataset.edge);const pair=networkPair(p.dataset.from,p.dataset.to);if(!groups.has(pair))groups.set(pair,[]);groups.get(pair).push(p);}let bundles=0,minGap=Infinity;for(const group of groups.values()){if(group.length<2)continue;bundles++;const points=group.map(p=>p.getPointAtLength(p.getTotalLength()/2));for(let i=0;i<points.length;i++)for(let j=i+1;j<points.length;j++)minGap=Math.min(minGap,Math.hypot(points[i].x-points[j].x,points[i].y-points[j].y));}return {bundles,minGap,duplicate}})()`);
+  assert(lanes.bundles>0);assert(lanes.minGap>7.9);assert.equal(lanes.duplicate,false);
  }
  await evaluate("setNetworkServiceMode('current')");
  assert.ok(await evaluate("document.querySelectorAll('.network-link.inactive').length")>0);
@@ -81,7 +85,7 @@ async function run(){
  // Confirm service worker caches the new modules for an offline restart.
  await evaluate("navigator.serviceWorker.ready.then(()=>true)");
  await delay(1200);
- assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.2-recordings-complete').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
+ assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.3-vehicles-terminal').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
  await cdp('Network.enable');await cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
  await cdp('Page.reload');await delay(600);assert.equal(await evaluate('Object.keys(ROUTES).length'),26);
  await evaluate("showView('network')");assert.equal(await evaluate('!!document.getElementById("lineMapSvg")'),true);

@@ -1,8 +1,22 @@
-# Fahrplan Manager Audio – Version 6.2.2
+# Fahrplan Manager Audio – Version 6.2.3
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
 ## Neu
+
+Das Menü **Fahrzeuge** verwaltet mehrere eigene Fahrzeuge mit eindeutigem Kürzel, auswählbarem Typ und optionaler Notiz. Im Fahrplanformular „Tram / Fahrzeug“ lassen sich diese Fahrzeuge auswählen. Ein recherchierter Katalog mit 23 Bauarten und Varianten enthält Informationen, lokale Fotos und Quellen zu aktuellen Erfurter Straßenbahnen sowie historischen Gotha-/Tatra-Wagen und Beiwagen. Vergleichsaufnahmen sind gekennzeichnet. Datenpflege und Recherche: [VEHICLE_SOURCES.md](VEHICLE_SOURCES.md). Die Fahrzeugliste wird mit dem gesamten Datenbestand exportiert und importiert.
+
+Im Fahrermodus bleibt **Nächster Halt** am letzten Halt gleich beschriftet und deaktiviert. Die Fahrt bleibt aktiv, bis **Fahrt beenden** gedrückt wird; am Ziel wird sie als regulär beendet gespeichert. Der Zurück-Taster ermöglicht weiterhin die Rückkehr zum vorherigen Halt. Prüfung: `node tests/vehicles.cjs`.
+
+Version 6.2.3 ergänzt ein fotorealistisches frontales Fahrerpult nach der bereitgestellten Vorlage: graue Lackplatte, vier versenkte Schrauben, weiße Gruppenumrandungen, elfenbeinfarbene Tasterringe, sieben Funktionstaster und fünfzehn ausgegraute Reserveelemente. Fahrt und Türen liegen links, Fahrgastinfo unten links, Stau mittig und Fahrtende unten rechts; der Not-Aus-Pilztaster sitzt oben rechts. Die erzeugte Pultgrafik liegt lokal vor und wird auch offline geladen. Auf schmalen Displays lässt sich das Pult seitlich verschieben. Mechanische Druck-/Loslassgeräusche sowie das Einrasten laufen unabhängig von Ansagen und Funktionssounds. App, PWA und Browser-Favicon verwenden ein neues Straßenbahn-Icon.
+
+Auf breiten Bildschirmen steht das verkleinerte Pult links unter dem aktuellen Fahrtstatus; der Streckenverlauf bleibt rechts daneben sichtbar. Auf schmalen Displays folgen Fahrtstatus, Pult und Streckenverlauf untereinander.
+
+Unter „Meine Fahrpläne“ öffnet „Bearbeiten“ Strecke, Fahrzeug und Fahr-/Pausenzeiten eines vorhandenen Plans. Bei aktiver oder angehaltener Fahrt dieses Plans ist die Bearbeitung gesperrt. „Fahrt vorbereiten“ bietet neben „Jetzt“ auch „in 5 min.“ einschließlich Tageswechsel.
+
+Der Dev-Modus ist in den Einstellungen standardmäßig ausgeschaltet. Nach dem Einschalten erscheint neben „Ganzes Netz“ der dunkel markierbare Schalter „Netz bearbeiten“. Punkte mit Maus oder Touch ziehen; Namen direkt am Text verschieben oder unten über Zahlenwerte ausrichten. Haltestellen auswählen, um ihre Netzplanbeschriftung zu ändern. „Gleis verbinden“ verknüpft zwei Halte, „Gleis entfernen“ bietet die Auswahl bei überlappenden Verbindungen. Farben lassen sich aus vorhandenen/vorgefertigten Farben oder frei wählen. Änderungen werden lokal gespeichert, mit JSON-Backups übertragen und bleiben bei ausgeschaltetem Dev-Modus sichtbar. „Rückgängig“ und „Original wiederherstellen“ sind verfügbar. Gespeicherte Fahrpläne und Ansagezuordnungen behalten ihre bisherigen Haltestellenkennungen.
+
+Beide Gongs wurden aus den aktuell bereitgestellten Aufnahmen tonal rekonstruiert, ohne das aufgenommene Rauschen oder Hintergrundgeräusche einzumischen. Referenzen werden lokal unter `build/audio-reference-6.2.3/` gesichert. Erzeugung: `python scripts/generate_chimes.py` (NumPy und FFmpeg); technische Daten in `scripts/chime-tones.json`. Browserprüfung der neuen Bedienung: `node tests/editor.cjs`.
 
 Version 6.2.2 ergänzt die sieben gelieferten Haltestellenaufnahmen für Bergstraße, Bundesarbeitsgericht, Humboldtstraße, Landtag/Stadion Nord, Löberwallgraben, Ringelberg und Thüringen-Park. Damit sind alle 93 Haltestellen der eingebauten Streckenvorlagen mit vorhandenen Aufnahmen abgedeckt, auch offline. Eigene Haltestellen ohne Aufnahme bleiben stumm.
 
@@ -14,6 +28,22 @@ Die Ansage beginnt weiterhin eine Sekunde nach dem Haltewechsel. Schnelles Weite
 
 ## Linien & Netz
 
+Gemeinsame Streckenabschnitte werden mit getrennten parallelen Linienzügen gezeichnet. Die Linien treffen an den Haltestellen zusammen; beim Verschieben eines Halts werden alle Abstände und Anschlüsse neu berechnet. Beide Fahrtrichtungen derselben Linie belegen gemeinsam eine Spur.
+
+Im Dev-Modus unter „Netz bearbeiten“ eine Verbindung anklicken. Bei „Darstellung dieses Abschnitts“ lässt sich „Regulär“, „Baustelle“ oder „Nicht bedient“ wählen. Baustellen sind orange gestrichelt, nicht bediente Abschnitte grau gestrichelt vorbelegt. „Gestrichelt darstellen“ sowie die Abschnittsfarbe lassen sich unabhängig ändern. „Abschnittsmarkierung zurücksetzen“ stellt die bisherige Darstellung dieses Abschnitts wieder her. Die Auswahl oberhalb ändert weiterhin die Grundfarbe der gesamten Linie; individuelle Abschnittsmarkierungen haben Vorrang.
+
+### Angepassten Netzplan im Projekt hinterlegen
+
+1. In den Einstellungen den **Dev-Modus** einschalten und „Linien & Netz“ öffnen. Die Dateischaltflächen sind auch bei ausgeschaltetem Bearbeitungswerkzeug sichtbar.
+2. **Netzplan exportieren** speichert `network-plan.json`. Der Browser lädt die Datei herunter; unter Android öffnet sich die Dateiauswahl. Enthalten sind Positionen, Namen und Textversätze, zusätzliche/entfernte Gleise, Linienfarben sowie Strichelungen und Abschnittsmarkierungen.
+3. Die Datei im Projekt als [app/src/main/assets/network-plan.json](app/src/main/assets/network-plan.json) ablegen und die dortige Datei ersetzen. Der Browser kann den Projektordner nicht automatisch beschreiben.
+4. Im Projektstamm `python tools/sync-assets.py` ausführen. Das erzeugt `app/src/main/assets/network-plan-data.js` für Android und spiegelt beide Dateien nach `web-pwa/network-plan.json` und `web-pwa/network-plan-data.js`. Diese generierten Kopien nicht von Hand ändern.
+5. Die Browser-Vorschau neu laden, bei einem bestehenden Offline-Cache mit **Strg+F5**. Bei bereits lokal gespeicherten Anpassungen im Dev-Modus **Projektdatei laden** wählen. Neue App-Daten verwenden die Projektdatei automatisch. Für Android anschließend neu bauen und installieren.
+
+**Netzplan importieren** lädt dieselbe Datei direkt in die aktuelle App. Import und „Projektdatei laden“ können über „Rückgängig“ im Bearbeitungswerkzeug zurückgenommen werden. Fahrpläne, Historie und Einstellungen werden dabei beibehalten. Dateiformat: `fahrplan-manager-network-plan`, Formatversion 1; ältere Netzplandateien ohne Abschnittsmarkierungen bleiben kompatibel. Beschädigte Dateien werden ohne Übernahme abgewiesen.
+
+Die Basisdaten des schematischen Erfurter Netzes (Haltestellenkennungen, Standardpositionen und Haltefolgen) stehen in [app/src/main/assets/erfurt-network.js](app/src/main/assets/erfurt-network.js). Die oben genannte JSON-Datei enthält die Anpassungen an diesem Netz. Prüfungen: `node tests/network.cjs`, `node tests/editor.cjs` und `node tests/network-files.cjs` (letztere mit Playwright).
+
 Die Karte nutzt die ganze Inhaltsbreite und zeichnet auch die Verbindungen der Rückrichtungen. Der am 19.10.2026 gültige Baufahrplan für die Linien 1 und 6 sowie das Regelnetz sind umschaltbar. Eigene Linien können ein Streckenkürzel erhalten; ohne Eingabe wird etwa „L7“ angezeigt. Die interne Kennung erscheint nicht als Kürzel.
 
 Der neue Menüpunkt „Linien & Netz“ bietet zwölf EVAG-Vorlagen (Linien 1–6 in beiden Richtungen) und einen grafischen Editor. Vorhandene Haltestellen anklicken oder eigene Halte auf der Karte hinzufügen, Punkte verschieben, Reihenfolge, Name, Farbe und Fahrzeiten ändern und als eigene Linie speichern. Gespeicherte Linien stehen unter „Neue Fahrt“ bereit und sind im Datenexport enthalten. Bestehende Strecken und gespeicherte Fahrpläne bleiben erhalten.
@@ -22,7 +52,7 @@ Die Karte ist schematisch. Haltefolgen stammen aus den offiziellen EVAG-Halteste
 
 ## Installation und Signierung
 
-App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 622.
+App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 623.
 
 Da der frühere private Signierschlüssel nicht verfügbar ist, verwendet diese Fassung eine eigene App-Kennung und einen neu angelegten Schlüssel. Sie kann neben den bisherigen Fassungen installiert werden. Bestehende Daten über Einstellungen → Daten exportieren/importieren übertragen. Künftige Updates dieser Audio-Fassung müssen denselben neuen Schlüssel verwenden.
 
@@ -32,7 +62,7 @@ Der Release-Schlüssel wurde am 19.10.2026 auf ausdrücklichen Wunsch neu angele
 
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.2_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.3_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 

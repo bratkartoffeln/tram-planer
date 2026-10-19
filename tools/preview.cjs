@@ -3,7 +3,7 @@
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'../web-pwa');
 const port=Number(process.argv[2]||4173);
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.mp3':'audio/mpeg','.jpg':'image/jpeg','.png':'image/png','.ogg':'audio/ogg'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.mp3':'audio/mpeg','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.ogg':'audio/ogg'};
 const server=http.createServer((req,res)=>{
  try{
   const relative=decodeURIComponent(new URL(req.url,'http://localhost').pathname);

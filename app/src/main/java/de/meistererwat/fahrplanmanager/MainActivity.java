@@ -337,6 +337,15 @@ public class MainActivity extends Activity {
     public final class BackupBridge {
         @JavascriptInterface
         public void save(String json) {
+            saveDocument(json, false);
+        }
+
+        @JavascriptInterface
+        public void saveNetworkPlan(String json) {
+            saveDocument(json, true);
+        }
+
+        private void saveDocument(String json, boolean networkPlan) {
             mainHandler.post(() -> {
                 if (!resumed || !isTrustedPage()) return;
                 if (pendingBackup != null || fileCallback != null) {
@@ -348,13 +357,18 @@ public class MainActivity extends Activity {
                     byte[] data = json.getBytes(StandardCharsets.UTF_8);
                     if (data.length > MAX_BACKUP_BYTES) throw new IllegalArgumentException();
                     JSONObject backup = new JSONObject(json);
-                    if (backup.optJSONArray("plans") == null || backup.optJSONArray("history") == null
+                    if (networkPlan) {
+                        if (!"fahrplan-manager-network-plan".equals(backup.optString("format"))
+                                || backup.optInt("schemaVersion") != 1
+                                || !"erfurt".equals(backup.optString("network"))
+                                || backup.optJSONObject("edits") == null) throw new IllegalArgumentException();
+                    } else if (backup.optJSONArray("plans") == null || backup.optJSONArray("history") == null
                             || backup.optJSONObject("settings") == null) throw new IllegalArgumentException();
                     pendingBackup = data;
                     Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT)
                             .addCategory(Intent.CATEGORY_OPENABLE)
                             .setType("application/json")
-                            .putExtra(Intent.EXTRA_TITLE, "FahrplanManager-Backup-"
+                            .putExtra(Intent.EXTRA_TITLE, networkPlan ? "network-plan.json" : "FahrplanManager-Backup-"
                                     + new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).format(new Date()) + ".json");
                     startActivityForResult(intent, CREATE_BACKUP);
                 } catch (ActivityNotFoundException exception) {
