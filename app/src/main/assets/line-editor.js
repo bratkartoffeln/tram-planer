@@ -5,7 +5,7 @@ let networkServiceMode='current';
 function resizeNetworkMap(){const svg=document.getElementById('lineMapSvg');if(!svg)return;const scale=networkZoom??svg.parentElement.clientWidth/1100;svg.style.width=1100*scale+'px';svg.style.height=1080*scale+'px';}
 function zoomNetwork(factor){const svg=document.getElementById('lineMapSvg');if(!svg)return;networkZoom=factor==='fit'?null:Math.max(.2,Math.min(3,(networkZoom??svg.parentElement.clientWidth/1100)*factor));resizeNetworkMap();}
 window.addEventListener('resize',()=>{if(currentView==='network')resizeNetworkMap();});
-function setNetworkServiceMode(mode){networkServiceMode=mode==='regular'?'regular':'current';renderNetworkMap();}
+function setNetworkServiceMode(mode){networkServiceMode=mode==='regular'?'regular':'current';renderNetworkMap();renderNetworkEditorTools();}
 function networkConnections(mode=networkServiceMode){
  const active=mode==='regular'?ERFURT_NETWORK.routes:ERFURT_NETWORK.serviceRoutes;
  const edges=new Map(),activePairs=new Set();
@@ -16,7 +16,7 @@ function networkConnections(mode=networkServiceMode){
  if(mode!=='regular')for(const r of Object.values(ERFURT_NETWORK.routes))for(let i=1;i<r.stops.length;i++){
   const from=r.stops[i-1],to=r.stops[i],pair=key(from,to);if(!activePairs.has(pair))edges.set('inactive'+pair,{from,to,line:r.line,color:'#83919a',inactive:true});
  }
- return [...edges.values()];
+ return applyNetworkEdges([...edges.values()]);
 }
 function validCustomRoutes(value){
  const result={};
@@ -39,6 +39,7 @@ function syncCustomRoutes(){
  state.plans.forEach(plan=>{if(plan.routeId?.startsWith('custom-')&&plan.routeCode===plan.routeId)plan.routeCode=routeLabel(plan.routeId);});
 }
 function openLineEditor(id){
+ networkEditing=false;networkEditSelection=null;
  if(lineDraft?.dirty){showModal('Ungespeicherte Linie','Die Änderungen zuerst speichern oder verwerfen.',`<button onclick="closeModal()">Weiter bearbeiten</button><button class="danger" onclick="lineDraft=null;closeModal();openLineEditor('${id||''}')">Änderungen verwerfen</button>`);return;}
  const r=ROUTES[id];
  lineDraft={sourceId:id,id:id?.startsWith('custom-')?id:null,name:r?.name||'Neue Linie',line:r?.line||'',code:r?.code||(id?.startsWith('custom-')?state.settings.route_names[id]||'':''),color:r?.color||'#168a95',dirty:false,stops:(r?.stops||[]).map((name,i)=>({name,travel:i?(r.times?.[i]??2):0,...(r.points?.[i]||ERFURT_NETWORK.positions[name]||{x:100+i%8*120,y:100+Math.floor(i/8)*85})}))};
@@ -64,10 +65,10 @@ function renderNetwork(el){
  <div class="notice" id="networkServiceNotice"></div><div class="network-legend" id="networkLegend"></div>
  <p class="muted">${lineDraft?'Haltestelle anklicken: anhängen. Gewählte Halte ziehen: Position ändern. Für einen neuen Halt Namen eingeben und auf freie Fläche klicken.':'Wähle eine Vorlage oder erstelle eine neue Linie.'}</p>
  ${lineDraft?`<div class="field"><label for="mapStopName">Neuer Halt auf der Karte</label><input id="mapStopName" maxlength="100" placeholder="Haltestellenname, dann auf die Karte klicken"></div>`:''}
- <div class="actions network-map-tools"><button class="small" onclick="zoomNetwork(1/1.25)" aria-label="Netzplan verkleinern">−</button><button class="small" onclick="zoomNetwork(1.25)" aria-label="Netzplan vergrößern">＋</button><button class="small" onclick="zoomNetwork('fit')">Ganzes Netz</button></div>
- <div class="network-map" id="networkMap"></div>`)}</div>
+ <div class="actions network-map-tools"><button class="small" onclick="zoomNetwork(1/1.25)" aria-label="Netzplan verkleinern">−</button><button class="small" onclick="zoomNetwork(1.25)" aria-label="Netzplan vergrößern">＋</button><button class="small" onclick="zoomNetwork('fit')">Ganzes Netz</button>${state.settings.dev_mode?`<button id="networkEditToggle" class="small ${networkEditing?'is-editing':''}" aria-pressed="${networkEditing}" onclick="toggleNetworkEditor()">Netz bearbeiten</button>`:''}</div>
+ <div id="networkEditorTools"></div><div class="network-map ${networkEditing?'is-editing':''}" id="networkMap"></div><div id="networkEditInspector"></div>`)}</div>
  <div class="col-12" id="lineInspector"></div></div>`;
- renderLineInspector();renderNetworkMap();
+ renderLineInspector();renderNetworkMap();renderNetworkEditorTools();
 }
 function renderLineInspector(){
  const el=document.getElementById('lineInspector');if(!el)return;
@@ -75,27 +76,29 @@ function renderLineInspector(){
  const d=lineDraft;
  el.innerHTML=card(`<h2>${d.id?'Eigene Linie bearbeiten':'Linie entwerfen'}</h2><div class="field"><label for="editorName">Name</label><input id="editorName" maxlength="100" value="${esc(d.name)}" oninput="lineDraft.name=this.value;lineDraft.dirty=true"></div><div class="form-grid" style="margin:12px 0"><div class="field"><label for="editorLine">Linie</label><input id="editorLine" maxlength="20" value="${esc(d.line)}" oninput="lineDraft.line=this.value;lineDraft.dirty=true"></div><div class="field"><label for="editorCode">Streckenkürzel (optional)</label><input id="editorCode" maxlength="14" value="${esc(d.code||'')}" placeholder="z. B. L7N, RING" oninput="lineDraft.code=this.value;lineDraft.dirty=true"></div><div class="field"><label for="editorColor">Farbe</label><input id="editorColor" type="color" value="${esc(d.color)}" oninput="lineDraft.color=this.value;lineDraft.dirty=true;renderNetworkMap()"></div></div><div class="actions"><button class="small" onclick="reverseLineDraft()">⇄ Reihenfolge umkehren</button><span class="pill">${d.stops.length} Halte</span></div><p class="muted">Fahrzeit ab vorherigem Halt in Minuten. Pfeile ändern die Reihenfolge.</p><div class="line-stops">${d.stops.map((s,i)=>`<div class="line-stop"><span class="stop-number">${i+1}</span><div class="field"><label for="ln_${i}">Haltestelle ${i+1}</label><input id="ln_${i}" maxlength="100" value="${esc(s.name)}" onchange="lineDraft.stops[${i}].name=this.value;lineDraft.dirty=true;renderNetworkMap()"><label for="lt_${i}">Fahrzeit (Min.)</label><input id="lt_${i}" type="number" min="0" max="240" step="1" value="${s.travel}" ${i?'':'readonly'} oninput="lineDraft.stops[${i}].travel=Number(this.value);lineDraft.dirty=true"></div><div class="line-stop-actions"><button class="small" aria-label="Halt ${i+1} nach oben" ${i?'':'disabled'} onclick="moveLineStop(${i},-1)">↑</button><button class="small" aria-label="Halt ${i+1} nach unten" ${i<d.stops.length-1?'':'disabled'} onclick="moveLineStop(${i},1)">↓</button><button class="small" aria-label="Halt ${i+1} entfernen" onclick="lineDraft.stops.splice(${i},1);refreshLineDraft()">×</button></div></div>`).join('')}</div><div class="actions" style="margin-top:14px"><button class="primary" onclick="saveLineDraft()">Linie speichern</button><button onclick="lineDraft=null;showView('network')">Verwerfen</button>${d.id?`<button class="danger" onclick="deleteCustomLine()">Löschen</button>`:''}</div>`);
 }
-function refreshLineDraft(){lineDraft.dirty=true;if(lineDraft.stops[0])lineDraft.stops[0].travel=0;renderLineInspector();renderNetworkMap();}
+function refreshLineDraft(){lineDraft.dirty=true;if(lineDraft.stops[0])lineDraft.stops[0].travel=0;renderLineInspector();renderNetworkMap();renderNetworkEditorTools();}
 function moveLineStop(i,delta){const j=i+delta;if(j<0||j>=lineDraft.stops.length)return;[lineDraft.stops[i],lineDraft.stops[j]]=[lineDraft.stops[j],lineDraft.stops[i]];refreshLineDraft();}
 function reverseLineDraft(){const times=lineDraft.stops.slice(1).map(s=>s.travel).reverse();lineDraft.stops.reverse().forEach((s,i)=>s.travel=i?times[i-1]:0);refreshLineDraft();}
 function renderNetworkMap(){
  const host=document.getElementById('networkMap');if(!host)return;
  const service=networkServiceMode==='regular'?ERFURT_NETWORK.routes:ERFURT_NETWORK.serviceRoutes;
  document.getElementById('networkServiceNotice').textContent=networkServiceMode==='regular'?'Regelnetz in beiden Richtungen, ohne die befristete Baustellenführung.':'Stand 19.10.2026: Linie 1 ab Rieth, Linie 6 ab Europaplatz. Grau gestrichelt: Regelverbindungen, die im Baufahrplan nicht von der Stadtbahn bedient werden; dort besteht teilweise Schienenersatzverkehr.';
- document.getElementById('networkLegend').innerHTML=Object.values(service).filter((_,i)=>i%2===0).map(r=>`<span class="pill" style="--route-color:${r.color}">${r.line} · ${esc(r.stops[0])} → ${esc(r.stops.at(-1))}</span>`).join('');
- const pts=ERFURT_NETWORK.positions;
+ document.getElementById('networkLegend').innerHTML=Object.values(service).filter((_,i)=>i%2===0).map(r=>`<span class="pill" style="--route-color:${state.networkEdits.lineColors[r.line]||r.color}">${r.line} · ${esc(r.stops[0])} → ${esc(r.stops.at(-1))}</span>`).join('');
+ const pts=networkPositions();
  const path=stops=>stops.map(s=>`${s.x},${s.y}`).join(' ');
  const connections=networkConnections().sort((a,b)=>Number(b.inactive)-Number(a.inactive));
+ const geometry=networkLinkGeometry(connections,pts);
  host.innerHTML=`<svg id="lineMapSvg" viewBox="0 0 1100 1080" role="group" aria-label="Schematisches Erfurter Straßenbahnnetz mit bearbeitbarer Linie"><rect width="1100" height="1080" fill="var(--soft)"/>
  <g class="network-connections" pointer-events="none">${connections.map(edge=>{
-  const a=pts[edge.from],b=pts[edge.to];
-  return `<line class="network-link${edge.inactive?' inactive':''}" data-from="${esc(edge.from)}" data-to="${esc(edge.to)}" data-line="${edge.line}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${edge.color}" stroke-width="4" opacity="${edge.inactive?'.45':'.65'}" ${edge.inactive?'stroke-dasharray="7 7"':''}/>`;
+  const lane=geometry.get(networkEdgeKey(edge));
+  return `<path class="network-link${edge.inactive?' inactive':''}" data-from="${esc(edge.from)}" data-to="${esc(edge.to)}" data-line="${esc(edge.line)}" data-edge="${esc(networkEdgeKey(edge))}" data-lane-offset="${lane.offset}" data-service-status="${edge.serviceStatus}" d="${lane.d}" fill="none" stroke="${edge.color}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" opacity="${edge.inactive?'.6':'.95'}" ${edge.dashed?'stroke-dasharray="7 7"':''}><title>Linie ${esc(edge.line)} · ${edge.serviceStatus==='construction'?'Baustelle':edge.serviceStatus==='not-served'?'Nicht bedient':'Regulär'}</title></path>`;
  }).join('')}</g>
- ${Object.entries(pts).map(([n,p],i)=>`<g class="network-node" data-name="${esc(n)}" data-stop="${i}" tabindex="0" role="button" aria-label="${esc(n)} anhängen"><circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--panel)" stroke="var(--muted)" stroke-width="2"/><text x="${p.x+12}" y="${p.y+4}">${esc(n)}</text><title>${esc(n)}</title></g>`).join('')}
- ${lineDraft?`<polyline id="draftPolyline" points="${path(lineDraft.stops)}" fill="none" stroke="${lineDraft.color}" stroke-width="6"/>${lineDraft.stops.map((s,i)=>`<g class="draft-node" data-index="${i}"><circle cx="${s.x}" cy="${s.y}" r="13" fill="${lineDraft.color}"/><text x="${s.x}" y="${s.y+4}" text-anchor="middle" fill="white">${i+1}</text><title>${esc(s.name)} · ziehen zum Verschieben</title></g>`).join('')}`:''}</svg>`;
+ ${Object.entries(pts).map(([n,p],i)=>`<g class="network-node" data-name="${esc(n)}" data-stop="${i}" tabindex="0" role="button" aria-label="${esc(n)} anhängen"><circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--panel)" stroke="var(--muted)" stroke-width="2"/><text class="network-stop-label" x="${p.x+12+(p.dx||0)}" y="${p.y+4+(p.dy||0)}">${esc(p.name||n)}</text><title>${esc(n)}</title></g>`).join('')}
+ ${lineDraft&&!networkEditing?`<polyline id="draftPolyline" points="${path(lineDraft.stops)}" fill="none" stroke="${lineDraft.color}" stroke-width="6"/>${lineDraft.stops.map((s,i)=>`<g class="draft-node" data-index="${i}"><circle cx="${s.x}" cy="${s.y}" r="13" fill="${lineDraft.color}"/><text x="${s.x}" y="${s.y+4}" text-anchor="middle" fill="white">${i+1}</text><title>${esc(s.name)} · ziehen zum Verschieben</title></g>`).join('')}`:''}</svg>`;
  const svg=host.querySelector('svg');
  const point=e=>{const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());};
  resizeNetworkMap();
+ if(networkEditing&&state.settings.dev_mode){bindNetworkEditor(svg);return;}
  let dragging=null,suppressClick=false;
  svg.onpointerdown=e=>{const g=e.target.closest('.draft-node');if(!g||!lineDraft)return;dragging={i:Number(g.dataset.index),x:e.clientX,y:e.clientY,moved:false};svg.setPointerCapture(e.pointerId);e.preventDefault();};
  svg.onpointermove=e=>{if(!dragging)return;const p=point(e);dragging.moved ||= Math.hypot(e.clientX-dragging.x,e.clientY-dragging.y)>4;if(!dragging.moved)return;const s=lineDraft.stops[dragging.i];s.x=Math.max(15,Math.min(1085,p.x));s.y=Math.max(15,Math.min(1065,p.y));const g=svg.querySelector(`[data-index="${dragging.i}"]`);g.querySelector('circle').setAttribute('cx',s.x);g.querySelector('circle').setAttribute('cy',s.y);g.querySelector('text').setAttribute('x',s.x);g.querySelector('text').setAttribute('y',s.y+4);svg.querySelector('#draftPolyline').setAttribute('points',path(lineDraft.stops));lineDraft.dirty=true;};

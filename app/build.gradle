@@ -10,8 +10,8 @@ android {
         applicationId 'de.meistererwat.fahrplanmanager.audio'
         minSdk 26
         targetSdk 35
-        versionCode 622
-        versionName '6.2.2'
+        versionCode 623
+        versionName '6.2.3'
     }
 
     buildTypes {

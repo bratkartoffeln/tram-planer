@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#102a36">
 <meta name="description" content="Fiktive Straßenbahn-Fahrplan-Simulation von MeisterErwat">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <title>Fahrplan Manager • MeisterErwat</title>
 <style>
@@ -18,8 +20,12 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid
 #networkTemplate{flex-basis:100%!important}input[type=color]{height:46px;padding:4px}.network-map-tools{margin-top:12px}
 .content.network-view{max-width:none}.network-view .network-map{max-height:none}.network-view .line-stops{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0 22px}.network-mode-field{margin:12px 0;max-width:540px}.network-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.network-legend .pill{border-left:5px solid var(--route-color)}
 .departure-controls{display:flex;gap:8px;align-items:center}.departure-controls input{flex:1}.departure-controls button{flex:none}
-.traffic-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;width:100%;align-items:stretch}.traffic-actions button{min-width:0;padding:11px 4px;font-size:clamp(.7rem,2.6vw,.9rem);overflow-wrap:anywhere}</style>
+.traffic-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;width:100%;align-items:stretch}.traffic-actions button{min-width:0;padding:11px 4px;font-size:clamp(.7rem,2.6vw,.9rem);overflow-wrap:anywhere}
+.departure-controls{flex-wrap:wrap}.departure-controls input{flex:1 1 105px}.network-map-tools .is-editing{background:#253039;border-color:#253039;color:white;box-shadow:inset 0 2px 4px #0005}.network-map.is-editing svg{touch-action:none}.network-map.is-editing .network-connections{pointer-events:stroke}.network-map.is-editing .network-link{cursor:pointer;stroke-width:5}.network-map.is-editing .network-node{cursor:grab}.network-map.is-editing .network-stop-label{pointer-events:auto;cursor:move;paint-order:stroke;stroke:var(--soft);stroke-width:3px;stroke-linejoin:round}.network-map.is-editing .network-node.selected circle{stroke:#ed7b22;stroke-width:5}.network-map.is-editing .network-link.selected{stroke-width:7;opacity:1}.network-editor-tools,.network-edit-inspector{padding:15px;background:var(--soft);border:1px solid var(--line);border-radius:12px;margin-top:12px}.network-editor-tools p{margin:10px 0 0;font-size:.86rem;line-height:1.5}.network-editor-tools button[aria-pressed=true]{background:var(--nav);color:white;border-color:var(--nav)}.network-edit-inspector .form-grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}.network-edit-inspector h3{margin-bottom:14px}.color-swatches{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.color-swatch{width:36px;height:36px;padding:0;border:3px solid var(--panel);border-radius:50%;background:var(--swatch);box-shadow:0 0 0 1px var(--muted)}.color-swatch[aria-pressed=true]{outline:3px solid var(--text);outline-offset:2px}.network-edit-inspector input[type=color]{max-width:160px}.network-link{vector-effect:none}.network-stop-label{paint-order:stroke;stroke:var(--soft);stroke-width:3px;stroke-linejoin:round}.network-plan-files details{margin-top:12px}.network-plan-files code{overflow-wrap:anywhere}
+.network-edge-style{border-top:1px solid var(--line);margin-top:18px;padding-top:4px}.network-dash-field{display:flex;gap:9px;align-items:center;align-self:center}.network-plan-files p,.network-plan-files details{font-size:.86rem}
+</style>
 <link rel="stylesheet" href="cockpit.css">
+<link rel="stylesheet" href="vehicles.css">
 </head>
 <body>
 <div class="shell">
@@ -30,6 +36,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid
       <button data-view="new" onclick="showView('new')"><span class="nav-icon">＋</span> Neue Fahrt</button>
       <button data-view="network" onclick="showView('network')"><span class="nav-icon">⑂</span> Linien & Netz</button>
       <button data-view="plans" onclick="showView('plans')"><span class="nav-icon">▣</span> Fahrpläne</button>
+      <button data-view="vehicles" onclick="showView('vehicles')"><span class="nav-icon">▤</span> Fahrzeuge</button>
       <button data-view="driver" onclick="openActiveTrip()"><span class="nav-icon">▶</span> Aktive Fahrt <span id="activeDot"></span></button>
       <button data-view="history" onclick="showView('history')"><span class="nav-icon">◷</span> Historie</button>
       <button data-view="settings" onclick="showView('settings')"><span class="nav-icon">⚙</span> Einstellungen</button>
@@ -47,7 +54,11 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid
 <script src="audio/announcements-data.js"></script>
 <script src="announcements.js"></script>
 <script src="erfurt-network.js"></script>
+<script src="network-plan-data.js"></script>
+<script src="network-editor.js"></script>
 <script src="line-editor.js"></script>
 <script src="cockpit.js"></script>
+<script src="vehicle-types-data.js"></script>
+<script src="vehicles.js"></script>
 <script src="app.js"></script>
 </body></html>

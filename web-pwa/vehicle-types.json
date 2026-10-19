@@ -1,0 +1,467 @@
+{
+  "schemaVersion": 1,
+  "researchedOn": "2026-10-20",
+  "scope": "Erfurter Straßenbahn: heutige Serien, Traditionsfahrzeuge und frühere Gotha-/Reko-Bauarten. Arbeits- und Veranstaltungsumbauten sind bei ihrer Grundbauart beschrieben. Frühe Einzelanfertigungen vor den Gotha-Serien sind hier nicht vollständig erfasst.",
+  "sources": {
+    "evag": {
+      "title": "EVAG: Fahrzeuge und Traditionsbahnen",
+      "url": "https://www.evag-erfurt.de/evag/strassenbahn-mieten-erfurt"
+    },
+    "tramlink": {
+      "title": "EVAG: Tramlink",
+      "url": "https://www.evag-erfurt.de/evag/tramlink"
+    },
+    "fleet": {
+      "title": "Fahrzeugchronik Erfurt",
+      "url": "https://www.strassenbahn-erfurt.de/wagenpark/"
+    },
+    "combino": {
+      "title": "Erfurter Combino-Bauarten und Fahrzeugdaten",
+      "url": "https://www.tram-mitteldeutschland.de/Erfurt/Fahrzeuge.html"
+    },
+    "gotha": {
+      "title": "Gothawagen.de: Erfurter Fahrzeuggeschichte",
+      "url": "https://www.gothawagen.de/gothawagen/staedte/erfurt/erfurt.html"
+    },
+    "reko": {
+      "title": "EVAG: Fahrzeuggeschichte der 1980er",
+      "url": "https://jubilaeum.evag-erfurt.de/evag-jubilaeum/home/evag-geschichte/1980er"
+    },
+    "heritage": {
+      "title": "Erfurter Sonder- und Traditionswagen",
+      "url": "https://www.strassenbahn-erfurt.de/wagenpark/sonderwagen/"
+    }
+  },
+  "types": [
+    {
+      "id": "tramlink",
+      "name": "Stadler Tramlink",
+      "group": "Linienfahrzeuge",
+      "manufacturer": "Stadler",
+      "era": "Erfurt seit 2021",
+      "description": "Siebenteiliger Niederflurwagen der jüngsten Erfurter Fahrzeuggeneration.",
+      "features": [
+        "ca. 42 m",
+        "Niederflur",
+        "Einrichtung"
+      ],
+      "photo": "tramlink",
+      "photoCaption": "Tramlink 803 am Erfurter Domplatz.",
+      "sources": [
+        "tramlink",
+        "evag"
+      ]
+    },
+    {
+      "id": "combino-basic",
+      "name": "Combino Basic · 5-teilig",
+      "group": "Linienfahrzeuge",
+      "manufacturer": "Siemens",
+      "era": "Baujahr 2000 · Wagen 621–627",
+      "description": "Erste Erfurter Combino-Serie mit fünf Wagenkästen und ursprünglicher Kopfform.",
+      "features": [
+        "ca. 30 m",
+        "Niederflur",
+        "Einrichtung"
+      ],
+      "photo": "combino-basic",
+      "photoCaption": "Combino Basic 621 in Erfurt.",
+      "sources": [
+        "combino",
+        "fleet"
+      ]
+    },
+    {
+      "id": "combino-advanced-long",
+      "name": "Combino Advanced · 5-teilig",
+      "group": "Linienfahrzeuge",
+      "manufacturer": "Siemens",
+      "era": "Baujahre 2002–2005 · Wagen 628–656",
+      "description": "Lange Advanced-Ausführung des Combino mit überarbeiteter Fahrzeugfront.",
+      "features": [
+        "ca. 30 m",
+        "Niederflur",
+        "Einrichtung"
+      ],
+      "photo": "combino-advanced-long",
+      "photoCaption": "Combino Advanced 634 in Erfurt.",
+      "sources": [
+        "combino",
+        "fleet"
+      ]
+    },
+    {
+      "id": "combino-advanced-short",
+      "name": "Combino Advanced · 3-teilig",
+      "group": "Linienfahrzeuge",
+      "manufacturer": "Siemens",
+      "era": "Baujahre 2002–2005 · Wagen 701–712",
+      "description": "Kurze Advanced-Ausführung; in Erfurt auch als Teil von Doppeltraktionen eingesetzt.",
+      "features": [
+        "ca. 20 m",
+        "Niederflur",
+        "Einrichtung"
+      ],
+      "photo": "combino-advanced-short",
+      "photoCaption": "Dreiteiliger Combino 710 am Europaplatz.",
+      "sources": [
+        "combino",
+        "fleet"
+      ]
+    },
+    {
+      "id": "combino-classic",
+      "name": "Combino Classic · 3-teilig",
+      "group": "Linienfahrzeuge",
+      "manufacturer": "Siemens",
+      "era": "Baujahre 2011–2012 · Wagen 713–724",
+      "description": "Spätere Erfurter Combino-Serie mit drei Wagenkästen.",
+      "features": [
+        "ca. 20 m",
+        "Niederflur",
+        "Einrichtung"
+      ],
+      "photo": "combino-classic",
+      "photoCaption": "Combino Classic 715 in Erfurt (Originaldateiname nennt irrtümlich 716).",
+      "sources": [
+        "combino",
+        "fleet"
+      ]
+    },
+    {
+      "id": "mgt6d",
+      "name": "MGT6D · Zweirichter",
+      "group": "Linienfahrzeuge",
+      "manufacturer": "DUEWAG / Siemens",
+      "era": "Baujahr 1994 · Wagen 601–604",
+      "description": "Erste Erfurter Niederflurserie. Zwei Fahrerstände und Türen auf beiden Seiten unterscheiden sie von den späteren Einrichtern.",
+      "features": [
+        "Teilniederflur",
+        "Zweirichtung",
+        "3-teilig"
+      ],
+      "photo": "mgt6d",
+      "photoCaption": "MGT6D 602 am Anger.",
+      "sources": [
+        "fleet"
+      ]
+    },
+    {
+      "id": "mgt6de",
+      "name": "MGT6DE · Einrichter",
+      "group": "Linienfahrzeuge",
+      "manufacturer": "DUEWAG / Siemens",
+      "era": "Baujahre 1996–1998 · Wagen 605–616",
+      "description": "Weiterentwicklung des MGT6D für den Erfurter Einrichtungsbetrieb.",
+      "features": [
+        "Teilniederflur",
+        "Einrichtung",
+        "3-teilig"
+      ],
+      "photo": "mgt6de",
+      "photoCaption": "MGT6DE 606 in der Erfurter Bahnhofstraße.",
+      "sources": [
+        "fleet",
+        "evag"
+      ]
+    },
+    {
+      "id": "kt4d",
+      "name": "Tatra KT4D",
+      "group": "Tatra & Tradition",
+      "manufacturer": "ČKD Tatra, Prag",
+      "era": "Erfurt ab 1976",
+      "description": "Vierachsiger Kurzgelenktriebwagen. Prägte den Erfurter Linienverkehr; einzelne Fahrzeuge wurden später zu Arbeitswagen umgebaut.",
+      "features": [
+        "Hochflur",
+        "Einrichtung",
+        "2-teilig"
+      ],
+      "photo": "kt4d",
+      "photoCaption": "Erfurter Tatra KT4D.",
+      "sources": [
+        "fleet",
+        "reko"
+      ]
+    },
+    {
+      "id": "kt4dc",
+      "name": "Tatra KT4D-C · modernisiert",
+      "group": "Tatra & Tradition",
+      "manufacturer": "ČKD Tatra / Modernisierung EVAG",
+      "era": "Modernisierte KT4D · heute auch Sonderfahrten",
+      "description": "Modernisierungsvariante des KT4D. Erhaltene Stadtführungswagen gehören zu dieser Fahrzeugfamilie.",
+      "features": [
+        "Hochflur",
+        "Einrichtung",
+        "Sonderfahrten"
+      ],
+      "photo": "kt4dc",
+      "photoCaption": "Traditions-Tatra 522 in Erfurt.",
+      "sources": [
+        "heritage",
+        "evag"
+      ]
+    },
+    {
+      "id": "gotha-standard",
+      "name": "Gothaer Zweiachser · TW 92",
+      "group": "Tatra & Tradition",
+      "manufacturer": "Waggonfabrik Gotha",
+      "era": "Traditionswagen 92 · Baujahr 1938",
+      "description": "Erhaltener zweiachsiger Vorkriegstriebwagen für historische Fahrten.",
+      "features": [
+        "Hochflur",
+        "Zweiachser",
+        "24 Sitzplätze"
+      ],
+      "photo": "gotha-standard",
+      "photoCaption": "Traditionswagen 92 in der Erfurter Bahnhofstraße.",
+      "sources": [
+        "evag",
+        "heritage"
+      ]
+    },
+    {
+      "id": "t2d",
+      "name": "Gotha / Tatra T2D",
+      "group": "Tatra & Tradition",
+      "manufacturer": "ČKD Tatra, Prag",
+      "era": "Erfurter Neulieferungen ab 1968",
+      "description": "In Prag weitergebaute Gotha-Konstruktion. In Erfurt auch als Traditionswagen 3 und als Arbeits-/Schneepflugwagen vertreten.",
+      "features": [
+        "Hochflur",
+        "Zweiachser",
+        "Einrichtung"
+      ],
+      "photo": "t2d",
+      "photoCaption": "T2D-Traditionswagen am Erfurter Domplatz.",
+      "sources": [
+        "gotha",
+        "evag",
+        "heritage"
+      ]
+    },
+    {
+      "id": "g4-65",
+      "name": "Gotha G4-65",
+      "group": "Tatra & Tradition",
+      "manufacturer": "VEB Waggonbau Gotha",
+      "era": "Erfurter Serie der 1960er · Traditionswagen 178",
+      "description": "Gothaer Gelenkwagen mit schwebendem Mittelteil; Nachfolgeausführung des G4-61.",
+      "features": [
+        "Hochflur",
+        "4 Achsen",
+        "3-teilig"
+      ],
+      "photo": "g4-65",
+      "photoCaption": "G4-65-Traditionswagen 178 in Erfurt; später aus Gotha übernommen.",
+      "sources": [
+        "gotha",
+        "heritage"
+      ]
+    },
+    {
+      "id": "katerexpress",
+      "name": "Gotha G4-65 · Katerexpress",
+      "group": "Tatra & Tradition",
+      "manufacturer": "VEB Waggonbau Gotha / EVAG",
+      "era": "Wagen 190 · Baujahr 1967 · Eventumbau 2003",
+      "description": "Zum Veranstaltungswagen mit Tischen und Bar umgebauter G4-65.",
+      "features": [
+        "Hochflur",
+        "Eventwagen",
+        "Einrichtung"
+      ],
+      "photo": "katerexpress",
+      "photoCaption": "Katerexpress 190 in Erfurt.",
+      "sources": [
+        "evag",
+        "heritage"
+      ]
+    },
+    {
+      "id": "g4-61",
+      "name": "Gotha G4-61",
+      "group": "Frühere Bauarten",
+      "manufacturer": "VEB Waggonbau Gotha",
+      "era": "Prototyp ab 1959 · Vorserie 1961 · Serie ab 1962",
+      "description": "Frühe Gothaer Gelenkwagenserie. Erfurt war an der Entwicklung beteiligt und setzte sie in größerer Zahl ein.",
+      "features": [
+        "Hochflur",
+        "4 Achsen",
+        "3-teilig"
+      ],
+      "photo": "g4-61",
+      "photoCaption": "Typenfoto: Gotha G4-61, Wagen 54 in Nordhausen, 1990.",
+      "sources": [
+        "gotha"
+      ]
+    },
+    {
+      "id": "t57e",
+      "name": "Gotha T57E · Erfurt 57",
+      "group": "Frühere Bauarten",
+      "manufacturer": "VEB Waggonbau Gotha",
+      "era": "Erfurter Lieferungen 1957–1958",
+      "description": "Erfurter Sonderausführung mit großen Plattformfenstern. Zehn Triebwagen wurden geliefert.",
+      "features": [
+        "Hochflur",
+        "Zweiachser",
+        "Einrichtung"
+      ],
+      "photo": "historic-gotha",
+      "photoCaption": "Zeitaufnahme Erfurter Gotha-Züge an der EGA; kein gesichertes Einzelporträt eines T57E.",
+      "sources": [
+        "gotha"
+      ]
+    },
+    {
+      "id": "t2-60",
+      "name": "Gotha T2-60",
+      "group": "Frühere Bauarten",
+      "manufacturer": "VEB Waggonbau Gotha",
+      "era": "Lieferung 1960 · zwei Triebwagen",
+      "description": "Fortsetzung der Erfurter Zweiachser-Sonderbauform; Einführung der ESW-Kupplung zusammen mit passenden Beiwagen.",
+      "features": [
+        "Hochflur",
+        "Zweiachser",
+        "Einrichtung"
+      ],
+      "photo": "historic-gotha",
+      "photoCaption": "Zeitaufnahme Erfurter Gotha-Züge an der EGA; kein gesichertes Einzelporträt eines T2-60.",
+      "sources": [
+        "gotha"
+      ]
+    },
+    {
+      "id": "t2-61",
+      "name": "Gotha T2-61",
+      "group": "Frühere Bauarten",
+      "manufacturer": "VEB Waggonbau Gotha",
+      "era": "Lieferung 1961 · zwei Triebwagen",
+      "description": "Erfurter Fahrzeuge aus der damaligen Gothaer Serienfertigung; ein Wagen ging 1964 nach Brandenburg.",
+      "features": [
+        "Hochflur",
+        "Zweiachser",
+        "Einrichtung"
+      ],
+      "photo": "t2-61",
+      "photoCaption": "Erfurter Gotha-Zweiachser auf dem verschneiten Anger, 1984 (Bundesarchiv; als T2-61 eingeordnet).",
+      "sources": [
+        "gotha"
+      ]
+    },
+    {
+      "id": "b2-60",
+      "name": "Gotha B2-60 · Beiwagen",
+      "group": "Beiwagen",
+      "manufacturer": "VEB Waggonbau Gotha",
+      "era": "Erfurter Sonderbauform · Lieferung 1960",
+      "description": "Sieben zweiachsige Beiwagen zur Erfurter Sonderbauform der Gotha-Triebwagen.",
+      "features": [
+        "Ohne eigenen Antrieb",
+        "Hochflur",
+        "Zweiachser"
+      ],
+      "photo": "historic-gotha",
+      "photoCaption": "Historischer Gotha-Zug in Erfurt; Zeitaufnahme ohne gesicherte Beiwagen-Untertyp-Zuordnung.",
+      "sources": [
+        "gotha"
+      ]
+    },
+    {
+      "id": "b2-61",
+      "name": "Gotha B2-61 · Beiwagen",
+      "group": "Beiwagen",
+      "manufacturer": "VEB Waggonbau Gotha",
+      "era": "Lieferung 1961",
+      "description": "Serienbeiwagen der Gothaer Zweiachserfamilie im früheren Erfurter Wagenpark.",
+      "features": [
+        "Ohne eigenen Antrieb",
+        "Hochflur",
+        "Zweiachser"
+      ],
+      "photo": "historic-gotha",
+      "photoCaption": "Historischer Gotha-Zug in Erfurt; Zeitaufnahme ohne gesicherte Beiwagen-Untertyp-Zuordnung.",
+      "sources": [
+        "gotha"
+      ]
+    },
+    {
+      "id": "b2-62",
+      "name": "Gotha B2-62 / B2-64 · Beiwagen",
+      "group": "Beiwagen",
+      "manufacturer": "VEB Waggonbau Gotha",
+      "era": "Spätere Gotha-Beiwagen · u. a. Traditionswagen 274",
+      "description": "Spätere Beiwagenfamilie, auch hinter Gelenkwagen verwendet. Der erhaltene Wagen 274 wird in der Fahrzeugchronik als B2-64 geführt.",
+      "features": [
+        "Ohne eigenen Antrieb",
+        "Hochflur",
+        "Zweiachser"
+      ],
+      "photo": "b2-64",
+      "photoCaption": "Typenfoto: B2-64-Beiwagen 385 im Straßenbahnmuseum Halle; kein Erfurter Wagen.",
+      "sources": [
+        "gotha",
+        "heritage",
+        "evag"
+      ]
+    },
+    {
+      "id": "b2d",
+      "name": "Tatra B2D · Beiwagen",
+      "group": "Beiwagen",
+      "manufacturer": "ČKD Tatra, Prag",
+      "era": "Erfurt ab 1968",
+      "description": "In Prag gebauter Beiwagen der Gotha-Konstruktion; Neulieferungen und spätere Übernahmen aus Halle.",
+      "features": [
+        "Ohne eigenen Antrieb",
+        "Hochflur",
+        "Zweiachser"
+      ],
+      "photo": "b2-64",
+      "photoCaption": "Vergleichsfoto: B2-64 in Halle aus derselben Gotha-Fahrzeugfamilie; kein B2D.",
+      "sources": [
+        "gotha"
+      ]
+    },
+    {
+      "id": "summer-trailer",
+      "name": "Gotha B2-64 · Sommerbeiwagen 275",
+      "group": "Beiwagen",
+      "manufacturer": "VEB Waggonbau Gotha / Umbau",
+      "era": "Traditionswagen 275 · offener Umbau",
+      "description": "Offener Sommerbeiwagen für Traditions- und Veranstaltungsfahrten mit einem geeigneten Triebwagen.",
+      "features": [
+        "Ohne eigenen Antrieb",
+        "Offener Aufbau",
+        "34 Sitzplätze"
+      ],
+      "photo": "b2-64",
+      "photoCaption": "Vergleichsfoto des geschlossenen B2-64 in Halle; der Erfurter offene Umbau 275 ist hier nicht abgebildet.",
+      "sources": [
+        "heritage",
+        "evag"
+      ]
+    },
+    {
+      "id": "reko-trailer",
+      "name": "Reko-Beiwagen · BE 70",
+      "group": "Beiwagen",
+      "manufacturer": "RAW Berlin-Schöneweide",
+      "era": "Erfurter Lieferungen 1973–1975",
+      "description": "18 Reko-Beiwagen ergänzten die Erfurter Gotha-Züge in den 1970er-Jahren.",
+      "features": [
+        "Ohne eigenen Antrieb",
+        "Hochflur",
+        "Zweiachser"
+      ],
+      "photo": "historic-gotha",
+      "photoCaption": "Ältere Erfurter Gotha-Zeitaufnahme als Vergleich; kein Reko-Beiwagen-Porträt.",
+      "sources": [
+        "reko"
+      ]
+    }
+  ]
+}

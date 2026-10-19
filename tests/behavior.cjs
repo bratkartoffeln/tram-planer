@@ -72,12 +72,14 @@ async function openPage({seed=null,native=true,frozen=true,now=BASE,viewport={wi
       let nextId=1;
       const ids=new WeakMap();
       AudioBufferSourceNode.prototype.start=function(...args) {
+        if(typeof cabAudioContext!=='undefined'&&this.context===cabAudioContext)return start.apply(this,args);
         const id=nextId++;ids.set(this,id);
         window.__qaSources.push({event:'start',id,at:performance.now(),duration:this.buffer?.duration,sampleRate:this.buffer?.sampleRate});
         this.addEventListener('ended',()=>window.__qaSources.push({event:'ended',id,at:performance.now()}),{once:true});
         return start.apply(this,args);
       };
       AudioBufferSourceNode.prototype.stop=function(...args) {
+        if(typeof cabAudioContext!=='undefined'&&this.context===cabAudioContext)return stop.apply(this,args);
         window.__qaSources.push({event:'stop',id:ids.get(this),at:performance.now()});
         return stop.apply(this,args);
       };
@@ -88,7 +90,7 @@ async function openPage({seed=null,native=true,frozen=true,now=BASE,viewport={wi
     await page.clock.pauseAt(new Date(now));
   }
   await page.goto(origin+'/index.html',{waitUntil:'load'});
-  await page.locator('#appVersion').filter({hasText:'v6.2.2 Android'}).waitFor();
+  await page.locator('#appVersion').filter({hasText:'v6.2.3 Android'}).waitFor();
   return {context,page};
 }
 const readState = page=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);
@@ -138,7 +140,7 @@ async function testCancellation(label,action,verify) {
 
 (async()=>{
   fs.mkdirSync(OUTPUT,{recursive:true});
-  const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.jpg':'image/jpeg','.png':'image/png','.wav':'audio/wav','.mp3':'audio/mpeg'};
+  const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp','.wav':'audio/wav','.mp3':'audio/mpeg'};
   server=http.createServer((request,response)=>{
     try {
       const requestPath=decodeURIComponent(new URL(request.url,'http://localhost').pathname);
@@ -441,7 +443,7 @@ async function testCancellation(label,action,verify) {
       await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
       const cached=await page.evaluate(async()=>{
         const names=await caches.keys();
-        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.2-recordings-complete'));
+        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.3-vehicles-terminal'));
         return (await cache.keys()).map(request=>new URL(request.url).pathname);
       });
       const required=['/','/index.html','/app.js','/announcements.js','/manifest.webmanifest','/icon-192.png','/icon-512.png','/audio/announcements-data.js','/audio/announcements.json','/audio/catalog.json',...allAudioPaths.map(file=>'/'+file)];
@@ -449,7 +451,7 @@ async function testCancellation(label,action,verify) {
       assert(required.every(file=>cached.includes(file)),'all shell and audio assets must be cached');
       await context.setOffline(true);
       await page.reload({waitUntil:'load'});
-      await page.locator('#appVersion').filter({hasText:'v6.2.2 Android'}).waitFor();
+      await page.locator('#appVersion').filter({hasText:'v6.2.3 Android'}).waitFor();
       assert.equal(await page.evaluate(()=>Object.keys(window.STOP_ANNOUNCEMENTS).length),96);
       const offlineAudio=await page.evaluate(async(audioPaths)=>Promise.all(audioPaths.map(async path=>{
         const response=await fetch(path);

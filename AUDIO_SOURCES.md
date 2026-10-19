@@ -1,5 +1,13 @@
 # Ansagen und Gongs ab Version 6.2.1
 
+## Neue Rekonstruktion und Tastengeräusche in 6.2.3
+
+Die zu Beginn der Bearbeitung lokal veränderten Dateien `ding_dong.mp3` und `dong_dong_ding.mp3` dienen als Referenz. Sicherung der unveränderten Eingaben: `build/audio-reference-6.2.3/` (lokal, nicht versioniert). Eine additive Rekonstruktion übernimmt nur ausgeprägte Tonfrequenzen mit ihren gemessenen Lautstärkeverläufen. Kein Teil der aufgenommenen Wellenform und kein breitbandiges Restsignal wird beigemischt. Ding-Dong: Grundtöne etwa 523/440 Hz; Dong-Dong-Ding: Tonkomponenten etwa 655/520/388/584/492 Hz, einschließlich wiederholter Anschläge und Obertöne. Dauer etwa 2,28 bzw. 3,27 s; MP3, mono, 44,1 kHz, 192 kbit/s. Herkunft und Lizenz der vom Nutzer veränderten Referenzaufnahmen wurden nicht mitgeliefert.
+
+Die nachgebildeten Hüllkurven und Frequenzen stehen in `scripts/chime-tones.json`. Erneut erzeugen: `python scripts/generate_chimes.py` mit NumPy und FFmpeg (`FFMPEG_PATH` oder lokaler Encoder unter `build/qa-deps/`). Neue Referenzen analysieren: `python scripts/resynthesize_chimes.py --reference-dir VERZEICHNIS`. Anschließend `python tools/sync-assets.py`. Die Sprachaufnahmen bleiben unverändert. Die ältere Synthese unter „Eigene Gongs“ dokumentiert den historischen Stand vor 6.2.3.
+
+Mechanischer Druck, Loslassen und das kräftigere Einrasten des Not-Aus werden direkt mit Web Audio synthetisiert (`cockpit.js`), unabhängig von Android-/Web-Ansageketten. Die kurzen Anschläge bestehen aus gedämpften Resonanzen und deterministischen Impulsen. Stummschaltung und Hintergrundwechsel beenden die mechanischen Töne. Der Notfallbuzzer bleibt dem Not-Aus zugeordnet.
+
 ## Ergänzte Haltestellenaufnahmen in 6.2.2
 
 Die sieben am 19.10.2026 vom Nutzer ergänzten MP3-Dateien werden unverändert verwendet: Bergstraße (`bergstrasse.mp3`), Bundesarbeitsgericht (`bundes_arbeitsgericht.mp3`), Humboldtstraße (`humboldtstrasse.mp3`), Landtag/Stadion Nord (`landtag_stadion_nord.mp3`), Löberwallgraben (`loberwallgraben.mp3`), Ringelberg (`ringelberg.mp3`) und Thüringen-Park (`thuringen-park.mp3`). Sie liegen unter `audio/stops/`. Weitere Herkunfts- oder Lizenzangaben wurden für diese Dateien nicht mitgeliefert.

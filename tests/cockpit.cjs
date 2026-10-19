@@ -14,7 +14,10 @@ async function main(){
   assert.deepEqual(await b.evaluate("buildStopAnnouncement('Lutherkirche/SWE')"),['audio/chimes/ding_dong.mp3','audio/phrases/naechste_haltestelle.mp3','audio/stops/lutherkirche_stadtwerke.mp3']);
   assert.deepEqual(await b.evaluate("buildStopAnnouncement('Boyneburgufer')"),['audio/chimes/ding_dong.mp3','audio/phrases/naechste_haltestelle.mp3','audio/stops/boyneburg_ufer.mp3']);
   assert.deepEqual(await b.evaluate("buildStopAnnouncement('Stadtmuseum/Kaisersaal')"),['audio/chimes/ding_dong.mp3','audio/phrases/naechste_haltestelle.mp3','audio/stops/stadtmuseum_kaisersaal.mp3']);
-  await b.evaluate('document.querySelector(".cab-photo").decode()');assert.equal(await b.evaluate('document.querySelector(".cab-photo").naturalWidth'),3008);
+  assert.equal(await b.evaluate('document.querySelectorAll(".cab-screw").length'),4);
+  assert.equal(await b.evaluate('document.querySelectorAll(".cab-placeholder").length'),15);
+  assert.equal(await b.evaluate('document.querySelectorAll(".cab-photo").length'),0);
+  await b.evaluate('document.querySelector(".cab-panel-photo").decode()');assert.equal(await b.evaluate('document.querySelector(".cab-panel-photo").naturalWidth'),1681);
   await b.evaluate("showPlan(state.plans[0].id);document.getElementById('departureNowButton').click()");
   assert.equal(await b.evaluate('document.getElementById("tripDepartureInput").value'),await b.evaluate('fmtTime(Date.now())'));
   assert.equal(await b.evaluate('document.getElementById("startTripButton").disabled'),false);
@@ -71,6 +74,7 @@ async function main(){
   await b.evaluate('navigator.serviceWorker.ready.then(()=>true)');await b.delay(500);await b.cdp('Network.enable');await b.cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});await b.cdp('Page.reload');await b.delay(500);
   assert.equal(await b.evaluate('typeof renderCabControls'),'function');assert.equal(await b.evaluate("fetch('audio/effects/traffic.mp3').then(r=>r.ok)"),true);assert.equal(b.errors.length,0);
   assert.equal(await b.evaluate("fetch('images/tram-cockpit.jpg').then(r=>r.ok)"),true);
+  assert.equal(await b.evaluate("fetch('images/cab-panel-photoreal.webp').then(r=>r.ok)"),true);
   fs.writeFileSync(path.join(output,'result.json'),JSON.stringify({passed:true,levels,checks:['seven mapped button sounds','door interlock','traffic and history','disabled buttons','mute','one-second stop announcement','real audio decoding and playback','replacement and background cancellation','tablet/dark/mobile layout','offline assets']},null,2));console.log('Cockpit checks passed: '+output);
  }finally{await b.close();}
 }
