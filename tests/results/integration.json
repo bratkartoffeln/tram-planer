@@ -1,0 +1,149 @@
+{
+  "results": [
+    {
+      "name": "Fahrplan erstellen, Abfahrt verpflichtend vorbereiten, Start und Ansage exakt nach 1 Sekunde",
+      "status": "passed",
+      "milliseconds": 4369,
+      "evidence": {
+        "version": "v6.2.0 Android",
+        "departure": "14:35",
+        "firstThreeArrivals": [
+          "14:35",
+          "14:38",
+          "14:42"
+        ],
+        "announcementDelayMs": 1000,
+        "pauseAndDoorGuards": true,
+        "planId": "plan-3ccd2686-8a23-4522-82cd-7085a96cede5"
+      }
+    },
+    {
+      "name": "Schnelle Haltewechsel ersetzen wartende Ansagen und stoppen vorherige Wiedergabe",
+      "status": "passed",
+      "milliseconds": 669,
+      "evidence": {
+        "firstThreeClicksProduceOneAnnouncement": true,
+        "playingAnnouncementStoppedOnNextClick": true
+      }
+    },
+    {
+      "name": "Ansage abbrechen: vorheriger Halt",
+      "status": "passed",
+      "milliseconds": 497,
+      "evidence": {
+        "noPlaybackAfter1100ms": true
+      }
+    },
+    {
+      "name": "Ansage abbrechen: andere Ansicht",
+      "status": "passed",
+      "milliseconds": 488,
+      "evidence": {
+        "noPlaybackAfter1100ms": true
+      }
+    },
+    {
+      "name": "Ansage abbrechen: Android-Zurücktaste",
+      "status": "passed",
+      "milliseconds": 493,
+      "evidence": {
+        "noPlaybackAfter1100ms": true
+      }
+    },
+    {
+      "name": "Ansage abbrechen: Fahrt beenden",
+      "status": "passed",
+      "milliseconds": 491,
+      "evidence": {
+        "noPlaybackAfter1100ms": true
+      }
+    },
+    {
+      "name": "Ansage abbrechen: Notfall speichern",
+      "status": "passed",
+      "milliseconds": 1027,
+      "evidence": {
+        "noPlaybackAfter1100ms": true
+      }
+    },
+    {
+      "name": "Ansage abbrechen: native Activity-Pause",
+      "status": "passed",
+      "milliseconds": 518,
+      "evidence": {
+        "noPlaybackAfter1100ms": true
+      }
+    },
+    {
+      "name": "Bestandsdaten v6.1.5 migrieren verlustfrei und entfernen persönliche Codes",
+      "status": "passed",
+      "milliseconds": 659,
+      "evidence": {
+        "plansPreserved": true,
+        "historyPreserved": true,
+        "activeDeparturePreserved": "09:15",
+        "idsStableAcrossReload": true
+      }
+    },
+    {
+      "name": "Altes Backup importieren und migrierte Daten über Android exportieren",
+      "status": "passed",
+      "milliseconds": 636,
+      "evidence": {
+        "legacyImport": true,
+        "exportMatchesMigratedState": true
+      }
+    },
+    {
+      "name": "Fahrt über Mitternacht behält den Startanker und identische Ankunftszeiten",
+      "status": "passed",
+      "milliseconds": 3900,
+      "evidence": {
+        "firstArrivals": [
+          "23:58",
+          "00:00",
+          "00:02"
+        ],
+        "anchorPreservedAfterMidnightAndReload": true
+      }
+    },
+    {
+      "name": "00:05 mit Abfahrt 23:59 verwendet den Vortag",
+      "status": "passed",
+      "milliseconds": 616,
+      "evidence": {
+        "departureEpoch": 1792360740000
+      }
+    },
+    {
+      "name": "23:58 mit Abfahrt 00:02 verwendet den Folgetag",
+      "status": "passed",
+      "milliseconds": 561,
+      "evidence": {
+        "departureEpoch": 1792360920000
+      }
+    },
+    {
+      "name": "Echte Audiodateien decodieren, Gong vor Stimme, WebAudio-Abbruch und vollständiger Offlinebetrieb",
+      "status": "passed",
+      "milliseconds": 5474,
+      "evidence": {
+        "decodedFiles": 16,
+        "stopNamesCovered": 15,
+        "gongThenVoice": true,
+        "cancelStopsVoiceChain": true,
+        "requiredCachedAssets": 25,
+        "offlineReloadAndAudio": true
+      }
+    },
+    {
+      "name": "Keine JavaScript- oder Browserkonsolenfehler",
+      "status": "passed",
+      "milliseconds": 0,
+      "evidence": {
+        "errors": 0
+      }
+    }
+  ],
+  "browserErrors": []
+}

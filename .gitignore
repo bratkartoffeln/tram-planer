@@ -1,0 +1,41 @@
+# Private signing material and credentials
+signing/
+**/signing/
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.key
+*.pem
+storepass*
+keypass*
+*password*
+*credentials*
+.env
+.env.*
+secrets/
+**/secrets/
+FahrplanManager_Signierung*
+
+# Local configuration and generated output
+local.properties
+.gradle/
+**/build/
+.idea/
+*.iml
+node_modules/
+__pycache__/
+*.pyc
+*.apk
+*.aab
+*.zip
+.DS_Store
+Thumbs.db
+
+# Additional credential formats
+*.pkcs12
+*.p8
+id_rsa*
+id_ed25519*
+key.properties
+keystore.properties
