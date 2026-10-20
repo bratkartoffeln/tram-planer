@@ -1,5 +1,11 @@
 # Bilder und App-Icon
 
+## Fahrpult-Ergänzungen ab 6.2.4
+
+Der bisherige graue Reservetaster rechts neben „Fahrgastanzeige“ wird über HTML/CSS als blauer Vollbildtaster mit Bildschirmsymbol belegt. Die zugrunde liegende Pultgrafik bleibt unverändert: acht Funktionstaster, zwei Kontrollleuchten für den Türzustand, zwei drehbare Reserve-Drehschalter und zehn rein grafische Reserveelemente. Vollbild (626/749), Stau (871/748) und Fahrtende (1493/748) sind an den gemessenen Tastermitten der Originalgrafik ausgerichtet. Die Schraubenanimationen verwenden lokale Ausschnitte derselben Pultgrafik; Schraubenlöcher werden in CSS ergänzt.
+
+Die beiden Reserve-Drehschalter verwenden CSS-Ebenen mit lokalen Ausschnitten derselben Pultgrafik für die feststehende Einfassung und den drehbaren schwarzen Griff. Es wurden keine neuen Bilddateien erzeugt.
+
 ## Fahrzeugfotos ab 6.2.3
 
 Die Fahrzeugverwaltung verwendet reale, lokal gespeicherte Commons-Fotos. Einzelne historische Untertypen nutzen ausdrücklich bezeichnete Zeit- oder Vergleichsaufnahmen. Alle Urheber, Originaldateien und CC-/CC0-Lizenzen stehen in `app/src/main/assets/images/vehicles/credits.json` und direkt unter den Bildern in der App. Fachquellen, Einschränkungen und Pflege: [VEHICLE_SOURCES.md](VEHICLE_SOURCES.md).

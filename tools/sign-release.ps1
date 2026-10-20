@@ -18,7 +18,7 @@ $java = Join-Path $javaRoot 'bin/java.exe'
 $buildTools = Join-Path $sdkRoot 'build-tools/35.0.0'
 $outputDirectory = Join-Path $projectRoot 'app/build/outputs/apk/release'
 $unsigned = Join-Path $outputDirectory 'app-release-unsigned.apk'
-$signed = Join-Path $outputDirectory 'FahrplanManager_v6.2.3_release.apk'
+$signed = Join-Path $outputDirectory 'FahrplanManager_v6.2.4_release.apk'
 if (!(Test-Path -LiteralPath $unsigned)) { throw 'Run :app:assembleRelease first.' }
 & (Join-Path $buildTools 'zipalign.exe') -c -p 4 $unsigned
 if ($LASTEXITCODE -ne 0) { throw 'Unsigned APK is not correctly aligned.' }

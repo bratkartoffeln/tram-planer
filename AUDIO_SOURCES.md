@@ -1,5 +1,11 @@
 # Ansagen und Gongs ab Version 6.2.1
 
+## Mechanische Geräusche ab 6.2.4
+
+Die beiden Reserve-Drehschalter verwenden einen eigenen synthetischen Rastklang: ein leises Anlaufgeräusch und zwei kurze, gedämpfte mechanische Anschläge beim Erreichen der nächsten 90°-Stellung (0,24 Sekunden, Web Audio in `cockpit.js`). Der Ton folgt der Drehbewegung und beachtet Stummschaltung und Hintergrundwechsel.
+
+Herausdrehen und Herunterfallen verwenden eine eigene Web-Audio-Synthese in `cockpit.js`: kurze Drehimpulse und drei gedämpfte metallische Aufschläge (1,65 Sekunden). Beim Eindrehen erklingt eine separate Ratschenfolge aus vier Drehbewegungen, kurzen Zahnklicks während der Rückbewegungen und einem abschließenden Anschlag (1,25 Sekunden). Beide Klänge werden lokal erzeugt, benötigen keine Aufnahme oder Downloads und beachten die Pult-Stummschaltung sowie den Hintergrundwechsel.
+
 ## Neue Rekonstruktion und Tastengeräusche in 6.2.3
 
 Die zu Beginn der Bearbeitung lokal veränderten Dateien `ding_dong.mp3` und `dong_dong_ding.mp3` dienen als Referenz. Sicherung der unveränderten Eingaben: `build/audio-reference-6.2.3/` (lokal, nicht versioniert). Eine additive Rekonstruktion übernimmt nur ausgeprägte Tonfrequenzen mit ihren gemessenen Lautstärkeverläufen. Kein Teil der aufgenommenen Wellenform und kein breitbandiges Restsignal wird beigemischt. Ding-Dong: Grundtöne etwa 523/440 Hz; Dong-Dong-Ding: Tonkomponenten etwa 655/520/388/584/492 Hz, einschließlich wiederholter Anschläge und Obertöne. Dauer etwa 2,28 bzw. 3,27 s; MP3, mono, 44,1 kHz, 192 kbit/s. Herkunft und Lizenz der vom Nutzer veränderten Referenzaufnahmen wurden nicht mitgeliefert.

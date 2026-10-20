@@ -1,9 +1,9 @@
 'use strict';
 const CACHE_PREFIX = 'fahrplan-manager-tablet-';
-const CACHE = CACHE_PREFIX + 'v6.2.3-vehicles-terminal';
+const CACHE = CACHE_PREFIX + 'v6.2.4-rotary';
 const ASSETS = [
   './', './index.html', './app.js', './announcements.js', './erfurt-network.js', './line-editor.js', './network-editor.js', './network-plan.json', './network-plan-data.js',
-  './cockpit.js', './cockpit.css', './images/tram-cockpit.jpg', './images/credits.json', './images/cab-panel-photoreal.webp', './audio/effects/catalog.json',
+  './cockpit.js', './cockpit.css', './shell.css', './images/tram-cockpit.jpg', './images/credits.json', './images/cab-panel-photoreal.webp', './audio/effects/catalog.json',
   './vehicles.js', './vehicles.css', './vehicle-types.json', './vehicle-types-data.js', './images/vehicles/credits.json',
   ...['door_open','door_close','emergency','traffic','passenger','finish','back'].map(id=>'./audio/effects/'+id+'.mp3'),
   './favicon-32.png', './manifest.webmanifest', './icon-192.png', './icon-512.png',

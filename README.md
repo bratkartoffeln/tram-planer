@@ -1,8 +1,20 @@
-# Fahrplan Manager Audio – Version 6.2.3
+# Fahrplan Manager Audio – Version 6.2.4
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
 ## Neu
+
+Version 6.2.4 ergänzt **Menü einklappen** oben im linken Seitenmenü. Auf breiten Bildschirmen bleibt eine schmale Symbolleiste mit erreichbaren Menüpunkten; das Fahrpult nutzt die zusätzliche Breite. Auf kleinen Displays wird die Menüleiste verborgen, der Ausklappschalter bleibt sichtbar. Die Einstellung wird lokal gespeichert und mit den Einstellungen gesichert.
+
+Der zuvor freie Taster **Vollbild** rechts neben „Fahrgastanzeige“ schaltet eine große Fahrpultansicht samt aktuellem Halt, Zeitabweichung und Streckenverlauf ein oder aus. Am Desktop/Tablet steht die Strecke rechts, im schmalen Hochformat darunter. Escape beziehungsweise Android-Zurück verlässt zuerst den Vollbildmodus. Die laufende Fahrt bleibt erhalten. Im Browser wird die Vollbild-API verwendet; bei fehlender Unterstützung bleibt die bildschirmfüllende App-Ansicht verfügbar. Die Android-App blendet über ihre lokale Display-Anbindung auch die Systemleisten aus. Acht Taster sind jetzt belegt, zwei Kontrollleuchten zeigen den Türzustand, zwei Reserve-Drehschalter sind drehbar, zehn Elemente bleiben rein grafische Reserve. Browserprüfung: `node tests/display.cjs`.
+
+Die jeweils fünften Elemente der ersten und zweiten Reihe zeigen **Türen zu** (grün) beziehungsweise **Türen offen** (orange). Die bisherige Türanzeige rechts oben entfällt. Vollbild-, Stau- und Fahrtende-Symbole sind an den tatsächlichen Tastermitten ausgerichtet.
+
+Die beiden schwarzen **Reserve-Drehschalter** drehen sich bei jedem Klick oder Tippen um 90° im Uhrzeigersinn und rasten hörbar ein. Enter und Leertaste funktionieren ebenfalls. Die Einfassungen stehen fest; nur die Griffe drehen sich. Die unabhängigen Stellungen bleiben während derselben Fahrt auch beim Ansichtswechsel erhalten und setzen sich bei einer neuen Fahrt zurück. Die Schalter haben keine Fahrfunktion; die übrigen Reserveelemente bleiben ausgegraut.
+
+Das Häkchen **Dev-Modus** ist zunächst verborgen. In den Einstellungen zehnmal direkt hintereinander innerhalb von fünf Sekunden auf die Versionsnummer klicken, um es freizuschalten. Andere Klicks unterbrechen die Folge. Weitere zehn Klicks innerhalb von fünf Sekunden deaktivieren den Dev-Modus und verbergen das Häkchen wieder; gespeicherte Netzplananpassungen bleiben erhalten. Freischaltung und Einstellung werden lokal gespeichert. Prüfung: `node tests/dev-mode.cjs`.
+
+**Schrauben-Easter-Egg:** Doppelklick beziehungsweise Doppeltippen auf eine der vier Pultschrauben dreht sie gegen den Uhrzeigersinn heraus und lässt sie mit Metallklang herunterfallen. Erneuter Doppelklick auf das Loch dreht die Schraube mit Ratschenklang wieder hinein. Während einer Animation werden weitere Auslösungen ignoriert. Stummschaltung und reduzierte Bewegung werden berücksichtigt. Eine neue Fahrt setzt alle Schrauben zurück; Fahrtdaten bleiben unverändert. Prüfung: `node tests/cab-extras.cjs`.
 
 Das Menü **Fahrzeuge** verwaltet mehrere eigene Fahrzeuge mit eindeutigem Kürzel, auswählbarem Typ und optionaler Notiz. Im Fahrplanformular „Tram / Fahrzeug“ lassen sich diese Fahrzeuge auswählen. Ein recherchierter Katalog mit 23 Bauarten und Varianten enthält Informationen, lokale Fotos und Quellen zu aktuellen Erfurter Straßenbahnen sowie historischen Gotha-/Tatra-Wagen und Beiwagen. Vergleichsaufnahmen sind gekennzeichnet. Datenpflege und Recherche: [VEHICLE_SOURCES.md](VEHICLE_SOURCES.md). Die Fahrzeugliste wird mit dem gesamten Datenbestand exportiert und importiert.
 
@@ -34,7 +46,9 @@ Im Dev-Modus unter „Netz bearbeiten“ eine Verbindung anklicken. Bei „Darst
 
 ### Angepassten Netzplan im Projekt hinterlegen
 
-1. In den Einstellungen den **Dev-Modus** einschalten und „Linien & Netz“ öffnen. Die Dateischaltflächen sind auch bei ausgeschaltetem Bearbeitungswerkzeug sichtbar.
+Der integrierte Plan in 6.2.4 übernimmt die bereitgestellte Exportdatei: elf angepasste Haltestellen-/Textpositionen und den grau gestrichelten, als „Nicht bedient“ markierten Abschnitt der Linie 6 zwischen Berliner Straße und Riethstraße. Bei vorhandenen lokalen Netzplananpassungen im Dev-Modus **Projektdatei laden** wählen, um diesen Projektstand zu übernehmen.
+
+1. In den Einstellungen zehnmal innerhalb von fünf Sekunden auf die Versionsnummer klicken, den eingeblendeten **Dev-Modus** einschalten und „Linien & Netz“ öffnen. Die Dateischaltflächen sind auch bei ausgeschaltetem Bearbeitungswerkzeug sichtbar.
 2. **Netzplan exportieren** speichert `network-plan.json`. Der Browser lädt die Datei herunter; unter Android öffnet sich die Dateiauswahl. Enthalten sind Positionen, Namen und Textversätze, zusätzliche/entfernte Gleise, Linienfarben sowie Strichelungen und Abschnittsmarkierungen.
 3. Die Datei im Projekt als [app/src/main/assets/network-plan.json](app/src/main/assets/network-plan.json) ablegen und die dortige Datei ersetzen. Der Browser kann den Projektordner nicht automatisch beschreiben.
 4. Im Projektstamm `python tools/sync-assets.py` ausführen. Das erzeugt `app/src/main/assets/network-plan-data.js` für Android und spiegelt beide Dateien nach `web-pwa/network-plan.json` und `web-pwa/network-plan-data.js`. Diese generierten Kopien nicht von Hand ändern.
@@ -52,7 +66,7 @@ Die Karte ist schematisch. Haltefolgen stammen aus den offiziellen EVAG-Halteste
 
 ## Installation und Signierung
 
-App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 623.
+App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 624.
 
 Da der frühere private Signierschlüssel nicht verfügbar ist, verwendet diese Fassung eine eigene App-Kennung und einen neu angelegten Schlüssel. Sie kann neben den bisherigen Fassungen installiert werden. Bestehende Daten über Einstellungen → Daten exportieren/importieren übertragen. Künftige Updates dieser Audio-Fassung müssen denselben neuen Schlüssel verwenden.
 
@@ -62,7 +76,7 @@ Der Release-Schlüssel wurde am 19.10.2026 auf ausdrücklichen Wunsch neu angele
 
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.3_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.4_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 
