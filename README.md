@@ -1,8 +1,14 @@
-# Fahrplan Manager Audio – Version 6.2.4
+# Fahrplan Manager Audio – Version 6.2.5
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
 ## Neu
+
+Version 6.2.5 ergänzt Rückgängig in der Linienwerkstatt, das Einrasten ausschließlich auf Netzplanhaltestellen sowie auswählbare Linienbuttons für beide Fahrtrichtungen. Die aktive Linie bleibt farbig, andere Linien werden entsättigt.
+
+Das Seitenmenü fährt in etwa 300 ms weich ein und aus; Beschriftungen und Kopfbereich blenden passend mit. Auf kleinen Displays wird es vertikal zusammengefahren. Netzplan und Fahrpult folgen der Größenänderung. Bei aktivierter Systemeinstellung für reduzierte Bewegung entfällt die Animation.
+
+Die Fahrgastanzeige folgt der bereitgestellten Monitorvorlage: heller LCD im dunklen Gehäuse, blaues Linienfeld, aktueller Halt, Uhrzeit, zweisprachige Abfahrtsinformation und zwei folgende Halte mit Minutenangaben. Die Endhaltestelle wird bei ausgelassenen Zwischenhalten über einen gestrichelten Streckenabschnitt verbunden; Anschlusslinien stammen aus dem hinterlegten Netz. Die Minuten berücksichtigen Fahr- und Pausenzeiten sowie erfasste Stauzeit, bleiben jedoch Simulationswerte. Die Anzeige aktualisiert sich jede Sekunde und bleibt auch im Darkmode hell. Browserprüfung: `node tests/passenger-display.cjs`.
 
 Version 6.2.4 ergänzt **Menü einklappen** oben im linken Seitenmenü. Auf breiten Bildschirmen bleibt eine schmale Symbolleiste mit erreichbaren Menüpunkten; das Fahrpult nutzt die zusätzliche Breite. Auf kleinen Displays wird die Menüleiste verborgen, der Ausklappschalter bleibt sichtbar. Die Einstellung wird lokal gespeichert und mit den Einstellungen gesichert.
 
@@ -60,13 +66,13 @@ Die Basisdaten des schematischen Erfurter Netzes (Haltestellenkennungen, Standar
 
 Die Karte nutzt die ganze Inhaltsbreite und zeichnet auch die Verbindungen der Rückrichtungen. Der am 19.10.2026 gültige Baufahrplan für die Linien 1 und 6 sowie das Regelnetz sind umschaltbar. Eigene Linien können ein Streckenkürzel erhalten; ohne Eingabe wird etwa „L7“ angezeigt. Die interne Kennung erscheint nicht als Kürzel.
 
-Der neue Menüpunkt „Linien & Netz“ bietet zwölf EVAG-Vorlagen (Linien 1–6 in beiden Richtungen) und einen grafischen Editor. Vorhandene Haltestellen anklicken oder eigene Halte auf der Karte hinzufügen, Punkte verschieben, Reihenfolge, Name, Farbe und Fahrzeiten ändern und als eigene Linie speichern. Gespeicherte Linien stehen unter „Neue Fahrt“ bereit und sind im Datenexport enthalten. Bestehende Strecken und gespeicherte Fahrpläne bleiben erhalten.
+Der Menüpunkt „Linien & Netz“ bietet zwölf EVAG-Vorlagen (Linien 1–6 in beiden Richtungen) und einen grafischen Editor. Vorhandene Haltestellen anklicken, nummerierte Halte auf andere Haltestellenkreise ziehen, Reihenfolge, Name, Farbe und Fahrzeiten ändern und als eigene Linie speichern. Freie Positionierungen sind gesperrt; Rückgängig stellt vorherige Bearbeitungsschritte wieder her. Im normalen Netzplan hebt ein Linienbutton die gewählte Fahrtrichtung hervor; ein erneuter Klick hebt die Auswahl auf. Die Gegenrichtung steht jeweils darunter. Gespeicherte Linien stehen unter „Neue Fahrt“ bereit und sind im Datenexport enthalten. Bestehende Strecken und gespeicherte Fahrpläne bleiben erhalten.
 
 Die Karte ist schematisch. Haltefolgen stammen aus den offiziellen EVAG-Haltestellenfahrplänen; Fahrzeiten bleiben einstellbare Simulationswerte. Recherche, Gültigkeit und Quellen: [NETWORK_SOURCES.md](NETWORK_SOURCES.md). Zusätzlicher Browsertest ohne npm-Abhängigkeiten: `node tests/network.cjs` (standardmäßig Microsoft Edge unter Windows, alternativ `FAHRPLAN_BROWSER_PATH`).
 
 ## Installation und Signierung
 
-App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 624.
+App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 625.
 
 Da der frühere private Signierschlüssel nicht verfügbar ist, verwendet diese Fassung eine eigene App-Kennung und einen neu angelegten Schlüssel. Sie kann neben den bisherigen Fassungen installiert werden. Bestehende Daten über Einstellungen → Daten exportieren/importieren übertragen. Künftige Updates dieser Audio-Fassung müssen denselben neuen Schlüssel verwenden.
 
@@ -76,7 +82,7 @@ Der Release-Schlüssel wurde am 19.10.2026 auf ausdrücklichen Wunsch neu angele
 
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.4_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.5_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 

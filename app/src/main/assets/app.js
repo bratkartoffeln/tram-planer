@@ -1,5 +1,5 @@
 'use strict';
-const APP_VERSION='6.2.4';
+const APP_VERSION='6.2.5';
 const STOP_W2D=['Wiesenhügel','Färberwaidweg','Abzweig Wiesenhügel','Blücherstraße','Sozialversicherungszentrum','Am Schwemmbach','Stadion Ost','Tschaikowskistraße','Robert-Koch-Straße','Hauptbahnhof','Anger','Fischmarkt/Rathaus','Domplatz'];
 const STOP_D2W=[...STOP_W2D].reverse();
 const STOP_L3D=['Melchendorf Betriebshof','Melchendorf','Abzweig Wiesenhügel','Blücherstraße','Sozialversicherungszentrum','Am Schwemmbach','Stadion Ost','Tschaikowskistraße','Robert-Koch-Straße','Hauptbahnhof','Anger','Fischmarkt/Rathaus','Domplatz'];
@@ -93,6 +93,7 @@ function applyTheme(){document.body.classList.toggle('dark',!!state.settings.dar
 function updateShell(){
  const collapsed=state.settings.sidebar_collapsed===true;
  document.body.classList.toggle('sidebar-collapsed',collapsed);
+ document.getElementById('nav').inert=collapsed&&window.matchMedia('(max-width:900px)').matches;
  const toggle=document.getElementById('sidebarToggle');
  toggle.setAttribute('aria-expanded',String(!collapsed));
  toggle.setAttribute('aria-label',collapsed?'Menü ausklappen':'Menü einklappen');
@@ -108,6 +109,13 @@ function toggleSidebar(){
  if(currentView==='network')resizeNetworkMap();
  if(currentView==='driver')queueCabRouteLayout();
 }
+// Follow the animated layout so maps and the cab fit throughout the movement.
+const sidebarLayoutObserver=new ResizeObserver(()=>{
+ if(currentView==='network')resizeNetworkMap();
+ if(currentView==='driver')queueCabRouteLayout();
+});
+sidebarLayoutObserver.observe(document.getElementById('sidebar'));
+window.matchMedia('(max-width:900px)').addEventListener('change',updateShell);
 function titleFor(v){return ({network:'Linien & Netz',home:'Übersicht',new:'Neue Fahrt erstellen',plans:'Meine Fahrpläne',vehicles:'Fahrzeuge',detail:'Fahrplan',driver:'Fahrer-Modus',history:'Fahrt-Historie',settings:'Einstellungen'})[v]||'Fahrplan Manager'}
 function showView(v){
  if(v==='new'&&currentView!=='new'&&!editingPlanId&& !window.draftRoute){draftStops=[];}
@@ -301,7 +309,7 @@ function followCurrentRouteStop(map,trip){
  map.dataset.followedStop=key;
 }
 function updateDriverLive(){if(!state.active||currentView!=='driver')return;updateCabFullscreenStatus();const a=state.active;const p=a.plan;const stop=p.stops[a.position];const now=Date.now();const d=activeDelayMin(now);const clock=document.getElementById('runClock');if(clock)clock.textContent=nowClock();const st=document.getElementById('currentStop');if(st)st.textContent=stop.name;const label=document.getElementById('delayStatus');if(label){label.className='status '+statusClass(d);label.textContent=statusText(d)}const eta=document.getElementById('etaText');if(eta)eta.textContent=fmtTime(etaEpoch());const started=a.actualStartEpoch||a.startedAtEpoch;const elapsed=Math.max(0,Math.floor((now-started)/1000));const dur=document.getElementById('durationText');if(dur)dur.textContent=`Fahrtdauer ${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;const left=currentPauseSeconds(now);const pn=document.getElementById('pauseNotice');if(pn)pn.classList.toggle('hidden',left<=0);const pt=document.getElementById('pauseText');if(pt)pt.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;const nb=document.getElementById('nextStopBtn');if(nb)nb.disabled=left>0||a.doorsOpen||a.position>=p.stops.length-1;const pb=document.getElementById('progressBar');if(pb)pb.style.width=(a.position/(p.stops.length-1))*100+'%';const pos=document.getElementById('positionText');if(pos)pos.textContent=`Haltestelle ${a.position+1} von ${p.stops.length}`;const map=document.getElementById('driverRouteMap');if(map){map.innerHTML=renderRouteMapHTML(a);followCurrentRouteStop(map,a)}}
-function tick(){document.getElementById('clock').textContent=nowClock();if(state.active&&state.active.status==='running'){if(state.active.pauseEndEpoch&&Date.now()>=state.active.pauseEndEpoch){state.active.pauseEndEpoch=null;saveState();showToast('Planmäßige Pause beendet — weiterfahren möglich.')}if(currentView==='driver')updateDriverLive();}updateShell()}
+function tick(){updatePassengerDisplay();document.getElementById('clock').textContent=nowClock();if(state.active&&state.active.status==='running'){if(state.active.pauseEndEpoch&&Date.now()>=state.active.pauseEndEpoch){state.active.pauseEndEpoch=null;saveState();showToast('Planmäßige Pause beendet — weiterfahren möglich.')}if(currentView==='driver')updateDriverLive();}updateShell()}
 function nextStop(){
  const active=state.active;
  if(!active||active.status!=='running')return;
@@ -334,7 +342,39 @@ function createReturnPlan(routeId,line,tram){
  state.plans.unshift(plan);saveState();showPlan(plan.id);
  showToast('Rückfahrt vorbereitet. Bitte Abfahrtszeit eintragen.');
 }
-function openPassengerDisplay(){if(!state.active)return;playDriverSound('passenger');const a=state.active;const p=a.plan;const next=p.stops[Math.min(p.stops.length-1,a.position+1)].name;showModal('📟 Fahrgastanzeige',`<div style="background:var(--nav);color:white;border-radius:16px;padding:23px;text-align:center"><div style="font-size:.84rem;letter-spacing:.15em;color:#8edce1;font-weight:900">LINIE ${esc(p.line)}</div><div style="font-size:1.5rem;font-weight:900;margin:8px 0 17px">${esc(p.stops[p.stops.length-1].name)}</div><div style="border-top:1px solid #46616b;border-bottom:1px solid #46616b;padding:15px"><div style="font-size:.76rem;color:#b6ccd2">AKTUELLER HALT</div><div style="font-size:1.45rem;font-weight:900;margin:6px 0">${esc(p.stops[a.position].name)}</div><div style="color:#d8e7eb">Nächster Halt: ${esc(next)}</div></div><div style="font-size:1.8rem;font-weight:900;margin-top:16px">${nowClock()}</div><div style="margin-top:9px;color:#ffc5be;font-weight:850">${esc(statusText(activeDelayMin()))}</div>${currentPauseSeconds()>0?`<div style="margin-top:8px;color:#ffe19a">Pause ${Math.ceil(currentPauseSeconds()/60)} min</div>`:''}</div>`,`<button class="primary" onclick="closeModal()">Schließen</button>`)}
+function passengerStopLabel(name){return ({'Windischholzhausen/X-FAB':'Windischholzh./X-FAB','Katholisches Krankenhaus':'Kath. Krankenhaus'})[name]||name;}
+function passengerNameSize(name,base){return Math.min(base,Math.max(2.2,base*24/Math.max(24,name.length)));}
+function passengerDisplayHTML(at=Date.now()){
+ const a=state.active;if(!a)return '<div class="passenger-empty">Keine aktive Fahrt</div>';
+ const p=a.plan,last=p.stops.length-1,pos=a.position,current=p.stops[pos];
+ const frozen=a.status==='suspended'?(a.suspendedAt||at):at;
+ const departure=Math.max(a.startedAtEpoch||0,(a.positionReachedAt||frozen)+(Number(current.pause)||0)*60000,a.pauseEndEpoch||0);
+ const wait=Math.max(0,Math.ceil((departure-frozen)/60000));
+ const subtitle=pos===last?'Endhaltestelle / Terminus':a.status==='suspended'?'Fahrt unterbrochen / Service paused':wait>0?`Abfahrt in ${wait} Min. / Departure in ${wait} min.`:'Abfahrt / Departure';
+ const indices=[];for(let i=pos+1;i<=Math.min(pos+2,last);i++)indices.push(i);
+ if(pos<last&&!indices.includes(last))indices.push(last);
+ const arrival=i=>{
+  let epoch=departure;
+  for(let n=pos+1;n<=i;n++){epoch+=(Number(p.stops[n].travel)||0)*60000;if(n<i)epoch+=(Number(p.stops[n].pause)||0)*60000;}
+  return Math.max(0,Math.ceil((epoch+(Number(a.trafficDelayMin)||0)*60000-frozen)/60000));
+ };
+ const service=ERFURT_NETWORK.serviceRoutes;
+ const transfers=[...new Map(Object.values(service).filter(r=>r.line!==p.line&&r.stops.includes(p.stops[last].name)).map(r=>[r.line,r])).values()];
+ const interchange=transfers.length?`<div class="passenger-connections" aria-label="Weitere Linien an der Endhaltestelle">${transfers.map(r=>`<span class="passenger-transfer" style="--transfer-color:${r.color}">${esc(r.line)}</span>`).join('')}</div>`:'';
+ return `<div class="passenger-monitor" role="region" aria-label="Fahrgastinformation Linie ${esc(p.line)}">
+ <div class="passenger-screen">
+ <header class="passenger-heading"><div class="passenger-line" aria-label="Linie ${esc(p.line)}">${esc(p.line)}</div><div class="passenger-current"><div class="passenger-current-name" style="font-size:${passengerNameSize(passengerStopLabel(current.name),5.6)}cqw">${esc(passengerStopLabel(current.name))}</div><div class="passenger-departure">${esc(subtitle)}</div></div><time class="passenger-clock">${fmtTime(at)}</time></header>
+ <div class="passenger-stops">${indices.map((i,j)=>`<div class="passenger-row ${i===last?'is-destination':''} ${i>(indices[j-1]??pos)+1?'has-gap':''}"><div class="passenger-minutes">${a.status==='suspended'?'—':arrival(i)+' Min.'}</div><div class="passenger-track" aria-hidden="true"></div><div class="passenger-stop"><span style="font-size:${passengerNameSize(passengerStopLabel(p.stops[i].name),i===last?5.5:4.7)}cqw">${esc(passengerStopLabel(p.stops[i].name))}</span>${i===last?interchange:''}</div></div>`).join('')}${pos===last?'<div class="passenger-terminus">Bitte aussteigen.<br><span>Please leave the tram.</span></div>':''}</div>
+ <footer class="passenger-brand"><span class="passenger-logo" aria-label="SWE EVAG"><b>SWE</b><span>EVAG</span></span></footer>
+ </div></div>`;
+}
+function updatePassengerDisplay(){const host=document.getElementById('passengerDisplay');if(host)host.innerHTML=passengerDisplayHTML();}
+function openPassengerDisplay(){
+ if(!state.active)return;
+ playDriverSound('passenger');
+ showModal('Fahrgastanzeige',`<div id="passengerDisplay">${passengerDisplayHTML()}</div>`,`<button class="primary" onclick="closeModal()">Schließen</button>`);
+ document.querySelector('#modalRoot .modal').classList.add('passenger-modal');
+}
 function renderHistory(el){el.innerHTML=`<div class="grid"><div class="col-12">${card(`<div class="actions" style="justify-content:space-between"><div><h2>Fahrt-Historie</h2><p class="muted" style="margin:0">Fahrten, Notfallmeldungen und Stau-Ereignisse. Einträge können einzeln gelöscht werden.</p></div><button class="danger" onclick="clearHistory()">Alles löschen</button></div><div class="data-list" style="margin-top:15px">${state.history.length?state.history.map(h=>`<div class="data-item"><div class="data-main"><strong>${esc(h.title||h.type)} ${h.type==='NOTFALL'?'<span class="route-code" style="background:var(--red);color:white">NOTFALL</span>':''}</strong><p>${esc(fmtDate(h.at))}${h.line?`<br>Linie ${esc(h.line)} · Tram ${esc(h.tram||'—')} · ${esc(h.route||'')}`:''}${h.stop?`<br>Haltestelle: ${esc(h.stop)}`:''}${h.duration?`<br>Fahrtdauer ${esc(h.duration)} · Abweichung ${esc(timeDeltaText(Number(h.delta)||0))}`:''}${h.note?`<br>Notiz: ${esc(h.note)}`:''}</p></div><div class="data-actions">${h.type==='NOTFALL'&&h.resumeTrip?`<button class="small primary" onclick="resumeFromHistory('${h.id}')">Fahrt fortsetzen</button>`:''}<button class="small danger" onclick="deleteHistoryEntry('${h.id}')">Eintrag löschen</button></div></div>`).join(''):`<div class="empty">Noch keine Historieneinträge gespeichert.</div>`}</div>` )}</div></div>`}
 function resumeFromHistory(id){const h=state.history.find(x=>x.id===id);if(!h||!h.resumeTrip){showToast('Kein fortsetzbarer Fahrzustand gespeichert.');return}state.active=clone(h.resumeTrip);if(state.active.status!=='suspended'){state.active.status='suspended';state.active.suspendedAt=Date.now()}saveState();resumeActive()}
 function deleteHistoryEntry(id){showModal('Eintrag löschen','Diesen Historieneintrag dauerhaft löschen?',`<button onclick="closeModal()">Abbrechen</button><button class="danger" onclick="state.history=state.history.filter(h=>h.id!=='${id}');saveState();closeModal();showView('history')">Löschen</button>`)}

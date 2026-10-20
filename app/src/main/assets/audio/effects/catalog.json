@@ -2,14 +2,14 @@
   {
     "id": "door_open",
     "file": "audio/effects/door_open.mp3",
-    "duration": 2.9499773242630387,
-    "sha256": "1c0dd164311f6607ddaf1ad296755f441958aad5fbe3ba3c986c3edb1dbc4ab5"
+    "duration": 4.017006802721088,
+    "sha256": "f2a4ede670603d04fe0f1f80216e38fc7b837c072271422f5a6e382acb8c4d0d"
   },
   {
     "id": "door_close",
     "file": "audio/effects/door_close.mp3",
-    "duration": 5,
-    "sha256": "6037e493bbdb768ba43f1c55c4196e6ae1de418ee7b45413382680049d483e10"
+    "duration": 6.80297052154195,
+    "sha256": "990ddfececd9759d270db13510586d4493a19ac434ea4ccac5c97557119354b3"
   },
   {
     "id": "emergency",
