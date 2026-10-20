@@ -37,7 +37,7 @@ async function main(){
   assert.equal(fs.readdirSync(path.join(root,'audio/effects')).filter(file=>file.endsWith('.wav')).length,0);
   for(const [id,r]of Object.entries(levels)){if(id==='gongRms')continue;assert.ok(r.duration>1&&r.duration<7,id);assert.ok(r.rms>.001&&r.peak<=1,id);}
   assert.ok(levels.passenger.rms<levels.gongRms*.25);
-  await b.evaluate("window.cabEvents=[];window.AndroidAnnouncements={playSequence:(name,json)=>cabEvents.push({name,paths:JSON.parse(json)}),stop:()=>cabEvents.push({stop:true})}");
+  await b.evaluate("window.cabEvents=[];window.AndroidAnnouncements={playEffect:(id,ticket)=>{cabEvents.push({name:'Fahrpult: '+id,paths:['audio/effects/'+id+'.mp3']});queueMicrotask(()=>onNativeDriverSoundEnd(ticket,true))},playSequence:(name,json)=>cabEvents.push({name,paths:JSON.parse(json)}),stop:()=>cabEvents.push({stop:true})}");
   async function check(action,id){await b.evaluate(action);assert.equal(await b.evaluate('cabEvents.filter(e=>e.paths).at(-1).paths[0]'),'audio/effects/'+id+'.mp3');}
   await check("document.getElementById('doorBtn').click()",'door_open');assert.equal(await b.evaluate('state.active.doorsOpen'),true);assert.equal(await b.evaluate('document.getElementById("nextStopBtn").disabled'),true);
   await check("document.getElementById('doorBtn').click()",'door_close');assert.equal(await b.evaluate('state.active.doorsOpen'),false);

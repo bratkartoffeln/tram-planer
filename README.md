@@ -1,8 +1,12 @@
-# Fahrplan Manager Audio – Version 6.2.5
+# Fahrplan Manager Audio – Version 6.2.6
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
 ## Neu
+
+Version 6.2.6 richtet den oberen Streckenstrich der Fahrgastanzeige exakt am weiteren Verlauf aus. Im Vollbild des Fahrpults lässt sich der Streckenverlauf über ein eigenes Symbol weich aus- und wieder einblenden; im Hochformat wird der untere Bereich zusammengefahren. Tastaturbedienung und reduzierte Bewegung werden berücksichtigt.
+
+Beim Öffnen und Schließen blinkt „Türen offen“ bis zum tatsächlichen Wiedergabeende des jeweiligen Türsounds. Danach leuchtet beim Öffnen „Türen offen“ dauerhaft, beim Schließen wechselt die Anzeige auf „Türen zu“. Während der Bewegung ist der Türtaster gesperrt und die Weiterfahrt blockiert. Ein abgebrochener Schließvorgang meldet weiterhin offene Türen. Android meldet das Ende über den MediaPlayer zurück, die PWA über Web Audio; ohne Ton erfolgt der Zustandswechsel sofort. Prüfungen: `node tests/door-motion.cjs`, `node tests/cab-route-panel.cjs` und `node tests/passenger-display.cjs`.
 
 Version 6.2.5 ergänzt Rückgängig in der Linienwerkstatt, das Einrasten ausschließlich auf Netzplanhaltestellen sowie auswählbare Linienbuttons für beide Fahrtrichtungen. Die aktive Linie bleibt farbig, andere Linien werden entsättigt.
 
@@ -72,7 +76,7 @@ Die Karte ist schematisch. Haltefolgen stammen aus den offiziellen EVAG-Halteste
 
 ## Installation und Signierung
 
-App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 625.
+App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 626.
 
 Da der frühere private Signierschlüssel nicht verfügbar ist, verwendet diese Fassung eine eigene App-Kennung und einen neu angelegten Schlüssel. Sie kann neben den bisherigen Fassungen installiert werden. Bestehende Daten über Einstellungen → Daten exportieren/importieren übertragen. Künftige Updates dieser Audio-Fassung müssen denselben neuen Schlüssel verwenden.
 
@@ -82,7 +86,7 @@ Der Release-Schlüssel wurde am 19.10.2026 auf ausdrücklichen Wunsch neu angele
 
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.5_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.6_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 

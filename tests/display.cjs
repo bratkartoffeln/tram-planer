@@ -23,6 +23,7 @@ const root=path.resolve(__dirname,'../app/src/main/assets'),output=path.resolve(
   await page.screenshot({path:path.join(output,'collapsed-desktop.png')});
   await page.locator('#cabFullscreenBtn').click();await page.waitForFunction(()=>cabFullscreen&&document.fullscreenElement===document.documentElement);
   assert(await page.locator('#sidebar').isHidden());assert(await page.locator('.topbar').isHidden());assert.equal(await page.locator('#cabFullscreenBtn').getAttribute('aria-pressed'),'true');
+  await page.waitForTimeout(350);
   const fullWidth=await width();assert(fullWidth>collapsedWidth+100);assert.deepEqual(await b.evaluate('clone(state.active)'),trip);
   const visibleLayout=async()=>{
    const photo=await page.locator('.cab-stage').boundingBox(),route=await page.locator('#driverRouteMap').boundingBox();
