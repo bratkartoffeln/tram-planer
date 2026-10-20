@@ -21,3 +21,35 @@ body.cab-fullscreen{overflow:hidden}.cab-fullscreen .shell{display:block;min-hei
 @media(prefers-reduced-motion:reduce){.cab-rotary-turn{transition:none}}
 @keyframes cab-screw-tighten{0%{transform:translate(0,-1.2cqw) rotate(-900deg) scale(1.15);opacity:0;filter:drop-shadow(0 .6cqw .3cqw #0009)}10%{transform:translate(0,-.9cqw) rotate(-900deg) scale(1.12);opacity:1}25%,33%{transform:translate(0,-.65cqw) rotate(-675deg) scale(1.09)}45%,53%{transform:translate(0,-.45cqw) rotate(-450deg) scale(1.06)}65%,73%{transform:translate(0,-.25cqw) rotate(-225deg) scale(1.03)}90%,100%{transform:translate(0,0) rotate(0) scale(1);opacity:1;filter:none}}
 @media(prefers-reduced-motion:reduce){.cab-screw.is-loose .cab-screw-face{animation:cab-screw-fade .2s linear forwards}.cab-screw.is-tightening .cab-screw-face{animation:cab-screw-appear .2s linear forwards}@keyframes cab-screw-fade{to{opacity:0}}@keyframes cab-screw-appear{from{opacity:0}to{opacity:1}}}
+
+/* Passenger LCD: fixed light palette, independent of the driver's night theme. */
+.modal.passenger-modal{width:min(1180px,100%);max-height:96dvh;padding:16px;background:#1c2023;border:1px solid #697072;border-radius:12px;box-shadow:0 24px 90px #000b}
+.passenger-modal>h2{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.passenger-modal .modal-footer{margin-top:12px}.passenger-modal .modal-footer button{background:#333b40;border-color:#596166;color:#fff}
+#passengerDisplay{container-type:inline-size}
+.passenger-monitor{padding:2.2cqw 2.6cqw 2.8cqw;border-radius:1cqw;background:linear-gradient(110deg,#595a55,#222725 5%,#6b6c63 50%,#2b302d 94%,#595b54);box-shadow:inset 0 1px 2px #d4d5c055,0 3px 8px #0009}
+.passenger-screen{position:relative;isolation:isolate;overflow:hidden;border:1.2cqw solid #0b1015;background:#e9edf4;color:#080c15;font-family:Arial,Helvetica,sans-serif;aspect-ratio:1.6;display:grid;grid-template-rows:21% 62% 17%;box-shadow:0 0 0 1px #000,inset 0 0 10px #0d203033}
+.passenger-screen:after{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;background:linear-gradient(115deg,#ffffff08,transparent 45%,#738fbc08);box-shadow:inset 0 0 1.6cqw #14243c1c}
+.passenger-heading{display:grid;grid-template-columns:14% minmax(0,1fr) 15%;align-items:start;background:#e5e9f3}
+.passenger-line{height:100%;display:grid;place-items:center;color:#fff;background:#132e60;font-size:9cqw;font-weight:400;line-height:1;letter-spacing:-.05em;padding:.6cqw;overflow-wrap:anywhere}
+.passenger-current{position:relative;min-width:0;padding:1cqw 1.8cqw .7cqw 6.8cqw;height:100%;display:flex;flex-direction:column;justify-content:center}
+.passenger-current:before{content:"";position:absolute;left:3.2cqw;bottom:0;width:1cqw;height:44%;background:#14384e}
+.passenger-current-name{font-size:5.6cqw;line-height:1.12;font-weight:700;letter-spacing:-.035em;overflow-wrap:anywhere}
+.passenger-departure{font-size:1.9cqw;line-height:1.2;font-weight:700;margin-top:.7cqw}
+.passenger-clock{font-size:4.2cqw;line-height:1;font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums;padding:2.5cqw 1cqw 0 0;white-space:nowrap;text-align:right}
+.passenger-stops{display:flex;flex-direction:column;min-height:0;background:#e9edf3}
+.passenger-row{display:grid;grid-template-columns:14% 7% minmax(0,1fr);flex:1;min-height:0;align-items:stretch}
+.passenger-minutes{align-self:center;text-align:right;white-space:nowrap;font-size:2.3cqw;line-height:1;font-variant-numeric:tabular-nums}
+.passenger-track{position:relative}.passenger-track:before{content:"";position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:1cqw;background:#14384e;border-top:.8cqw solid #e9edf3}
+.passenger-stop{min-width:0;display:flex;flex-direction:column;justify-content:center;padding:.7cqw 1cqw .7cqw 0;font-size:4.7cqw;line-height:1.08;letter-spacing:-.025em;overflow-wrap:anywhere}
+.passenger-row.is-destination{background:#dde3ed;flex:1.12}.passenger-row.is-destination .passenger-stop{font-size:5.5cqw;font-weight:700}
+.passenger-row.is-destination .passenger-track:before{bottom:50%;border-color:#dde3ed}.passenger-row.is-destination .passenger-track:after{content:"";position:absolute;width:3cqw;height:1cqw;background:#14384e;left:50%;top:50%;transform:translate(-50%,-50%)}
+.passenger-row.has-gap .passenger-track:before{background:repeating-linear-gradient(to bottom,#14384e 0 1cqw,transparent 1cqw 1.7cqw)}
+.passenger-connections{display:flex;gap:.5cqw;margin-top:.6cqw}.passenger-transfer{background:var(--transfer-color);color:#fff;min-width:3.5cqw;height:3.5cqw;display:grid;place-items:center;padding:0 .5cqw;font-size:2.9cqw;line-height:1;font-weight:700;letter-spacing:0}
+.passenger-brand{display:flex;align-items:center;justify-content:center;background:#eef0f5}
+.passenger-logo{display:inline-flex;border:.25cqw solid #d5103c;color:#d5103c;font-size:4.5cqw;line-height:1.03;font-weight:700;letter-spacing:-.05em;transform:scaleX(.94)}
+.passenger-logo b{background:#d5103c;color:#fff;padding:.3cqw .7cqw;letter-spacing:-.07em}.passenger-logo>span{padding:.3cqw .6cqw;font-weight:500}
+.passenger-terminus{margin:auto;text-align:center;font-size:4cqw;line-height:1.5}.passenger-terminus span{font-size:3cqw}
+.passenger-empty{padding:30px;color:#fff;text-align:center}
+@media(max-width:600px){.modal.passenger-modal{padding:8px}.passenger-modal .modal-footer{margin-top:8px}.modal-backdrop:has(.passenger-modal){padding:6px}}
+@media(orientation:landscape) and (max-height:700px){.modal.passenger-modal{width:min(1180px,calc(136dvh - 100px));padding:8px}.passenger-modal .modal-footer{margin-top:6px}.passenger-modal .modal-footer button{padding:7px 14px}}

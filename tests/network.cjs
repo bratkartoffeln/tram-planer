@@ -62,15 +62,48 @@ async function run(){
  assert.equal(await evaluate('Object.keys(normalizeState(JSON.parse(JSON.stringify(state))).customRoutes).length'),2);
  assert.equal(await evaluate("Object.keys(validCustomRoutes({'__proto__':{},'custom-bad':{name:'x',line:'x',stops:['x']}})).length"),0);
  await evaluate("showView('network');openLineEditor('EF1H')");
- // Drag a route point using actual pointer events, not direct model mutation.
- const drag=await evaluate("(()=>{const svg=document.getElementById('lineMapSvg'),g=svg.querySelector('.draft-node');g.scrollIntoView({block:'center',inline:'center'});const r=g.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2,old:lineDraft.stops[0].x}})()");
- await cdp('Input.dispatchMouseEvent',{type:'mousePressed',x:drag.x,y:drag.y,button:'left',clickCount:1});
- await cdp('Input.dispatchMouseEvent',{type:'mouseMoved',x:drag.x+30,y:drag.y+20,button:'left',buttons:1});
- await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',x:drag.x+30,y:drag.y+20,button:'left',clickCount:1});
- assert.ok(await evaluate('lineDraft.stops[0].x')>drag.old+20);
- await evaluate("lineDraft=null;openLineEditor();lineDraft.name='Kartenlinie';lineDraft.line='88';document.getElementById('mapStopName').value='Eigener Halt';const svg=document.getElementById('lineMapSvg'),p=svg.createSVGPoint();p.x=900;p.y=100;const client=p.matrixTransform(svg.getScreenCTM());svg.querySelector('rect').dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:client.x,clientY:client.y}));document.querySelector('[data-stop=\"0\"]').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));moveLineStop(1,-1);lineDraft.stops[1].travel=0;saveLineDraft()");
- assert.equal(await evaluate('lineDraft.stops[1].name'),'Eigener Halt');
+ // Dragging into empty space leaves the route and its undo history unchanged.
+ const original=await evaluate('clone(lineDraft)');
+ assert.equal(await evaluate('document.getElementById("lineUndoButton").disabled'),true);
+ const dragTo=async(target,touch=false,cancel=false)=>{
+  const coords=await evaluate(`(()=>{const svg=document.getElementById('lineMapSvg'),g=svg.querySelector('.draft-node circle');g.scrollIntoView({block:'center',inline:'center'});const r=g.getBoundingClientRect(),p=svg.createSVGPoint();p.x=${target.x};p.y=${target.y};const end=p.matrixTransform(svg.getScreenCTM());return {x:r.x+r.width/2,y:r.y+r.height/2,tx:end.x,ty:end.y}})()`);
+  if(touch){await cdp('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:coords.x,y:coords.y,id:1}]});await cdp('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:coords.tx,y:coords.ty,id:1}]});await cdp('Input.dispatchTouchEvent',{type:cancel?'touchCancel':'touchEnd',touchPoints:[]});await cdp('Emulation.setTouchEmulationEnabled',{enabled:false});}
+  else{await cdp('Input.dispatchMouseEvent',{type:'mousePressed',x:coords.x,y:coords.y,button:'left',clickCount:1});await cdp('Input.dispatchMouseEvent',{type:'mouseMoved',x:coords.tx,y:coords.ty,button:'left',buttons:1});await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',x:coords.tx,y:coords.ty,button:'left',clickCount:1});}
+ };
+ await dragTo({x:900,y:100});assert.deepEqual(await evaluate('lineDraft'),original);
+ assert.equal(await evaluate('lineUndo.length'),0);
+ const target=await evaluate('networkPositions()[lineDraft.stops[1].name]');
+ await dragTo(target);
+ assert.equal(await evaluate('lineDraft.stops[0].name'),original.stops[1].name);
+ assert.equal(await evaluate('lineDraft.stops[0].x'),target.x);
+ assert.equal(await evaluate('lineDraft.stops.length'),original.stops.length);
+ await evaluate('document.getElementById("lineUndoButton").click()');assert.deepEqual(await evaluate('lineDraft'),original);
+ await dragTo(target,true,true);assert.deepEqual(await evaluate('lineDraft'),original);
+ await dragTo(target,true);assert.equal(await evaluate('lineDraft.stops[0].name'),original.stops[1].name);
+ await evaluate('undoLineDraft()');assert.deepEqual(await evaluate('lineDraft'),original);
+ assert.equal(await evaluate("[...document.querySelectorAll('.network-link')].every(e=>getComputedStyle(e).filter==='grayscale(1)')"),true);
+ for(const action of ["updateLineField('name','Changed')","updateLineField('color','#123456')","updateLineStop(1,'travel',17)","updateLineStop(1,'name','Anger')","removeLineStop(1)","moveLineStop(1,-1)","reverseLineDraft()"]){await evaluate(action);await evaluate('undoLineDraft()');assert.deepEqual(await evaluate('lineDraft'),original);}
+ await evaluate("lineDraft=null;openLineEditor();lineDraft.name='Kartenlinie';lineDraft.line='88';document.getElementById('lineMapSvg').querySelector('rect').dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:900,clientY:100}))");
+ assert.equal(await evaluate('lineDraft.stops.length'),0);
+ await evaluate("document.querySelector('[data-stop=\"0\"]').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));document.querySelector('[data-stop=\"1\"]').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));moveLineStop(1,-1);lineDraft.stops[1].travel=0;saveLineDraft()");
  assert.equal(await evaluate('normalizeState(state).customRoutes[lineDraft.id].times[1]'),0);
+ await evaluate("lineDraft=null;showView('network')");
+ for(const mode of ['current','regular']){
+  await evaluate('setNetworkServiceMode('+JSON.stringify(mode)+')');
+  assert.equal(await evaluate("document.querySelectorAll('.network-route-button').length"),12);
+  const ids=await evaluate("[...document.querySelectorAll('.network-route-button')].map(b=>b.dataset.route)");
+  for(const route of ids){
+   await evaluate('document.querySelector(\'[data-route="'+route+'"]\').click()');
+   assert.equal(await evaluate('networkSelectedRoute'),route);
+   assert.equal(await evaluate("document.querySelectorAll('.network-route-button[aria-pressed=true]').length"),1);
+   assert.ok(await evaluate("document.querySelectorAll('.network-link.is-muted').length")>0);
+   assert.ok(await evaluate("document.querySelectorAll('.network-link:not(.is-muted)').length")>0);
+   await evaluate('document.querySelector(\'[data-route="'+route+'"]\').click()');
+   assert.equal(await evaluate('networkSelectedRoute'),null);
+   assert.equal(await evaluate("document.querySelectorAll('.network-link.is-muted').length"),0);
+  }
+ }
+
  await evaluate("zoomNetwork('fit')");assert.equal(await evaluate("Math.abs(document.getElementById('lineMapSvg').getBoundingClientRect().width-document.getElementById('networkMap').clientWidth)<1"),true);
  await evaluate("window.AndroidBackup={save:json=>window.testBackup=json};exportData();state.customRoutes={};syncCustomRoutes();importData({target:{files:[new File([window.testBackup],'backup.json',{type:'application/json'})]}})");await delay(150);
  assert.equal(await evaluate('Object.keys(state.customRoutes).length'),3);
@@ -85,7 +118,7 @@ async function run(){
  // Confirm service worker caches the new modules for an offline restart.
  await evaluate("navigator.serviceWorker.ready.then(()=>true)");
  await delay(1200);
- assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.4-rotary').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
+ assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.5-sidebar-motion').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
  await cdp('Network.enable');await cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
  await cdp('Page.reload');await delay(600);assert.equal(await evaluate('Object.keys(ROUTES).length'),26);
  await evaluate("showView('network')");assert.equal(await evaluate('!!document.getElementById("lineMapSvg")'),true);

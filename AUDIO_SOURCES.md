@@ -1,5 +1,11 @@
 # Ansagen und Gongs ab Version 6.2.1
 
+## Bereinigte Türsounds in 6.2.5
+
+Die zu Beginn dieser Bearbeitung im Projekt vorhandenen Türdateien wurden vor der Filterung unter `build/door-cleanup-6.2.5/` gesichert. Diese Eingaben sind länger als die ursprünglich generierten Ausschnitte: Öffnen 4,017 Sekunden, Schließen 6,803 Sekunden. Die aktuelle Fassung filtert das konstante Hintergrundfiepen um 4,96 kHz sowie schmale Nebentöne um 4,8–5,4 und 9,6–10,8 kHz. Schmale Kerbfilter erhalten die breitbandigen Türgeräusche; 5 % Pegelreserve verhindert Übersteuerung. Die Dauer bleibt unverändert. MP3 mit 192 kbit/s, aktualisierte Prüfsummen in `audio/effects/catalog.json`.
+
+Erneut aus den lokal gesicherten Eingaben erzeugen: `python scripts/clean-door-sounds.py`, danach `python tools/sync-assets.py`. Der Filter verwendet FFmpeg aus `FFMPEG_PATH` oder `build/qa-deps/`. Das Hauptfiepen wurde nach dem MP3-Encoding um etwa 47 bzw. 51 dB reduziert. Diese Bearbeitung betrifft nur die beiden Türsounds; die nachfolgenden Angaben zur ursprünglichen Erzeugung bleiben als Quellenstand erhalten.
+
 ## Mechanische Geräusche ab 6.2.4
 
 Die beiden Reserve-Drehschalter verwenden einen eigenen synthetischen Rastklang: ein leises Anlaufgeräusch und zwei kurze, gedämpfte mechanische Anschläge beim Erreichen der nächsten 90°-Stellung (0,24 Sekunden, Web Audio in `cockpit.js`). Der Ton folgt der Drehbewegung und beachtet Stummschaltung und Hintergrundwechsel.
