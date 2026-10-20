@@ -7,7 +7,7 @@
   let timer = null;
   let context = null;
   const buffers = new Map();
-  const playing = new Set();
+  const playing = new Map();
   const gongPath = 'audio/chimes/ding_dong.mp3';
   const noticeGong = 'audio/chimes/dong_dong_ding.mp3';
   const phrase = name => `audio/phrases/${name}.mp3`;
@@ -30,26 +30,39 @@
     return matches.length === 1 ? mapping[matches[0]] : null;
   };
   let driverEffect = false;
+  let nativeEffect = null;
+  window.onNativeDriverSoundEnd = (requestId, completed) => {
+    if (!nativeEffect || nativeEffect.ticket !== requestId) return;
+    const pending = nativeEffect;
+    nativeEffect = null;
+    driverEffect = false;
+    pending.resolve(completed === true);
+  };
   const effects = new Set(['door_open','door_close','emergency','traffic','passenger','finish','back']);
   window.stopDriverSound = () => { if (driverEffect) window.cancelStopAnnouncement(); };
   window.playDriverSound = async id => {
-    if (!effects.has(id)) return;
+    if (!effects.has(id)) return false;
     window.cancelStopAnnouncement();
-    if (state.settings.cockpit_muted) return;
+    if (state.settings.cockpit_muted) return true;
     driverEffect = true;
     const expectedTicket = ticket;
     const path = `audio/effects/${id}.mp3`;
     try {
-      if (nativeAvailable()) {
-        window.AndroidAnnouncements.playSequence('Fahrpult: '+id, JSON.stringify([path]));
-        return;
+      if (nativeAvailable() && typeof window.AndroidAnnouncements.playEffect === 'function') {
+        return await new Promise(resolve => {
+          nativeEffect = {ticket:expectedTicket, resolve};
+          window.AndroidAnnouncements.playEffect(id, expectedTicket);
+        });
       }
       await audioContext().resume();
       const buffer = await loadBuffer(path);
-      if (expectedTicket === ticket) await playBuffer(buffer, expectedTicket);
+      const completed = expectedTicket === ticket && await playBuffer(buffer, expectedTicket);
       if (expectedTicket === ticket) driverEffect = false;
+      return completed;
     } catch (error) {
       if (expectedTicket === ticket) { driverEffect = false; window.onAnnouncementError('Der Fahrpult-Sound konnte nicht abgespielt werden.'); }
+      if (nativeEffect?.ticket === expectedTicket) { nativeEffect.resolve(false); nativeEffect = null; }
+      return false;
     }
   };
 
@@ -122,14 +135,16 @@
   };
 
   window.cancelStopAnnouncement = () => {
+    if (nativeEffect) { nativeEffect.resolve(false); nativeEffect = null; }
     driverEffect = false;
     ++ticket;
     clearTimeout(timer);
     timer = null;
-    for (const source of playing) {
+    for (const [source, resolve] of playing) {
       source.onended = null;
       try { source.stop(); } catch (error) { /* Already finished. */ }
       source.disconnect();
+      resolve(false);
     }
     playing.clear();
     if (window.AndroidAnnouncements && typeof window.AndroidAnnouncements.stop === 'function') {
@@ -143,7 +158,7 @@
       const source = audioContext().createBufferSource();
       source.buffer = buffer;
       source.connect(context.destination);
-      playing.add(source);
+      playing.set(source, resolve);
       source.onended = () => {
         playing.delete(source);
         source.disconnect();

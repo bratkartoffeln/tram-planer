@@ -4,9 +4,11 @@ const CAB_ICONS={
  close:'M7 5h18v22H7zM16 5v22M2 16h9m-4-4 4 4-4 4M30 16h-9m4-4-4 4 4 4',next:'m12 6 10 10-10 10M4 16h17M27 6v20',
  traffic:'M7 21V11h18v10M5 21h22M9 25v2m14-2v2M10 7h12M9 16h2m10 0h2',emergency:'m16 3 14 25H2zM16 11v8m0 4v1',
  passenger:'M4 5h24v18H4zM10 28h12M16 23v5M8 11h16M8 17h10',finish:'M12 4H5v24h7M19 9l7 7-7 7M12 16h14',
- fullscreen:'M12 5H5v7m15-7h7v7M5 20v7h7m15-7v7h-7'
+ fullscreen:'M12 5H5v7m15-7h7v7M5 20v7h7m15-7v7h-7',
+ route:'M5 5h22v22H5zM20 5v22M10 11l5 5-5 5'
 };
 let cabFullscreen=false,cabOwnsBrowserFullscreen=false,cabFullscreenRequest=null;
+let cabRouteCollapsed=false;
 let cabScrewTripId=null;
 const cabLooseScrews=new Set(),cabScrewTouches=new Map();
 const cabRotaryTurns=[0,0];
@@ -34,10 +36,10 @@ function turnCabRotary(index){
  const knob=document.getElementById('cabRotary'+index);if(!knob)return;
  cabRotaryTurns[index]++;knob.style.setProperty('--rotary-angle',cabRotaryTurns[index]*90+'deg');knob.setAttribute('aria-label',cabRotaryLabel(index));playCabMechanical('rotary');
 }
-function cabDoorIndicator(x,y,color,label,active,icon){
+function cabDoorIndicator(x,y,color,label,active,icon,blinking=false){
  const size=140,cap=96;
  const crop=`--cap-inset:${(size-cap)/size*50}%;--cap-size-x:${CAB_PANEL.width/cap*100}%;--cap-size-y:${CAB_PANEL.height/cap*100}%;--cap-x:${(x-cap/2)/(CAB_PANEL.width-cap)*100}%;--cap-y:${(y-cap/2)/(CAB_PANEL.height-cap)*100}%`;
- return `<span class="cab-door-indicator cab-indicator-${color}${active?' is-lit':''}" data-door-indicator="${color==='green'?'closed':'open'}" style="${cabPosition(x,y,size)};${crop}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"><svg viewBox="0 0 32 32"><path d="${CAB_ICONS[icon]}"/></svg></span></span><span class="cab-label">${label}</span></span>`;
+ return `<span class="cab-door-indicator cab-indicator-${color}${active?' is-lit':''}${blinking?' is-blinking':''}" data-door-indicator="${color==='green'?'closed':'open'}" style="${cabPosition(x,y,size)};${crop}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"><svg viewBox="0 0 32 32"><path d="${CAB_ICONS[icon]}"/></svg></span></span><span class="cab-label">${label}</span></span>`;
 }
 function renderCabScrew(index,x,y,label){
  const cap=54,missing=cabLooseScrews.has(index);
@@ -65,6 +67,7 @@ function toggleCabScrew(index){
  playCabMechanical(tightening?'ratchet':'screw');
 }
 function renderCabControls(a,pause){
+ const moving=doorMotion?.tripId===a.id;
  if(cabScrewTripId!==a.id){cabScrewTripId=a.id;cabLooseScrews.clear();cabScrewTouches.clear();cabRotaryTurns.fill(0);}
  const spares=[[510,247],[686,247],[334,475],[510,475],[686,475],[1262,234],[1093,485],[1493,485],[194,752],[1270,750]];
  const headings=[['FAHRT & TÜREN',432,106],['SCHEIBE',1170,106],['SPIEGEL',1295,373],['FAHRGASTINFO',415,616],['BETRIEB',1295,616]];
@@ -72,17 +75,34 @@ function renderCabControls(a,pause){
  ${headings.map(([name,x,y])=>`<span class="cab-group-mark" style="left:${x/CAB_PANEL.width*100}%;top:${y/CAB_PANEL.height*100}%">${name}</span>`).join('')}
  ${cabButton({id:'nextStopBtn',x:166,y:247,color:'blue',label:'Nächster Halt',icon:'next',action:'nextStop()',disabled:pause>0||a.doorsOpen||a.position>=a.plan.stops.length-1})}
  ${cabButton({x:334,y:247,color:'white',label:'Zurück',icon:'back',action:'driverPrevious()',disabled:a.position===0||pause>0})}
- ${cabButton({id:'doorBtn',x:166,y:475,color:'green',label:a.doorsOpen?'Türen schließen':'Türen öffnen',icon:a.doorsOpen?'close':'doors',action:'toggleDoors()',pressed:a.doorsOpen})}
+ ${cabButton({id:'doorBtn',x:166,y:475,color:'green',label:a.doorsOpen?'Türen schließen':'Türen öffnen',icon:a.doorsOpen?'close':'doors',action:'toggleDoors()',pressed:a.doorsOpen,disabled:moving})}
  ${cabButton({x:406,y:749,color:'white',label:'Fahrgastanzeige',icon:'passenger',action:'openPassengerDisplay()'})}
  ${cabButton({id:'cabFullscreenBtn',x:626,y:749,color:'fullscreen-toggle',label:'Vollbild',icon:'fullscreen',action:'toggleCabFullscreen()',pressed:cabFullscreen})}
  ${cabButton({x:871,y:748,color:'amber',label:'Stau',icon:'traffic',action:'openTrafficModal()'})}
  ${cabButton({x:1493,y:748,color:'red',label:'Fahrt beenden',icon:'finish',action:'finishTrip(state.active.position>=state.active.plan.stops.length-1)'})}
  ${cabButton({id:'emergencyBtn',x:1510,y:220,color:'red',label:'NOT-AUS',icon:'emergency',action:'pressCabEmergency()',emergency:true,pressed:a.status==='suspended'})}
- <div class="cab-door-indicators" role="status" aria-label="${a.doorsOpen?'Türen geöffnet':'Türen geschlossen'}">${cabDoorIndicator(884,248,'green','Türen zu',!a.doorsOpen,'close')}${cabDoorIndicator(884,481,'amber','Türen offen',a.doorsOpen,'doors')}</div>
+ <div class="cab-door-indicators" role="status" aria-label="${moving?(doorMotion.opening?'Türen öffnen':'Türen schließen'):a.doorsOpen?'Türen geöffnet':'Türen geschlossen'}">${cabDoorIndicator(884,248,'green','Türen zu',!a.doorsOpen,'close')}${cabDoorIndicator(884,481,'amber','Türen offen',a.doorsOpen,'doors',moving)}</div>
  ${spares.map(([x,y])=>cabPlaceholder(x,y)).join('')}
  ${renderCabRotary(0,1088,236)}${renderCabRotary(1,1088,750)}
  </div></div></div><div class="cab-footer"><span>FAHRPLAN MANAGER · BEDIENPULT</span><div><button class="cab-text-button" onclick="toggleCockpitSound()" aria-pressed="${!!state.settings.cockpit_muted}">${state.settings.cockpit_muted?'Tastentöne aus':'Tastentöne an'}</button><button class="cab-text-button" onclick="showCockpitSources()">Bild- & Tonquellen</button></div></div></section>`;
 }
+function updateCabRoutePanel(){
+ document.body.classList.toggle('cab-route-collapsed',cabFullscreen&&cabRouteCollapsed);
+ const panel=document.querySelector('.driver-view>.grid>.col-4');
+ if(panel)panel.inert=cabFullscreen&&cabRouteCollapsed;
+ const button=document.getElementById('cabRouteToggle');
+ if(button){
+  const label=cabRouteCollapsed?'Streckenverlauf einblenden':'Streckenverlauf ausblenden';
+  button.setAttribute('aria-expanded',String(!cabRouteCollapsed));button.setAttribute('aria-label',label);button.title=label;
+ }
+}
+function toggleCabRoutePanel(){
+ if(!cabFullscreen||currentView!=='driver')return;
+ cabRouteCollapsed=!cabRouteCollapsed;updateCabRoutePanel();queueCabRouteLayout();
+}
+document.addEventListener('transitionend',event=>{
+ if(event.target.matches('.driver-view>.grid')&&event.propertyName.startsWith('grid-template'))queueCabRouteLayout();
+});
 function toggleCabFullscreen(){if(currentView==='driver'&&state.active)setCabFullscreen(!cabFullscreen);}
 function setCabFullscreen(enabled){
  cabFullscreen=enabled===true&&currentView==='driver'&&!!state.active;
@@ -116,10 +136,14 @@ function queueCabRouteLayout(){
 }
 window.addEventListener('resize',queueCabRouteLayout);
 function updateCabFullscreenStatus(){
+ updateCabRoutePanel();
  const host=document.getElementById('cabFullscreenStatus'),trip=state.active;
  if(!host||!cabFullscreen||!trip)return;
+ if(!host.querySelector('#cabFullscreenLive'))host.innerHTML=`<div id="cabFullscreenLive"></div><button type="button" id="cabRouteToggle" class="cab-route-toggle" aria-controls="driverRouteMap" onclick="toggleCabRoutePanel()"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="${CAB_ICONS.route}"/></svg></button>`;
+ updateCabRoutePanel();
+ const live=host.querySelector('#cabFullscreenLive');
  const delay=activeDelayMin(),pause=currentPauseSeconds();
- host.innerHTML=`<div><span class="eyebrow">Aktueller Halt</span><strong class="cab-fullscreen-stop">${esc(trip.plan.stops[trip.position].name)}</strong><span class="muted">Linie ${esc(trip.plan.line)} · Tram ${esc(trip.plan.tram)} · Halt ${trip.position+1}/${trip.plan.stops.length}</span></div><div class="actions"><span class="status ${statusClass(delay)}">${esc(statusText(delay))}</span><span class="pill">${nowClock()}</span>${pause>0?`<span class="pill">Pause ${Math.floor(pause/60)}:${String(pause%60).padStart(2,'0')}</span>`:''}</div>`;
+ live.innerHTML=`<div><span class="eyebrow">Aktueller Halt</span><strong class="cab-fullscreen-stop">${esc(trip.plan.stops[trip.position].name)}</strong><span class="muted">Linie ${esc(trip.plan.line)} · Tram ${esc(trip.plan.tram)} · Halt ${trip.position+1}/${trip.plan.stops.length}</span></div><div class="actions"><span class="status ${statusClass(delay)}">${esc(statusText(delay))}</span><span class="pill">${nowClock()}</span>${pause>0?`<span class="pill">Pause ${Math.floor(pause/60)}:${String(pause%60).padStart(2,'0')}</span>`:''}</div>`;
 }
 document.addEventListener('fullscreenchange',()=>{if(cabOwnsBrowserFullscreen&&!document.fullscreenElement){cabOwnsBrowserFullscreen=false;setCabFullscreen(false);}});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&cabFullscreen&&!document.getElementById('modalRoot').innerHTML){event.preventDefault();setCabFullscreen(false);}});

@@ -64,6 +64,7 @@ public class MainActivity extends Activity {
     private AudioManager audioManager;
     private AudioFocusRequest focusRequest;
     private long announcementGeneration;
+    private int driverEffectRequest = -1;
     private byte[] pendingBackup;
     private ValueCallback<Uri[]> fileCallback;
 
@@ -190,6 +191,28 @@ public class MainActivity extends Activity {
     }
 
     public final class AnnouncementBridge {
+        @JavascriptInterface
+        public void playEffect(String effectId, int requestId) {
+            mainHandler.post(() -> {
+                if (!isTrustedPage() || destroyed) return;
+                stopAnnouncement();
+                driverEffectRequest = requestId;
+                final long generation = announcementGeneration;
+                if (!resumed || effectId == null
+                        || !effectId.matches("door_open|door_close|emergency|traffic|passenger|finish|back")) {
+                    stopAnnouncement();
+                    return;
+                }
+                if (!requestAnnouncementFocus()) {
+                    failAnnouncement("Der Fahrpult-Sound konnte keinen Audiozugriff erhalten.", generation);
+                    return;
+                }
+                playAsset("audio/effects/" + effectId + ".mp3", generation,
+                        () -> finishAnnouncement(generation),
+                        () -> failAnnouncement("Der Fahrpult-Sound konnte nicht abgespielt werden.", generation));
+            });
+        }
+
         @JavascriptInterface
         public void playSequence(String stopName, String json) {
             mainHandler.post(() -> {
@@ -326,6 +349,7 @@ public class MainActivity extends Activity {
     }
 
     private void stopAnnouncement() {
+        completeDriverEffect(false);
         announcementGeneration++;
         releasePlayer();
         if (audioManager != null && focusRequest != null) {
@@ -335,7 +359,18 @@ public class MainActivity extends Activity {
     }
 
     private void finishAnnouncement(long generation) {
-        if (generation == announcementGeneration) stopAnnouncement();
+        if (generation == announcementGeneration) {
+            completeDriverEffect(true);
+            stopAnnouncement();
+        }
+    }
+
+    private void completeDriverEffect(boolean completed) {
+        final int requestId = driverEffectRequest;
+        driverEffectRequest = -1;
+        if (requestId < 0 || destroyed || webView == null || !isTrustedPage()) return;
+        webView.evaluateJavascript("window.onNativeDriverSoundEnd&&window.onNativeDriverSoundEnd("
+                + requestId + "," + completed + ")", null);
     }
 
     private void failAnnouncement(String message, long generation) {

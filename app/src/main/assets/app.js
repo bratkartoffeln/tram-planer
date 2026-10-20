@@ -1,5 +1,5 @@
 'use strict';
-const APP_VERSION='6.2.5';
+const APP_VERSION='6.2.6';
 const STOP_W2D=['Wiesenhügel','Färberwaidweg','Abzweig Wiesenhügel','Blücherstraße','Sozialversicherungszentrum','Am Schwemmbach','Stadion Ost','Tschaikowskistraße','Robert-Koch-Straße','Hauptbahnhof','Anger','Fischmarkt/Rathaus','Domplatz'];
 const STOP_D2W=[...STOP_W2D].reverse();
 const STOP_L3D=['Melchendorf Betriebshof','Melchendorf','Abzweig Wiesenhügel','Blücherstraße','Sozialversicherungszentrum','Am Schwemmbach','Stadion Ost','Tschaikowskistraße','Robert-Koch-Straße','Hauptbahnhof','Anger','Fischmarkt/Rathaus','Domplatz'];
@@ -329,7 +329,19 @@ function driverPrevious(){
  cancelStopAnnouncement();active.position--;active.positionReachedAt=Date.now();active.pauseEndEpoch=null;
  saveState();showView('driver');playDriverSound('back');
 }
-function toggleDoors(){if(!state.active||state.active.status!=='running')return;state.active.doorsOpen=!state.active.doorsOpen;saveState();showView('driver');playDriverSound(state.active.doorsOpen?'door_open':'door_close')}
+let doorMotion=null;
+async function toggleDoors(){
+ const trip=state.active;if(!trip||trip.status!=='running'||doorMotion)return;
+ const motion={tripId:trip.id,opening:!trip.doorsOpen};
+ doorMotion=motion;trip.doorsOpen=true;saveState();showView('driver');
+ const completed=await playDriverSound(motion.opening?'door_open':'door_close');
+ if(doorMotion!==motion)return;
+ doorMotion=null;
+ if(state.active?.id!==motion.tripId)return;
+ // An interrupted closing operation leaves the doors open for a fresh attempt.
+ state.active.doorsOpen=motion.opening||!completed;
+ saveState();if(currentView==='driver')renderDriver(document.getElementById('view'));
+}
 function openTrafficModal(){if(!state.active||state.active.status!=='running'){showToast('Keine laufende Fahrt.');return}playDriverSound('traffic');showModal('🚧 Stau melden','Wie viel zusätzliche Verspätung soll durch den Stau entstehen?',`<div class="traffic-actions">${[1,2,5,10].map(n=>`<button onclick="applyTraffic(${n})">+${n} Min.</button>`).join('')}<button onclick="closeModal()">Abbrechen</button></div>`)}
 function applyTraffic(n){if(!state.active)return;state.active.trafficDelayMin=(Number(state.active.trafficDelayMin)||0)+n;state.history.unshift({id:'h'+Date.now(),type:'STAU',at:Date.now(),title:'Stau +'+n+' min',line:state.active.plan.line,tram:state.active.plan.tram,route:state.active.plan.routeName,stop:state.active.plan.stops[state.active.position].name,delta:n});saveState();closeModal();showView('driver');showToast(`Stau gemeldet: +${n} min`)}
 function openEmergencyModal(){const a=state.active;if(!a||a.status!=='running')return;const p=a.plan;playDriverSound('emergency');showModal('⚠ Notfall melden','Die Simulation wird bis zum Fortsetzen angehalten. Wähle einen Halt dieser Strecke und schreibe bei Bedarf eine Notiz.',`<div class="field"><label>Aktueller Standort</label><select id="emergencyLocation">${p.stops.map((s,i)=>`<option ${i===a.position?'selected':''} value="${esc(s.name)}">${esc(s.name)}</option>`).join('')}</select></div><div class="field" style="margin-top:12px"><label>Grund / Notiz (optional)</label><textarea id="emergencyNote" rows="3" placeholder="Was ist passiert?"></textarea></div><p class="muted">Zeitpunkt: ${fmtDate(Date.now())}</p><div class="modal-footer"><button onclick="closeModal()">Abbrechen</button><button class="danger" onclick="confirmEmergency()">Notfall speichern</button></div>`)}

@@ -21,6 +21,11 @@ const output=path.resolve(__dirname,'../build/qa-passenger-display');
    await page.screenshot({path:path.join(output,"latest.png")});
    assert.equal(await b.evaluate('document.documentElement.scrollWidth<=innerWidth'),true);
    const monitor=await page.locator('.passenger-monitor').boundingBox();assert(monitor.x>=0&&monitor.x+monitor.width<=page.viewportSize().width+1);
+   const alignment=await page.evaluate(()=>{
+    const current=document.querySelector('.passenger-current'),track=document.querySelector('.passenger-track');if(!track)return 0;
+    const a=getComputedStyle(current,'::before'),b=getComputedStyle(track,'::before');
+    return Math.abs(current.getBoundingClientRect().left+parseFloat(a.left)+parseFloat(a.width)/2-(track.getBoundingClientRect().left+parseFloat(b.left)));
+   });assert(alignment<.1,'header line must align with the route below');
    assert.equal(await b.evaluate("[...document.querySelectorAll('.passenger-current-name,.passenger-stop,.passenger-departure')].every(e=>e.scrollWidth<=e.clientWidth+1&&e.scrollHeight<=e.clientHeight+1)"),true);
    assert(await page.getByRole('button',{name:'Schließen',exact:true}).isVisible());
   };
