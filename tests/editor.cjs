@@ -23,7 +23,7 @@ const root=path.resolve(__dirname,'../app/src/main/assets'),output=path.resolve(
   await page.locator('#startTripButton').click();await b.evaluate("showView('plans')");assert.equal(await page.getByRole('button',{name:'Bearbeiten',exact:true}).isDisabled(),true);
   await b.evaluate("editPlan('plan-edit-test')");assert.equal(await b.evaluate('currentView'),'plans');
   await b.evaluate("state.active.status='suspended';showView('plans')");assert.equal(await page.getByRole('button',{name:'Bearbeiten',exact:true}).isDisabled(),true);
-  await b.evaluate("state.active=null;showView('settings')");assert.equal(await page.locator('#devMode').isChecked(),false);
+  await b.evaluate("state.active=null;showView('settings');for(let i=0;i<10;i++)registerDevVersionClick()");assert.equal(await page.locator('#devMode').isChecked(),false);
   await b.evaluate("showView('network')");assert.equal(await page.locator('#networkEditToggle').count(),0);
   await b.evaluate("showView('settings')");await page.locator('#devMode').check();await b.evaluate("showView('network')");
   await page.locator('#networkEditToggle').click();assert.equal(await page.locator('#networkEditToggle').getAttribute('aria-pressed'),'true');
@@ -65,7 +65,7 @@ const root=path.resolve(__dirname,'../app/src/main/assets'),output=path.resolve(
   await b.evaluate("toggleNetworkEditor();updateNetworkStop('name','Forbidden')");assert.equal(await b.evaluate('networkPositions().Anger.name'),'Anger Zentrum');
   // Cab layout and mechanical feedback through actual mouse and keyboard input.
   await b.evaluate(`state.active={id:'run-editor-test',plan:clone(state.plans[0]),departure:'10:00',position:1,startedAtEpoch:Date.now(),positionReachedAt:Date.now(),doorsOpen:false,status:'running'};showView('driver');window.mechanical=[];window.actualMechanical=[];const original=playCabMechanical;playCabMechanical=kind=>{mechanical.push(kind);original(kind)};const start=AudioBufferSourceNode.prototype.start;AudioBufferSourceNode.prototype.start=function(...args){if(this.context===cabAudioContext)actualMechanical.push(this.buffer.duration);return start.apply(this,args)};`);
-  assert.equal(await page.locator('.cab-screw').count(),4);assert.equal(await page.locator('.cab-placeholder').count(),15);
+  assert.equal(await page.locator('.cab-screw').count(),4);assert.equal(await page.locator('.cab-placeholder').count(),10);
   await page.locator('#doorBtn').click();assert.deepEqual(await b.evaluate('mechanical'),['down','up']);
   await page.locator('#emergencyBtn').click();assert.equal(await page.locator('#emergencyBtn').getAttribute('aria-pressed'),'true');assert.deepEqual(await b.evaluate('mechanical'),['down','up','latch']);await page.getByRole('button',{name:'Abbrechen',exact:true}).click();assert.equal(await page.locator('#emergencyBtn').getAttribute('aria-pressed'),'false');
   await page.locator('#doorBtn').focus();await page.keyboard.press('Space');assert.deepEqual((await b.evaluate('mechanical')).slice(-2),['down','up']);

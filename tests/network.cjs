@@ -85,7 +85,7 @@ async function run(){
  // Confirm service worker caches the new modules for an offline restart.
  await evaluate("navigator.serviceWorker.ready.then(()=>true)");
  await delay(1200);
- assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.3-vehicles-terminal').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
+ assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.4-rotary').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
  await cdp('Network.enable');await cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
  await cdp('Page.reload');await delay(600);assert.equal(await evaluate('Object.keys(ROUTES).length'),26);
  await evaluate("showView('network')");assert.equal(await evaluate('!!document.getElementById("lineMapSvg")'),true);

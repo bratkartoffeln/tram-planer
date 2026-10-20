@@ -10,7 +10,7 @@ const output=path.resolve(__dirname,'../build/qa-network-files');
   const browser=await chromium.connectOverCDP(b.debuggingUrl),page=browser.contexts()[0].pages()[0];
   await page.setViewportSize({width:1440,height:1080});await page.goto(b.origin);
   await b.evaluate("showView('network')");assert.equal(await page.getByRole('button',{name:'Netzplan exportieren',exact:true}).count(),0);
-  await b.evaluate("setDevMode(true);showView('network')");
+  await b.evaluate("showView('settings');for(let i=0;i<10;i++)registerDevVersionClick();setDevMode(true);showView('network')");
   assert.equal(await b.evaluate('networkEditing'),false);assert.equal(await page.getByRole('button',{name:'Netzplan exportieren',exact:true}).count(),1);
   await page.locator('#networkEditToggle').click();
   // Change a label and select an actual connection for a construction marking.

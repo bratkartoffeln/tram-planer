@@ -59,6 +59,7 @@ public class MainActivity extends Activity {
     private WebView webView;
     private boolean resumed;
     private boolean destroyed;
+    private boolean cockpitImmersive;
     private MediaPlayer player;
     private AudioManager audioManager;
     private AudioFocusRequest focusRequest;
@@ -109,6 +110,7 @@ public class MainActivity extends Activity {
         webView.setWebChromeClient(new BackupChromeClient());
         webView.addJavascriptInterface(new AnnouncementBridge(), "AndroidAnnouncements");
         webView.addJavascriptInterface(new BackupBridge(), "AndroidBackup");
+        webView.addJavascriptInterface(new DisplayBridge(), "AndroidDisplay");
         webView.loadUrl(APP_URL);
 
         if (Build.VERSION.SDK_INT >= 33) {
@@ -123,6 +125,11 @@ public class MainActivity extends Activity {
         getWindow().setNavigationBarColor(BAR_COLOR);
         int flags = getWindow().getDecorView().getSystemUiVisibility();
         flags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        if (Build.VERSION.SDK_INT < 30) {
+            int immersiveFlags = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            flags = cockpitImmersive ? flags | immersiveFlags : flags & ~immersiveFlags;
+        }
         getWindow().getDecorView().setSystemUiVisibility(flags);
         if (Build.VERSION.SDK_INT >= 29) {
             getWindow().setStatusBarContrastEnforced(false);
@@ -134,6 +141,9 @@ public class MainActivity extends Activity {
                 controller.setSystemBarsAppearance(0,
                         WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
                                 | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                if (cockpitImmersive) controller.hide(WindowInsets.Type.systemBars());
+                else controller.show(WindowInsets.Type.systemBars());
             }
         }
     }
@@ -332,6 +342,18 @@ public class MainActivity extends Activity {
         if (generation != announcementGeneration) return;
         stopAnnouncement();
         notifyJavaScript("onAnnouncementError", false, message, false);
+    }
+
+    public final class DisplayBridge {
+        @JavascriptInterface
+        public void setImmersive(boolean enabled) {
+            mainHandler.post(() -> {
+                if (!resumed || !isTrustedPage()) return;
+                cockpitImmersive = enabled;
+                applySystemBarStyle();
+                getWindow().getDecorView().requestApplyInsets();
+            });
+        }
     }
 
     public final class BackupBridge {
