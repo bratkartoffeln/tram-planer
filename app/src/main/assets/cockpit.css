@@ -115,3 +115,12 @@ body.cab-fullscreen{overflow:hidden}.cab-fullscreen .shell{display:block;min-hei
 @media(prefers-reduced-motion:reduce){.cab-fullscreen .driver-view>.grid,.cab-fullscreen .driver-view>.grid>.col-4,.cab-route-toggle svg,.cab-accessory-cap,.cab-cap-socket{transition:none!important}}
 .cab-accessory-button:is(:active,.is-on) .cab-accessory-cap{transform:translate(var(--press-x,0%),var(--press-y,2%)) scale(var(--press-scale,.96))}
 .cab-rotary-isolated .cab-rotary-mask,.cab-rotary-isolated .cab-rotary-ring{display:none}.cab-rotary-isolated .cab-rotary-grip{left:var(--grip-left);top:var(--grip-top);width:var(--grip-width);height:var(--grip-height);background-image:var(--rotary-grip-image)}
+/* Translucent spill preserves the photographed paint grain and metal highlights. */
+.cab-door-indicator{--lamp-light:45,235,130;--lamp-core:185,255,213}
+.cab-indicator-amber{--lamp-light:255,172,42;--lamp-core:255,231,166}
+.cab-door-indicator::before,.cab-door-indicator::after{content:'';position:absolute;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity 140ms ease-out}
+.cab-door-indicator::before{left:50%;top:57%;width:330%;height:245%;transform:translate(-50%,-50%);background:radial-gradient(ellipse at center,rgba(var(--lamp-core),.13) 0%,rgba(var(--lamp-light),.22) 16%,rgba(var(--lamp-light),.12) 30%,rgba(var(--lamp-light),.045) 48%,rgba(var(--lamp-light),0) 70%);filter:blur(.32cqw)}
+.cab-door-indicator::after{left:50%;top:88%;width:205%;height:68%;transform:translateX(-50%) rotate(-12deg);background:radial-gradient(ellipse at 50% 35%,rgba(var(--lamp-core),.14),rgba(var(--lamp-light),.08) 30%,rgba(var(--lamp-light),0) 70%);filter:blur(.24cqw)}
+.cab-door-indicator.is-lit::before,.cab-door-indicator.is-lit::after{opacity:1}
+.cab-door-indicator.is-blinking::before,.cab-door-indicator.is-blinking::after{animation:cab-lamp-spill-blink 700ms steps(1,end) infinite}
+@keyframes cab-lamp-spill-blink{0%,100%{opacity:1}50%{opacity:0}}

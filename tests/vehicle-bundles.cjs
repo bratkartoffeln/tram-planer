@@ -14,7 +14,7 @@ const root=path.resolve(__dirname,process.env.FAHRPLAN_ASSET_ROOT||'../app/src/m
    const inherited=ids.every(id=>JSON.stringify(VEHICLE_BUNDLES[id].sounds)===JSON.stringify(VEHICLE_BUNDLES[id==='tramlink'?'family-tramlink':'default'].sounds));
    const tramlinkDoors=Object.fromEntries(['door_open','door_close','door_closed'].map(id=>[id,VEHICLE_BUNDLES.tramlink.sounds.effects[id]]));
    const images=new Set(ids.map(id=>VEHICLE_BUNDLES[id].cab.image)).size;
-   const screws=ids.every(id=>VEHICLE_BUNDLES[id].cab.screws.length===4);
+   const screws=ids.every(id=>VEHICLE_BUNDLES[id].cab.screws.length>=4);
    const fallback=getVehicleBundle({vehicleTypeId:'future-tram',tram:'801'}).id;
    const legacy=getVehicleBundle({tram:'801'}).id;
    const retained=getVehicleBundle({vehicleTypeId:'kt4d',tram:'801'}).id;

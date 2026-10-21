@@ -121,6 +121,126 @@
         1476,
         960,
         "unten rechts"
+      ],
+      [
+        518,
+        132,
+        "Lampenfassung 1",
+        22
+      ],
+      [
+        662,
+        132,
+        "Lampenfassung 2",
+        22
+      ],
+      [
+        874,
+        132,
+        "Lampenfassung 3",
+        22
+      ],
+      [
+        1018,
+        132,
+        "Lampenfassung 4",
+        22
+      ],
+      [
+        142,
+        360,
+        "Tasterfassung 1",
+        30
+      ],
+      [
+        320,
+        360,
+        "Tasterfassung 2",
+        30
+      ],
+      [
+        498,
+        360,
+        "Tasterfassung 3",
+        30
+      ],
+      [
+        676,
+        360,
+        "Tasterfassung 4",
+        30
+      ],
+      [
+        864,
+        360,
+        "Tasterfassung 5",
+        30
+      ],
+      [
+        1042,
+        360,
+        "Tasterfassung 6",
+        30
+      ],
+      [
+        142,
+        752,
+        "Tasterfassung 7",
+        30
+      ],
+      [
+        320,
+        752,
+        "Tasterfassung 8",
+        30
+      ],
+      [
+        498,
+        752,
+        "Tasterfassung 9",
+        30
+      ],
+      [
+        676,
+        752,
+        "Tasterfassung 10",
+        30
+      ],
+      [
+        864,
+        752,
+        "Tasterfassung 11",
+        30
+      ],
+      [
+        1042,
+        752,
+        "Tasterfassung 12",
+        30
+      ],
+      [
+        1218,
+        752,
+        "Tasterfassung 13",
+        30
+      ],
+      [
+        1395,
+        752,
+        "Tasterfassung 14",
+        30
+      ],
+      [
+        658,
+        547,
+        "Mittlere Fassung 1",
+        30
+      ],
+      [
+        878,
+        547,
+        "Mittlere Fassung 2",
+        30
       ]
     ],
     "rotaries": [],

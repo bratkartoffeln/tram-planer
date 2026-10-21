@@ -3,7 +3,7 @@ const CAB_LAYOUT_FONTS=['system-ui','Arial','Verdana','Georgia','Courier New','s
 const CAB_LAYOUT_STORAGE='fahrplan-cab-layouts-v1';
 const CAB_LAYOUT_ACTIONS={'':'Keine Funktion',next:'Nächster Halt',back:'Zurück',doors:'Türen öffnen / schließen',passenger:'Fahrgastanzeige',fullscreen:'Vollbild',traffic:'Stau',finish:'Fahrt beenden',emergency:'Not-Aus'};
 const CAB_LAYOUT_SYMBOLS=['', 'next','back','doors','close','passenger','fullscreen','traffic','finish','emergency','route'];
-const CAB_LAYOUT_SOUNDS={'':'Standard-Bedienklang',none:'Kein Bedienklang','effect:door_open':'Türen öffnen','effect:door_close':'Türen schließen','effect:door_closed':'Türen zu · Ding','effect:emergency':'Notfall','effect:traffic':'Stau','effect:passenger':'Fahrgastanzeige','effect:finish':'Fahrtende','effect:back':'Zurück','mechanical:down':'Taster drücken','mechanical:up':'Taster loslassen','mechanical:latch':'Not-Aus einrasten','mechanical:rotary':'Drehschalter','mechanical:screw':'Schraube lösen','mechanical:ratchet':'Schraube eindrehen'};
+const CAB_LAYOUT_SOUNDS={'':'Standard der Funktion',none:'Kein Aktivitätssound','effect:door_open':'Türen öffnen','effect:door_close':'Türen schließen','effect:door_closed':'Türen zu · Ding','effect:emergency':'Notfall','effect:traffic':'Stau','effect:passenger':'Fahrgastanzeige','effect:finish':'Fahrtende','effect:back':'Zurück','mechanical:down':'Taster drücken','mechanical:up':'Taster loslassen','mechanical:latch':'Not-Aus einrasten','mechanical:rotary':'Drehschalter','mechanical:screw':'Schraube lösen','mechanical:ratchet':'Schraube eindrehen'};
 const CAB_ACTUATION_TONES={'':'Standard',none:'Kein Betätigungston','mechanical:down':'Klick · Taster','mechanical:up':'Klick · Loslassen','mechanical:latch':'Klack · Einrasten','mechanical:rotary':'Drehschalter','mechanical:screw':'Schraube lösen','mechanical:ratchet':'Ratsche'};
 let cabLayoutEditor=null,cabLayoutTouch=null,cabLayoutSuppressClickUntil=0;
 function cabReserveExists(panel,key){if(Object.hasOwn(panel.buttons,key))return true;const match=/^(reserve|rotary|spare)-(\d+)$/.exec(key);return !!match&&Number(match[2])<(panel[{reserve:'accessories',rotary:'rotaries',spare:'spares'}[match[1]]]?.length||0);}
@@ -287,9 +287,9 @@ function openCabReserveMenu(key,x,y){
  document.body.appendChild(menu);
  menu.querySelectorAll('[data-cab-position]').forEach(field=>{
   const position=field.dataset.cabPosition,value=binding.sounds?.[position]??binding.sound??'';
-  field.closest('label').insertAdjacentHTML('afterend',`<label>Bedienklang${count>1?' · Stellung '+position:''}<select data-cab-sound-position="${position}">${Object.entries(CAB_LAYOUT_SOUNDS).map(([sound,label])=>`<option value="${sound}" ${sound===value?'selected':''}>${label}</option>`).join('')}</select></label><button type="button" class="small" onclick="previewCabBindingSound(this.previousElementSibling.querySelector('select').value)">▶ Anhören</button>`);
+  field.closest('label').insertAdjacentHTML('afterend',`<label>Aktivitätssound${count>1?' · Stellung '+position:''}<select data-cab-sound-position="${position}">${Object.entries(CAB_LAYOUT_SOUNDS).map(([sound,label])=>`<option value="${sound}" ${sound===value?'selected':''}>${label}</option>`).join('')}</select></label><button type="button" class="small" onclick="previewCabActivitySound(this.previousElementSibling.querySelector('select'))">▶ Anhören</button>`);
  });
- menu.querySelector('h3').insertAdjacentHTML('afterend','<p>Bedienklänge sind unabhängig von Ansagen und den Sounds der Fahrfunktion.</p>');
+ menu.querySelector('h3').insertAdjacentHTML('afterend','<p>Der Aktivitätssound ersetzt den Sound der Fahrfunktion. Betätigungstöne und Haltestellenansagen bleiben separat.</p>');
  mountCabSymbolPicker(menu);addCabActuationFields(menu,key);positionCabControlMenu(menu,x,y);
 }
 function saveCabReserveBinding(){
@@ -310,6 +310,14 @@ function saveCabReserveBinding(){
  if(!cabLayoutValid(draft,editor.panel))return;
  if(JSON.stringify(draft)!==JSON.stringify(editor.draft)){cabLayoutRemember(clone(editor.draft));editor.draft=draft;cabLayoutPersist();}
  closeCabReserveMenu();cabLayoutRefresh();cabLayoutProperties();
+}
+function previewCabActivitySound(field){
+ if(!cabLayoutAllowed())return;
+ const menu=field.closest('#cabReserveMenu'),position=field.dataset.cabSoundPosition,action=menu.querySelector('[data-cab-position="'+position+'"]').value;
+ stopVehiclePreviewSound();
+ if(field.value)return playCabReserveSound(field.value,cabLayoutEditor.bundle);
+ if(action==='next')return playStopAnnouncementPreview('Anger');
+ if(action&&action!=='fullscreen')return playDriverSound(action==='doors'?(vehiclePreviewDoorsOpen?'door_close':'door_open'):action,cabLayoutEditor.bundle,null);
 }
 function previewCabBindingSound(sound,standard='down'){
  if(!cabLayoutAllowed()||!Object.hasOwn(CAB_LAYOUT_SOUNDS,sound))return;

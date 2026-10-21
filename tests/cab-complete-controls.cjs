@@ -20,7 +20,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),session=req
   const exported=await b.evaluate('cabLayoutExportData()');assert.equal(exported.cab.layout['control-next'].action,'traffic');
   assert.equal(await b.evaluate(`document.querySelector('#nextStopBtn .cab-label').textContent`),'Meldung');
   assert.equal(await b.evaluate(`document.querySelector('#nextStopBtn path').getAttribute('d')===CAB_ICONS.traffic`),true);
-  // Native completion callbacks hold both follow sounds until release finishes.
+  // The selected activity sound replaces the function effect after release.
   await b.evaluate(`toggleCabLayoutEditor();window.soundEvents=[];window.mechanical=[];window.effects=[];window.AndroidAnnouncements={playMechanicalWithCompletion:(path,kind,id)=>{mechanical.push({path,kind,id});soundEvents.push(kind)},playEffect:(id,ticket)=>{effects.push({id,ticket});soundEvents.push('effect:'+id)},playSequence:()=>{},stop:()=>{},stopMechanical:()=>{}}`);
   const point=await b.evaluate(`(()=>{const n=document.getElementById('nextStopBtn');n.scrollIntoView({block:'center'});const r=n.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()`);
   const pointer=async down=>b.cdp('Input.dispatchMouseEvent',{type:down?'mousePressed':'mouseReleased',button:'left',buttons:down?1:0,clickCount:1,...point});
@@ -29,8 +29,10 @@ const assert=require('node:assert/strict'),path=require('node:path'),session=req
   assert.equal(await b.evaluate(`mechanical.at(-1).kind`),'up');assert.deepEqual(await b.evaluate('effects'),[]);
   const release=await b.evaluate('mechanical.at(-1).id');
   await b.evaluate(`onNativeCabMechanicalEnd(${release},true)`);
-  assert.equal(await b.evaluate('effects[0].id'),'traffic');
-  assert(await b.evaluate(`mechanical.some(c=>c.path==='audio/effects/passenger.mp3')`));
+  assert.equal(await b.evaluate('effects[0].id'),'passenger');
+  assert.equal(await b.evaluate('effects.length'),1);
+  assert.equal(await b.evaluate(`mechanical.some(c=>c.path==='audio/effects/passenger.mp3')`),false);
+  assert.equal(await b.evaluate(`mechanical[0].kind`),'down');
   await b.evaluate(`onNativeDriverSoundEnd(effects.at(-1).ticket,true);closeModal()`);
   // Reload preserves the complete native-button binding and preview behavior.
   await b.navigate();await b.evaluate(`state.settings.dev_mode=true;showView('vehicles');openVehicleBundlePreview('combino-basic')`);
@@ -42,7 +44,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),session=req
   // Real Web Audio: follow playback starts after the release buffer ends.
   await b.evaluate(`window.starts=[];const start=AudioBufferSourceNode.prototype.start;AudioBufferSourceNode.prototype.start=function(...args){starts.push({context:this.context===cabAudioContext?'mechanical':'effect',duration:this.buffer.duration,at:performance.now()});return start.apply(this,args)};const n=document.getElementById('nextStopBtn');n.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,button:0}));document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,button:0}));n.click()`);
   for(let i=0;i<80&&!await b.evaluate(`starts.some(s=>s.context==='effect')`);i++)await b.delay(50);
-  const starts=await b.evaluate('starts'),releaseStart=starts.find(s=>s.context==='mechanical'),follow=starts.find(s=>s.context==='effect');assert(releaseStart&&follow);
+  const starts=await b.evaluate('starts'),releaseStart=starts.filter(s=>s.context==='mechanical').at(-1),follow=starts.find(s=>s.context==='effect');assert(releaseStart&&follow);
   assert(follow.at>=releaseStart.at+releaseStart.duration*1000-20,JSON.stringify(starts));
   assert.equal(b.errors.length,0);console.log('Complete controls: 8 cab families, predefined and reserve editors, binding export/persistence, native release completion and Web Audio ordering passed.');
  }finally{await b.close();}

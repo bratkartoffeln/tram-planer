@@ -333,7 +333,7 @@ function driverPrevious(){
 let doorMotion=null;
 async function toggleDoors(){
  const trip=state.active;if(!trip||trip.status!=='running'||doorMotion)return;
- const motion={tripId:trip.id,opening:!trip.doorsOpen},bundle=getVehicleBundle();
+ const motion={tripId:trip.id,opening:!trip.doorsOpen},bundle=getVehicleBundle(),activity=cabActivitySound;
  doorMotion=motion;trip.doorsOpen=true;saveState();showView('driver');
  const completed=await playDriverSound(motion.opening?'door_open':'door_close',bundle);
  if(doorMotion!==motion)return;
@@ -342,7 +342,7 @@ async function toggleDoors(){
  // An interrupted closing operation leaves the doors open for a fresh attempt.
  state.active.doorsOpen=motion.opening||!completed;
  saveState();if(currentView==='driver')renderDriver(document.getElementById('view'));
- if(completed&&!motion.opening&&state.active.status==='running')void playDriverSound('door_closed',bundle);
+ if(completed&&!motion.opening&&state.active.status==='running')void playDriverSound('door_closed',bundle,activity?.sound?{sound:'none'}:null);
 }
 function openTrafficModal(){if(!state.active||state.active.status!=='running'){showToast('Keine laufende Fahrt.');return}playDriverSound('traffic');showModal('🚧 Stau melden','Wie viel zusätzliche Verspätung soll durch den Stau entstehen?',`<div class="traffic-actions">${[1,2,5,10].map(n=>`<button onclick="applyTraffic(${n})">+${n} Min.</button>`).join('')}<button onclick="closeModal()">Abbrechen</button></div>`)}
 function applyTraffic(n){if(!state.active)return;state.active.trafficDelayMin=(Number(state.active.trafficDelayMin)||0)+n;state.history.unshift({id:'h'+Date.now(),type:'STAU',at:Date.now(),title:'Stau +'+n+' min',line:state.active.plan.line,tram:state.active.plan.tram,route:state.active.plan.routeName,stop:state.active.plan.stops[state.active.position].name,delta:n});saveState();closeModal();showView('driver');showToast(`Stau gemeldet: +${n} min`)}

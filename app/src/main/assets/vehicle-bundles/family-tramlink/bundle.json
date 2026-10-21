@@ -161,6 +161,138 @@
         1628,
         872,
         "unten rechts"
+      ],
+      [
+        613,
+        86,
+        "Displayrahmen 1",
+        26
+      ],
+      [
+        1357,
+        86,
+        "Displayrahmen 2",
+        26
+      ],
+      [
+        612,
+        627,
+        "Displayrahmen 3",
+        26
+      ],
+      [
+        1357,
+        627,
+        "Displayrahmen 4",
+        26
+      ],
+      [
+        43,
+        644,
+        "Pultsegment 1",
+        30
+      ],
+      [
+        1628,
+        643,
+        "Pultsegment 2",
+        30
+      ],
+      [
+        46,
+        706,
+        "Pultsegment 3",
+        30
+      ],
+      [
+        1626,
+        706,
+        "Pultsegment 4",
+        30
+      ],
+      [
+        309,
+        238,
+        "Tachometer 1",
+        18
+      ],
+      [
+        303,
+        486,
+        "Tachometer 2",
+        18
+      ],
+      [
+        117,
+        725,
+        "Tasterring 1",
+        8
+      ],
+      [
+        245,
+        725,
+        "Tasterring 2",
+        8
+      ],
+      [
+        362,
+        725,
+        "Tasterring 3",
+        8
+      ],
+      [
+        490,
+        725,
+        "Tasterring 4",
+        8
+      ],
+      [
+        614,
+        725,
+        "Tasterring 5",
+        8
+      ],
+      [
+        740,
+        725,
+        "Tasterring 6",
+        8
+      ],
+      [
+        865,
+        725,
+        "Tasterring 7",
+        8
+      ],
+      [
+        992,
+        725,
+        "Tasterring 8",
+        8
+      ],
+      [
+        1116,
+        725,
+        "Tasterring 9",
+        8
+      ],
+      [
+        1243,
+        725,
+        "Tasterring 10",
+        8
+      ],
+      [
+        1370,
+        725,
+        "Tasterring 11",
+        8
+      ],
+      [
+        1500,
+        725,
+        "Tasterring 12",
+        8
       ]
     ],
     "rotaries": [

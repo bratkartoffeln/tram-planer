@@ -56,6 +56,8 @@ async function previewVehicleSound(id,mechanical=false){
  status.textContent=completed?'Hörprobe beendet.':'Wiedergabe gestoppt.';return completed;
 }
 async function previewVehicleCabAction(action){
+ const activity=cabActivitySound;
+ if(activity)activity.handled=true;
  const pendingBundle=vehicleBundlePreview,pendingTicket=vehiclePreviewTicket;
  if(cabFollowSoundGate&&!await cabFollowSoundGate.promise)return;
  if(pendingBundle!==vehicleBundlePreview||pendingTicket!==vehiclePreviewTicket)return;
@@ -69,14 +71,14 @@ async function previewVehicleCabAction(action){
  if(action==='doors')syncVehiclePreviewDoors(true);
  if(action==='emergency')button?.setAttribute('aria-pressed','true');
  let completed;
- if(action==='next')completed=await playStopAnnouncementPreview('Anger');
- else if(action==='fullscreen'){playCabMechanical('down',bundle);completed=true;}
- else completed=await playDriverSound(action==='doors'?(opening?'door_open':'door_close'):action,bundle);
+ if(action==='next'){playCabReserveSound(activity?.sound,bundle);completed=await playStopAnnouncementPreview('Anger');}
+ else if(action==='fullscreen'){if(activity?.sound)await playCabReserveSound(activity.sound,bundle);else playCabMechanical('down',bundle);completed=true;}
+ else completed=await playDriverSound(action==='doors'?(opening?'door_open':'door_close'):action,bundle,activity);
  if(ticket!==vehiclePreviewTicket||bundle!==vehicleBundlePreview)return;
  button?.classList.remove('is-sound-playing');if(action==='emergency')button?.setAttribute('aria-pressed','false');
  if(action==='doors'){if(completed)vehiclePreviewDoorsOpen=opening;syncVehiclePreviewDoors();}
  if(action==='doors'&&!opening&&completed){
-  completed=await playDriverSound('door_closed',bundle);
+  completed=await playDriverSound('door_closed',bundle,activity?.sound?{sound:'none'}:null);
   if(ticket!==vehiclePreviewTicket||bundle!==vehicleBundlePreview)return;
  }
  status.textContent=completed===null?'Beispielansage gestartet.':completed?'Hörprobe beendet.':'Wiedergabe gestoppt.';

@@ -216,10 +216,14 @@ def compile_bundles(assets, type_ids):
         for field, length in [('spares', 2), ('screws', 3), ('rotaries', 2), ('headings', 3)]:
             check(isinstance(cab.get(field), list), key + ': ' + field)
             for entry in cab[field]:
-                check(isinstance(entry, list) and len(entry) == length, key + ': ' + field)
+                check(isinstance(entry, list) and (len(entry) in (3, 4) if field == 'screws' else len(entry) == length), key + ': ' + field)
                 point(*(entry[1:] if field == 'headings' else entry[:2]))
                 if field in ('screws', 'headings'):
-                    check(isinstance(entry[-1] if field == 'screws' else entry[0], str), key + ': label')
+                    check(isinstance(entry[2] if field == 'screws' else entry[0], str), key + ': label')
+                if field == 'screws' and len(entry) == 4:
+                    check(type(entry[3]) in (int, float) and 4 <= entry[3] <= 120, key + ': screw cap')
+                    check(entry[3]/2 <= entry[0] <= width-entry[3]/2
+                          and entry[3]/2 <= entry[1] <= height-entry[3]/2, key + ': screw outside panel')
         check(len(cab['rotaries']) <= 2, key + ': at most two reserve rotaries')
         check({'mask', 'ring', 'grip'} <= set(cab.get('rotarySprites', {})) <= {'mask', 'ring', 'grip', 'image'}, key + ': rotary sprites')
         if 'image' in cab['rotarySprites']:
