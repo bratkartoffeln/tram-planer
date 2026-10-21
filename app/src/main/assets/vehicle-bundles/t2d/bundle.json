@@ -1,4 +1,7 @@
 {
   "id": "t2d",
-  "extends": "default"
+  "extends": "family-gotha-wheel",
+  "presentation": {
+    "variant": "Nachbildung · T2D · Handrad-Familienvergleich nach G4-65"
+  }
 }

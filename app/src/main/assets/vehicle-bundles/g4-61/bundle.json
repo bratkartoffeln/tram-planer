@@ -1,4 +1,7 @@
 {
   "id": "g4-61",
-  "extends": "default"
+  "extends": "family-gotha-wheel",
+  "presentation": {
+    "variant": "Nachbildung · G4-61 · Familienvergleich nach G4-65"
+  }
 }

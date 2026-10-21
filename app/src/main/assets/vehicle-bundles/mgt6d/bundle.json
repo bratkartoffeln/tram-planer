@@ -1,4 +1,7 @@
 {
   "id": "mgt6d",
-  "extends": "default"
+  "extends": "family-mgt",
+  "presentation": {
+    "variant": "Nachbildung · MGT6D · Familienvariante nach MGT6DE 612"
+  }
 }

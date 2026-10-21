@@ -1,4 +1,7 @@
 {
   "id": "kt4d",
-  "extends": "default"
+  "extends": "family-kt4d",
+  "presentation": {
+    "variant": "Nachbildung · KT4D · klassischer Baureihenvergleich"
+  }
 }

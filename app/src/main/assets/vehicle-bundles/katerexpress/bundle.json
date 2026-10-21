@@ -1,4 +1,7 @@
 {
   "id": "katerexpress",
-  "extends": "default"
+  "extends": "family-gotha-wheel",
+  "presentation": {
+    "variant": "Nachbildung · Katerexpress · G4-65-Familienvergleich"
+  }
 }

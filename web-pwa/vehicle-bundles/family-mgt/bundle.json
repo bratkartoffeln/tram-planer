@@ -1,0 +1,168 @@
+{
+  "id": "family-mgt",
+  "extends": "default",
+  "cab": {
+    "image": "vehicle-bundles/family-mgt/panel-front.webp",
+    "skin": "panel",
+    "width": 1536,
+    "height": 1024,
+    "buttons": {
+      "next": {
+        "x": 288,
+        "y": 359,
+        "size": 240,
+        "capWidth": 140,
+        "capHeight": 200,
+        "shape": "rect",
+        "ink": "#18212a"
+      },
+      "back": {
+        "x": 596.5,
+        "y": 358.5,
+        "size": 240,
+        "capWidth": 140,
+        "capHeight": 200,
+        "shape": "rect",
+        "ink": "#18212a"
+      },
+      "doors": {
+        "x": 901.5,
+        "y": 358.5,
+        "size": 240,
+        "capWidth": 140,
+        "capHeight": 200,
+        "shape": "rect",
+        "ink": "#18212a"
+      },
+      "passenger": {
+        "x": 288.5,
+        "y": 721,
+        "size": 240,
+        "capWidth": 140,
+        "capHeight": 200,
+        "shape": "rect",
+        "ink": "#18212a"
+      },
+      "fullscreen": {
+        "x": 596.5,
+        "y": 721,
+        "size": 240,
+        "capWidth": 140,
+        "capHeight": 200,
+        "shape": "rect",
+        "ink": "#18212a"
+      },
+      "traffic": {
+        "x": 903,
+        "y": 721,
+        "size": 240,
+        "capWidth": 140,
+        "capHeight": 200,
+        "shape": "rect",
+        "ink": "#18212a"
+      },
+      "finish": {
+        "x": 1225,
+        "y": 720.5,
+        "size": 240,
+        "capWidth": 140,
+        "capHeight": 200,
+        "shape": "rect",
+        "ink": "#18212a"
+      },
+      "emergency": {
+        "x": 1276.5,
+        "y": 331.5,
+        "size": 300,
+        "capWidth": 252,
+        "capHeight": 256,
+        "shape": "round",
+        "ink": "#fff3df"
+      }
+    },
+    "indicators": {
+      "closed": {
+        "x": 690,
+        "y": 143,
+        "size": 120,
+        "capWidth": 80,
+        "capHeight": 80,
+        "shape": "round"
+      },
+      "open": {
+        "x": 844,
+        "y": 143,
+        "size": 120,
+        "capWidth": 80,
+        "capHeight": 80,
+        "shape": "round"
+      }
+    },
+    "headings": [],
+    "spares": [],
+    "screws": [
+      [
+        80,
+        86,
+        "oben links"
+      ],
+      [
+        1455,
+        86,
+        "oben rechts"
+      ],
+      [
+        80,
+        914,
+        "unten links"
+      ],
+      [
+        1455,
+        914,
+        "unten rechts"
+      ]
+    ],
+    "rotaries": [],
+    "colors": {
+      "console": "#4d2b20",
+      "panel": "#4d2b20",
+      "text": "#eef1f3"
+    },
+    "screwCap": 60,
+    "emergencySprites": {
+      "mask": [
+        1100,
+        535,
+        40,
+        40
+      ],
+      "ring": [
+        1255,
+        340,
+        340,
+        340
+      ],
+      "travel": [
+        -20,
+        14
+      ]
+    },
+    "accessories": [],
+    "labelColor": "#fff8df"
+  },
+  "presentation": {
+    "title": "MGT · Tastenpanel",
+    "variant": "Nachbildung · Erfurt 612",
+    "description": "Frontale Nachbildung des schwarzen Tastenpanels im braunen Rahmen nach MGT6DE 612. Rechteckige elfenbeinfarbene Taster; Auswahl und Anordnung der Spieltasten sind angepasst. MGT6D nutzt denselben gekennzeichneten Familienvergleich.",
+    "references": [
+      {
+        "title": "Erfurt MGT6DE 612 · Christian Meinelt",
+        "url": "https://www.strassenbahn-erfurt.de/wagenpark/mgt/mgt6de/"
+      }
+    ],
+    "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe."
+  },
+  "credits": [
+    "KI-Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026. Nachbildung · Erfurt 612. Frontales Schalterpanel aus der Referenz abgeleitet; Tastenanzahl und Anordnung an die Simulation angepasst. Bildkappen und vier fotografierte Schrauben werden animiert. Instrumente sind Bildkulisse."
+  ]
+}

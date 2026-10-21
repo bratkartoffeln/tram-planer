@@ -1,4 +1,7 @@
 {
   "id": "combino-advanced-long",
-  "extends": "default"
+  "extends": "family-combino",
+  "presentation": {
+    "variant": "Nachbildung · Combino Advanced lang · Familienvergleich"
+  }
 }

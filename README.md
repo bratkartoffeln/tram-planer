@@ -1,8 +1,16 @@
-# Fahrplan Manager Audio – Version 6.2.7
+# Fahrplan Manager Audio – Version 6.2.8
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
 ## Neu
+
+Version 6.2.8 ergänzt acht fotorealistische frontale Schalterpanels nach Referenzfotos und ordnet sie allen 23 Fahrzeugtypen zu. Belegte Erfurter Pulte, Baureihenvergleiche und gemeinsam verwendete Varianten sind in der Fahrzeugübersicht gekennzeichnet; Beiwagen verwenden ein zugeordnetes Zugfahrzeugpult. Die eigentliche Schaltplatte wird wie beim Default frontal gezeigt. Tasterformen, Kappenfarben und Bildausschnitte passen zum jeweiligen Panel. Vier fotografierte Eckschrauben bleiben interaktiv. Unter „Fahrpult & Sounds ausprobieren“ spielen die Pulttasten direkt die Hörproben: sieben Funktionssounds, eine Beispielansage sowie die mechanischen Tasten- und Schraubenklänge. Der Vorschau-Türtaster wechselt zwischen Öffnen und Schließen; Vollbild spielt den Tastenklick. Die vorhandenen Standardklänge bleiben als Fallback ausdrücklich beschriftet. Hörproben verändern keine Fahrt und enden beim Schließen, Ansichtswechsel oder Wechsel in den Hintergrund. Quellen und Einschränkungen: [IMAGE_SOURCES.md](IMAGE_SOURCES.md).
+
+Bei Auswahl eines Fahrtrichtungsbuttons im schematischen Netzplan erhalten alle Haltestellen der ausgewählten Linie deren Linienfarbe. Pfeile in den Kreisen zeigen zum nächsten Halt; am Endhalt bleibt die Ankunftsrichtung sichtbar. Die Darstellung berücksichtigt angepasste Haltestellenpositionen und Linienfarben und verschwindet beim Abwählen oder Bearbeiten der Linie.
+
+Die Symbole sitzen mittig auf den gemessenen Tastenkappen. Der Not-Aus wird auch auf den Modellpanels tief eingedrückt, während die Einfassung fest bleibt. Weitere 14 vorhandene Taster und Hebelschalter lassen sich als Reserve bedienen; ihre Stellungen bleiben innerhalb einer Fahrt erhalten. Hebel wechseln zwischen zwei gegenüberliegenden fotografischen Stellungen am festen Lager. Beschriftungen auf vorhandenen Pads stehen ohne eigene Hintergrundfläche mittig im Feld: dunkel auf hellen Schildern, hell auf dunklen Feldern.
+
+Version 6.2.8 hält den oberen Haltestellennamen der Fahrgastanzeige in einer Zeile. Die Schrift passt sich an die tatsächlich verfügbare Breite an; das feste Namensfeld verhindert Verschiebungen von Abfahrt und Streckenanzeige. Die Anpassung erfolgt auch bei Größen- und Orientierungswechseln. Der Not-Aus-Kopf bewegt sich beim Drücken perspektivisch nach links unten zu seinem festen gelben Sockel; Schaft und überlagerter Bildausschnitt verhindern ein stehenbleibendes zweites Schalterbild. Tastaturbedienung und reduzierte Bewegung werden berücksichtigt.
 
 Version 6.2.7 bereitet modellabhängige Fahrerpulte und Sounds vor. Alle 23 Fahrzeugtypen besitzen ein eigenes erweiterbares Bündel; zunächst erben sie vollständig das bisherige Pult und die bisherigen Sounds. Die Android-App kann in den Einstellungen nach neuen GitHub-Releases suchen, beim Start höchstens einmal täglich prüfen und eine neuere Version mit APK-Download anbieten.
 
@@ -78,7 +86,7 @@ Die Karte ist schematisch. Haltefolgen stammen aus den offiziellen EVAG-Halteste
 
 ## Installation und Signierung
 
-App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 627.
+App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 628.
 
 Da der frühere private Signierschlüssel nicht verfügbar ist, verwendet diese Fassung eine eigene App-Kennung und einen neu angelegten Schlüssel. Sie kann neben den bisherigen Fassungen installiert werden. Bestehende Daten über Einstellungen → Daten exportieren/importieren übertragen. Künftige Updates dieser Audio-Fassung müssen denselben neuen Schlüssel verwenden.
 
@@ -96,7 +104,7 @@ Für jede neue Veröffentlichung die mit dem bestehenden Release-Schlüssel sign
 
 ### Fahrerpult- und Soundbündel erweitern
 
-Die Quelldaten liegen unter `app/src/main/assets/vehicle-bundles/<Typkennung>/bundle.json`; Typkennungen entsprechen `vehicle-types.json`. `default/bundle.json` enthält das bisherige Pult samt Sounds. Jedes Modell erbt zunächst mit `"extends": "default"`. Gemeinsame Familienbündel können als zusätzliche Ordner angelegt und über `extends` von mehreren Varianten verwendet werden. Vererbungszyklen und unbekannte Eltern werden beim Synchronisieren abgewiesen.
+Die Quelldaten liegen unter `app/src/main/assets/vehicle-bundles/<Typkennung>/bundle.json`; Typkennungen entsprechen `vehicle-types.json`. `default/bundle.json` enthält das bisherige Pult samt Sounds als Fallback. Die 23 Typen erben ihre Pulte von acht gemeinsamen `family-*`-Bündeln, deren Sounds wiederum vom Standard stammen. Weitere Familien können als zusätzliche Ordner angelegt und über `extends` von mehreren Varianten verwendet werden. Vererbungszyklen und unbekannte Eltern werden beim Synchronisieren abgewiesen.
 
 Objekte werden feldweise vererbt, Listen vollständig ersetzt. Nur Abweichungen müssen im Modellbündel stehen. Beispiel für `tramlink/bundle.json`, nachdem die referenzierten Medien abgelegt wurden:
 
@@ -117,19 +125,23 @@ Objekte werden feldweise vererbt, Listen vollständig ersetzt. Nur Abweichungen 
 }
 ```
 
-Alle Medienpfade gelten relativ zum Asset-Stamm. MP3-Dateien für neue Modelle liegen unter `vehicle-bundles/<Typkennung>/audio/`; Dateinamen verwenden kleine Buchstaben, Ziffern, Bindestriche und Unterstriche. `cab.width` und `cab.height` beschreiben die Bildkoordinaten. `buttons`, `indicators`, `headings`, `spares`, `screws`, `rotaries` und `rotarySprites` steuern die Positionen und Bildausschnitte des bestehenden Pult-Renderers. Die Grafik sollte passende Taster, Schrauben und Drehschalter enthalten. Leere Listen können Reserveelemente, Schrauben oder Überschriften ausblenden; maximal zwei Reserve-Drehschalter werden unterstützt. Fahrfunktionen und Türsperren bleiben im gemeinsamen Renderer.
+Alle Medienpfade gelten relativ zum Asset-Stamm. MP3-Dateien für neue Modelle liegen unter `vehicle-bundles/<Typkennung>/audio/`; Dateinamen verwenden kleine Buchstaben, Ziffern, Bindestriche und Unterstriche. `cab.width` und `cab.height` beschreiben die Bildkoordinaten. `buttons`, `indicators`, `headings`, `spares`, `screws`, `rotaries` und `rotarySprites` steuern Positionen und Bildausschnitte. Ohne `cab.skin` beziehungsweise mit `"photo"` verwendet der Renderer passende Fotoausschnitte für Taster, Schrauben und Drehschalter. `"skin": "panel"` verwendet ebenfalls fotografierte Bildkappen und Schrauben; frontale Druckzustände lassen die Einfassungen stehen. `buttons` und `indicators` können zusätzlich `size`, `capWidth`, `capHeight`, `shape` (`round`/`rect`), `ink` (Symbolfarbe) und `kind` (`mushroom`/`push`) angeben. Kappenmaße und Koordinaten an der Grafik messen; die Trefferfläche muss mindestens die Kappe umfassen. `cab.screwCap` setzt die Größe des fotografierten Schraubenkopfs. Leere Listen können Reserveelemente, Schrauben oder Überschriften ausblenden; maximal zwei Reserve-Drehschalter werden unterstützt. Fahrfunktionen und Türsperren bleiben im gemeinsamen Renderer.
+
+`presentation` beschreibt `title`, `variant`, `description`, `soundNote` und `references` (Liste aus `title` und `url` mit HTTPS-Link). Diese Angaben erscheinen in Fahrzeugkarten, Vorschau und Quellenansicht. Bei Änderungen der Referenz oder Soundausstattung auch Variantenkennzeichnung, Fallback-Hinweis, Urheber und Lizenzen aktualisieren. Ein vollständiges Familienbeispiel steht unter `vehicle-bundles/family-mgt/bundle.json`; einzelne Typen überschreiben nur abweichende Felder. Die Vorschau erhält ihr Bündel ausdrücklich und verwendet weder die aktive Fahrt noch deren Schraubenzustand als Vorschauzustand.
+
+Optional setzt `cab.labelColor` die Schriftfarbe auf der Platte. `labelPad: {x, y, width, ink}` an Tastern, Anzeigen oder Zubehör positioniert transparente Beschriftungen auf den vorhandenen Schildern (Bildkoordinaten und Hexfarbe). `cab.emergencySprites` enthält `mask`, `ring` (jeweils `[MitteX, MitteY, Breite, Höhe]`) und `travel` (`[dx, dy]`) für den tiefen Druck bei festem Ring. `cab.accessories` beschreibt weitere Reservebedienelemente mit `kind` (`button`/`lever`), `label` und `sprite` (Bildrechteck). Hebel benötigen zusätzlich `onSprite` für die gegenüberliegende Stellung und `cab.leverSprites.off/on` mit `image`, `width`, `height` und `crop`. Die freigestellten Griffe stehen auf einer Pultgrafik mit freiem Lager; der Renderer blendet zwischen den Stellungen um, ohne die Grafik zu rotieren. Alle referenzierten Medien werden geprüft und automatisch im Offline-Cache registriert. Beispiel: `vehicle-bundles/family-gotha-wheel/bundle.json`. Browserprüfung: `node tests/panel-controls.cjs`.
 
 Effektschlüssel: `door_open`, `door_close`, `emergency`, `traffic`, `passenger`, `finish`, `back`. Mechanische Schlüssel: `down`, `up`, `latch`, `rotary`, `screw`, `ratchet`; deren Standardwerte `synth:<Schlüssel>` verwenden die bisherigen Synthesen. Mechanik spielt unabhängig von Funktionssounds und Ansagen. Haltestellenansagen bleiben streckenabhängig. Eigene Quellenangaben erscheinen über „Bild- & Tonquellen“; bei Übernahme von Standardbestandteilen deren Quellen in IMAGE_SOURCES.md und AUDIO_SOURCES.md beibehalten.
 
 Die Zuordnung verwendet zuerst `vehicleTypeId` der Fahrt, für ältere Pläne die verknüpfte Fahrzeug-ID beziehungsweise das Kürzel. Ein unbekannter oder fehlender Typ nutzt `default`; gelöschte Fahrzeuge behalten über die gespeicherte Typkennung ihr Bündel. Neue Typen sowohl im Fahrzeugkatalog als auch mit eigenem Bündel anlegen.
 
-Nach Änderungen `python tools/sync-assets.py` ausführen. Das prüft Vererbung, Medienpfade, Positionsdaten und Soundzuordnungen, erzeugt `vehicle-bundles-data.js` sowie `vehicle-bundle-assets.json` und spiegelt die Assets nach `web-pwa`. Die generierten Dateien nicht von Hand ändern. Der Service Worker nimmt alle Bündelmanifeste und deren Medien automatisch in den Offline-Cache auf; bei Veröffentlichungen die Cacheversion erhöhen. Android erhält die Bündeldaten ohne Netzwerkabruf über ein lokales Script. Prüfungen: `node tests/vehicle-bundles.cjs`, `node tests/updates.cjs`, `python tests/vehicle-bundles.py` und `node tests/door-motion.cjs`.
+Nach Änderungen `python tools/sync-assets.py` ausführen. Das prüft Vererbung, Medienpfade, Positionsdaten und Soundzuordnungen, erzeugt `vehicle-bundles-data.js` sowie `vehicle-bundle-assets.json` und spiegelt die Assets nach `web-pwa`. Die generierten Dateien nicht von Hand ändern. Der Service Worker nimmt alle Bündelmanifeste und deren Medien automatisch in den Offline-Cache auf; bei Veröffentlichungen die Cacheversion erhöhen. Android erhält die Bündeldaten ohne Netzwerkabruf über ein lokales Script. Prüfungen: `node tests/vehicle-bundles.cjs`, `node tests/vehicle-previews.cjs`, `node tests/updates.cjs`, `python tests/vehicle-bundles.py` und `node tests/door-motion.cjs`.
 
 ## Bauen und prüfen
 
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.7_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.8_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 

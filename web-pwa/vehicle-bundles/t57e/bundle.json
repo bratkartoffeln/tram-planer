@@ -1,4 +1,7 @@
 {
   "id": "t57e",
-  "extends": "default"
+  "extends": "family-gotha-crank",
+  "presentation": {
+    "variant": "Nachbildung · T57E · Kurbel-Familienvergleich"
+  }
 }

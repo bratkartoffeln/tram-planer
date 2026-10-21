@@ -1,4 +1,7 @@
 {
   "id": "mgt6de",
-  "extends": "default"
+  "extends": "family-mgt",
+  "presentation": {
+    "variant": "Nachbildung · MGT6DE · Referenz Erfurt 612"
+  }
 }

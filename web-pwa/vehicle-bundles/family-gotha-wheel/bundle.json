@@ -1,0 +1,380 @@
+{
+  "id": "family-gotha-wheel",
+  "extends": "default",
+  "cab": {
+    "image": "vehicle-bundles/family-gotha-wheel/panel-front.webp",
+    "skin": "panel",
+    "width": 1536,
+    "height": 1024,
+    "buttons": {
+      "next": {
+        "x": 265,
+        "y": 583.5,
+        "size": 180,
+        "capWidth": 116,
+        "capHeight": 116,
+        "shape": "round",
+        "ink": "#fff3df",
+        "labelPad": {
+          "x": 270,
+          "y": 475,
+          "width": 164,
+          "ink": "#1d2328"
+        }
+      },
+      "back": {
+        "x": 592,
+        "y": 577.5,
+        "size": 180,
+        "capWidth": 116,
+        "capHeight": 116,
+        "shape": "round",
+        "ink": "#18212a",
+        "labelPad": {
+          "x": 597,
+          "y": 475,
+          "width": 170,
+          "ink": "#1d2328"
+        }
+      },
+      "doors": {
+        "x": 930,
+        "y": 580,
+        "size": 180,
+        "capWidth": 116,
+        "capHeight": 116,
+        "shape": "round",
+        "ink": "#f7f1df",
+        "labelPad": {
+          "x": 935,
+          "y": 475,
+          "width": 170,
+          "ink": "#1d2328"
+        }
+      },
+      "passenger": {
+        "x": 259,
+        "y": 813.5,
+        "size": 180,
+        "capWidth": 116,
+        "capHeight": 116,
+        "shape": "round",
+        "ink": "#18212a",
+        "labelPad": {
+          "x": 267,
+          "y": 706,
+          "width": 164,
+          "ink": "#1d2328"
+        }
+      },
+      "fullscreen": {
+        "x": 592.5,
+        "y": 814,
+        "size": 180,
+        "capWidth": 116,
+        "capHeight": 116,
+        "shape": "round",
+        "ink": "#18212a",
+        "labelPad": {
+          "x": 596,
+          "y": 706,
+          "width": 170,
+          "ink": "#1d2328"
+        }
+      },
+      "traffic": {
+        "x": 935.5,
+        "y": 815,
+        "size": 180,
+        "capWidth": 116,
+        "capHeight": 116,
+        "shape": "round",
+        "ink": "#3c280c",
+        "labelPad": {
+          "x": 935,
+          "y": 706,
+          "width": 170,
+          "ink": "#1d2328"
+        }
+      },
+      "finish": {
+        "x": 1270,
+        "y": 815.5,
+        "size": 180,
+        "capWidth": 116,
+        "capHeight": 116,
+        "shape": "round",
+        "ink": "#f7f1df",
+        "labelPad": {
+          "x": 1265,
+          "y": 706,
+          "width": 170,
+          "ink": "#1d2328"
+        }
+      },
+      "emergency": {
+        "x": 1271.5,
+        "y": 579,
+        "size": 180,
+        "capWidth": 126,
+        "capHeight": 122,
+        "shape": "round",
+        "ink": "#f7f1df",
+        "kind": "push",
+        "labelPad": {
+          "x": 1262,
+          "y": 475,
+          "width": 170,
+          "ink": "#1d2328"
+        }
+      }
+    },
+    "indicators": {
+      "closed": {
+        "x": 655,
+        "y": 165,
+        "size": 110,
+        "capWidth": 70,
+        "capHeight": 70,
+        "shape": "round"
+      },
+      "open": {
+        "x": 875,
+        "y": 165,
+        "size": 110,
+        "capWidth": 70,
+        "capHeight": 70,
+        "shape": "round"
+      }
+    },
+    "headings": [],
+    "spares": [],
+    "screws": [
+      [
+        64,
+        60,
+        "oben links"
+      ],
+      [
+        1472,
+        60,
+        "oben rechts"
+      ],
+      [
+        64,
+        944,
+        "unten links"
+      ],
+      [
+        1472,
+        944,
+        "unten rechts"
+      ]
+    ],
+    "rotaries": [],
+    "colors": {
+      "console": "#544431",
+      "panel": "#544431",
+      "text": "#eef1f3"
+    },
+    "screwCap": 54,
+    "emergencySprites": {
+      "mask": [
+        1130,
+        570,
+        40,
+        40
+      ],
+      "ring": [
+        1270,
+        580,
+        180,
+        180
+      ],
+      "travel": [
+        0,
+        7
+      ]
+    },
+    "accessories": [
+      {
+        "kind": "lever",
+        "label": "Kippschalter oben",
+        "sprite": [
+          1177,
+          146,
+          20,
+          48
+        ],
+        "profile": "toggle",
+        "onSprite": [
+          1177,
+          192,
+          20,
+          48
+        ]
+      },
+      {
+        "kind": "lever",
+        "label": "Kippschalter 1",
+        "sprite": [
+          297,
+          344,
+          20,
+          48
+        ],
+        "profile": "toggle",
+        "onSprite": [
+          297,
+          390,
+          20,
+          48
+        ],
+        "labelPad": {
+          "x": 300,
+          "y": 308,
+          "width": 130,
+          "ink": "#1d2328"
+        }
+      },
+      {
+        "kind": "lever",
+        "label": "Kippschalter 2",
+        "sprite": [
+          538,
+          344,
+          20,
+          48
+        ],
+        "profile": "toggle",
+        "onSprite": [
+          538,
+          390,
+          20,
+          48
+        ],
+        "labelPad": {
+          "x": 540,
+          "y": 308,
+          "width": 130,
+          "ink": "#1d2328"
+        }
+      },
+      {
+        "kind": "button",
+        "label": "Reservetaster",
+        "sprite": [
+          765,
+          372,
+          64,
+          64
+        ],
+        "labelPad": {
+          "x": 758,
+          "y": 308,
+          "width": 130,
+          "ink": "#1d2328"
+        }
+      },
+      {
+        "kind": "lever",
+        "label": "Kippschalter 3",
+        "sprite": [
+          999,
+          344,
+          20,
+          48
+        ],
+        "profile": "toggle",
+        "onSprite": [
+          999,
+          390,
+          20,
+          48
+        ],
+        "labelPad": {
+          "x": 998,
+          "y": 308,
+          "width": 130,
+          "ink": "#1d2328"
+        }
+      },
+      {
+        "kind": "lever",
+        "label": "Kippschalter 4",
+        "sprite": [
+          1239,
+          344,
+          20,
+          48
+        ],
+        "profile": "toggle",
+        "onSprite": [
+          1239,
+          390,
+          20,
+          48
+        ],
+        "labelPad": {
+          "x": 1238,
+          "y": 308,
+          "width": 130,
+          "ink": "#1d2328"
+        }
+      }
+    ],
+    "labelColor": "#1d2328",
+    "leverSprites": {
+      "off": {
+        "image": "vehicle-bundles/family-gotha-wheel/lever-off.webp",
+        "width": 1536,
+        "height": 1024,
+        "crop": [
+          768,
+          511.5,
+          326,
+          969
+        ]
+      },
+      "on": {
+        "image": "vehicle-bundles/family-gotha-wheel/lever-on.webp",
+        "width": 1024,
+        "height": 1536,
+        "crop": [
+          524,
+          768.5,
+          436,
+          1327
+        ]
+      }
+    }
+  },
+  "presentation": {
+    "title": "Gotha · Schaltplatte am Handradpult",
+    "variant": "Nachbildung · Vergleich Naumburg 202",
+    "description": "Frontale Nachbildung der hellen Schaltplatte links neben dem Fahrschalter-Handrad eines G4-65, Naumburg 202. Bakelittaster und Metallringe; Spieltasten angepasst. G4-61, G4-65, Katerexpress und T2D teilen diesen gekennzeichneten Familienvergleich.",
+    "references": [
+      {
+        "title": "G4-65 Naumburg 202 · ChristianBier, CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Fuehrerstand_G4-65.JPG"
+      },
+      {
+        "title": "Gotha-Bauarten und Fahrschalter",
+        "url": "https://www.gothawagen.de/gothawagen/typen/typmerkmale.html"
+      },
+      {
+        "title": "G4 · RSAG / Rostocker Nahverkehrsfreunde",
+        "url": "https://www.depot12.de/fileadmin/Depot12/Fahrzeuge/PDF/Triebwagen_1.pdf"
+      },
+      {
+        "title": "CC BY-SA 3.0 · Lizenz der bearbeiteten Vergleichsvorlage",
+        "url": "https://creativecommons.org/licenses/by-sa/3.0/"
+      }
+    ],
+    "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe."
+  },
+  "credits": [
+    "KI-Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026. Nachbildung · Vergleich Naumburg 202. Frontales Schalterpanel aus der Referenz abgeleitet; Tastenanzahl und Anordnung an die Simulation angepasst. Bildkappen und vier fotografierte Schrauben werden animiert. Instrumente sind Bildkulisse.",
+    "Grafiken panel-front.webp und lever-*.webp: Bearbeitungen nach ChristianBier, CC BY-SA 3.0. Originalfoto, Lizenz und Änderungen siehe Referenzlinks."
+  ]
+}

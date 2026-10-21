@@ -1,0 +1,168 @@
+{
+  "id": "family-kt4d",
+  "extends": "default",
+  "cab": {
+    "image": "vehicle-bundles/family-kt4d/panel-front.webp",
+    "skin": "panel",
+    "width": 1536,
+    "height": 1024,
+    "buttons": {
+      "next": {
+        "x": 197,
+        "y": 409.5,
+        "size": 170,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "back": {
+        "x": 197.5,
+        "y": 613,
+        "size": 170,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "doors": {
+        "x": 197.5,
+        "y": 816.5,
+        "size": 170,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "passenger": {
+        "x": 1331,
+        "y": 200,
+        "size": 170,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "fullscreen": {
+        "x": 1330,
+        "y": 408.5,
+        "size": 170,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "traffic": {
+        "x": 1329,
+        "y": 615.5,
+        "size": 170,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "finish": {
+        "x": 1330,
+        "y": 815,
+        "size": 170,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "emergency": {
+        "x": 186,
+        "y": 185.5,
+        "size": 220,
+        "capWidth": 184,
+        "capHeight": 172,
+        "shape": "round",
+        "ink": "#fff3df"
+      }
+    },
+    "indicators": {
+      "closed": {
+        "x": 660,
+        "y": 745,
+        "size": 96,
+        "capWidth": 60,
+        "capHeight": 60,
+        "shape": "round"
+      },
+      "open": {
+        "x": 860,
+        "y": 745,
+        "size": 96,
+        "capWidth": 60,
+        "capHeight": 60,
+        "shape": "round"
+      }
+    },
+    "headings": [],
+    "spares": [],
+    "screws": [
+      [
+        58,
+        54,
+        "oben links"
+      ],
+      [
+        1478,
+        54,
+        "oben rechts"
+      ],
+      [
+        58,
+        960,
+        "unten links"
+      ],
+      [
+        1478,
+        960,
+        "unten rechts"
+      ]
+    ],
+    "rotaries": [],
+    "colors": {
+      "console": "#27333e",
+      "panel": "#27333e",
+      "text": "#eef1f3"
+    },
+    "screwCap": 54,
+    "emergencySprites": {
+      "mask": [
+        340,
+        705,
+        40,
+        40
+      ],
+      "ring": [
+        200,
+        194,
+        245,
+        245
+      ],
+      "travel": [
+        10,
+        11
+      ]
+    },
+    "accessories": [],
+    "labelColor": "#fff8df"
+  },
+  "presentation": {
+    "title": "KT4D · klassisches Schalterpanel",
+    "variant": "Nachbildung · Prototypvergleich Potsdam",
+    "description": "Frontale dunkle Metallplatte mit schwarzen Bakelittastern, hellen Kappen und Analoginstrumenten nach dem Potsdamer KT4D-Prototyp. Für die Simulation angepasster Baureihenvergleich; kein exakter Erfurter Serienzustand.",
+    "references": [
+      {
+        "title": "Straßenbahn Potsdam · KT4D-Prototyp",
+        "url": "https://www.tram2000.de/wagenpark/museumswagen/kt4d-prototyp/"
+      }
+    ],
+    "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe."
+  },
+  "credits": [
+    "KI-Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026. Nachbildung · Prototypvergleich Potsdam. Frontales Schalterpanel aus der Referenz abgeleitet; Tastenanzahl und Anordnung an die Simulation angepasst. Bildkappen und vier fotografierte Schrauben werden animiert. Instrumente sind Bildkulisse."
+  ]
+}

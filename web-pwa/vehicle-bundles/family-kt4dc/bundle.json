@@ -1,0 +1,199 @@
+{
+  "id": "family-kt4dc",
+  "extends": "default",
+  "cab": {
+    "image": "vehicle-bundles/family-kt4dc/panel-front.webp",
+    "skin": "panel",
+    "width": 1536,
+    "height": 1024,
+    "buttons": {
+      "next": {
+        "x": 166,
+        "y": 253,
+        "size": 180,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#f7f1df"
+      },
+      "back": {
+        "x": 405,
+        "y": 251.5,
+        "size": 180,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "doors": {
+        "x": 163.5,
+        "y": 531,
+        "size": 180,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#f7f1df"
+      },
+      "passenger": {
+        "x": 240,
+        "y": 795,
+        "size": 180,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "fullscreen": {
+        "x": 578,
+        "y": 796,
+        "size": 180,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "traffic": {
+        "x": 954.5,
+        "y": 795.5,
+        "size": 180,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#3c280c"
+      },
+      "finish": {
+        "x": 1279,
+        "y": 794.5,
+        "size": 180,
+        "capWidth": 112,
+        "capHeight": 112,
+        "shape": "round",
+        "ink": "#f7f1df"
+      },
+      "emergency": {
+        "x": 1376,
+        "y": 260.5,
+        "size": 260,
+        "capWidth": 216,
+        "capHeight": 224,
+        "shape": "round",
+        "ink": "#fff3df"
+      }
+    },
+    "indicators": {
+      "closed": {
+        "x": 660,
+        "y": 577,
+        "size": 110,
+        "capWidth": 72,
+        "capHeight": 72,
+        "shape": "round"
+      },
+      "open": {
+        "x": 860,
+        "y": 577,
+        "size": 110,
+        "capWidth": 72,
+        "capHeight": 72,
+        "shape": "round"
+      }
+    },
+    "headings": [],
+    "spares": [],
+    "screws": [
+      [
+        70,
+        65,
+        "oben links"
+      ],
+      [
+        1464,
+        65,
+        "oben rechts"
+      ],
+      [
+        70,
+        934,
+        "unten links"
+      ],
+      [
+        1464,
+        934,
+        "unten rechts"
+      ]
+    ],
+    "rotaries": [],
+    "colors": {
+      "console": "#452020",
+      "panel": "#452020",
+      "text": "#eef1f3"
+    },
+    "screwCap": 54,
+    "emergencySprites": {
+      "mask": [
+        1280,
+        520,
+        40,
+        40
+      ],
+      "ring": [
+        1350,
+        265,
+        288,
+        288
+      ],
+      "travel": [
+        -18,
+        13
+      ]
+    },
+    "accessories": [
+      {
+        "kind": "button",
+        "label": "Reserve 1",
+        "sprite": [
+          1117,
+          251,
+          112,
+          112
+        ]
+      },
+      {
+        "kind": "button",
+        "label": "Reserve 2",
+        "sprite": [
+          410,
+          531,
+          112,
+          112
+        ]
+      },
+      {
+        "kind": "button",
+        "label": "Reserve 3",
+        "sprite": [
+          1115,
+          531,
+          112,
+          112
+        ]
+      }
+    ],
+    "labelColor": "#fff8df"
+  },
+  "presentation": {
+    "title": "KT4D-C · Schalterpanel",
+    "variant": "Nachbildung · Erfurt 522",
+    "description": "Frontales schwarzes Rundtasterpanel im roten Rahmen nach Erfurter Sonderwagen 522. Analogtacho als Bildkulisse. Die Spieltasten sind aus dem Schalterfeld abgeleitet und neu angeordnet; andere Modernisierungen können abweichen.",
+    "references": [
+      {
+        "title": "Erfurt KT4D-C 522 · Christian Meinelt",
+        "url": "https://www.strassenbahn-erfurt.de/wagenpark/bilder.php?id=522"
+      }
+    ],
+    "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe."
+  },
+  "credits": [
+    "KI-Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026. Nachbildung · Erfurt 522. Frontales Schalterpanel aus der Referenz abgeleitet; Tastenanzahl und Anordnung an die Simulation angepasst. Bildkappen und vier fotografierte Schrauben werden animiert. Instrumente sind Bildkulisse."
+  ]
+}

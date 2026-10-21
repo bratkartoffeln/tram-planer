@@ -40,14 +40,14 @@
   };
   const effects = new Set(['door_open','door_close','emergency','traffic','passenger','finish','back']);
   window.stopDriverSound = () => { if (driverEffect) window.cancelStopAnnouncement(); };
-  window.playDriverSound = async id => {
+  window.playDriverSound = async (id, bundle = null) => {
     if (!effects.has(id)) return false;
     window.cancelStopAnnouncement();
     if (state.settings.cockpit_muted) return true;
     driverEffect = true;
     const expectedTicket = ticket;
     const fallback = `audio/effects/${id}.mp3`;
-    const path = driverSoundPath(id) || fallback;
+    const path = (bundle?.sounds.effects[id] || driverSoundPath(id)) || fallback;
     try {
       if (nativeAvailable() && typeof window.AndroidAnnouncements.playEffect === 'function') {
         return await new Promise(resolve => {
@@ -91,6 +91,31 @@
       paths.push(phrase('next_stop_town_hall'));
     }
     return paths;
+  };
+
+  // Audition an example announcement without creating or advancing a trip.
+  window.playStopAnnouncementPreview = async name => {
+    window.cancelStopAnnouncement();
+    if (state.settings.cockpit_muted) return true;
+    const paths = window.buildStopAnnouncement(name, null), expectedTicket = ticket;
+    if (!paths) return false;
+    driverEffect = true;
+    try {
+      if (nativeAvailable()) {
+        window.AndroidAnnouncements.playSequence(name, JSON.stringify(paths));
+        return null; // Native announcement sequences have no completion callback.
+      }
+      await audioContext().resume();
+      const queue = await Promise.all(paths.map(loadBuffer));
+      for (const buffer of queue) {
+        if (expectedTicket !== ticket || !await playBuffer(buffer, expectedTicket)) return false;
+      }
+      if (expectedTicket === ticket) driverEffect = false;
+      return expectedTicket === ticket;
+    } catch {
+      if (expectedTicket === ticket) { driverEffect = false; window.onAnnouncementError('Die Hörprobe konnte nicht abgespielt werden.'); }
+      return false;
+    }
   };
 
   function nativeAvailable() {
