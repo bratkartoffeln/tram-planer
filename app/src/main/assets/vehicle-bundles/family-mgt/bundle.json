@@ -9,64 +9,64 @@
     "buttons": {
       "next": {
         "x": 288,
-        "y": 359,
+        "y": 361,
         "size": 240,
-        "capWidth": 140,
-        "capHeight": 200,
+        "capWidth": 142,
+        "capHeight": 210,
         "shape": "rect",
         "ink": "#18212a"
       },
       "back": {
         "x": 596.5,
-        "y": 358.5,
+        "y": 360,
         "size": 240,
-        "capWidth": 140,
-        "capHeight": 200,
+        "capWidth": 142,
+        "capHeight": 210,
         "shape": "rect",
         "ink": "#18212a"
       },
       "doors": {
         "x": 901.5,
-        "y": 358.5,
+        "y": 360,
         "size": 240,
-        "capWidth": 140,
-        "capHeight": 200,
+        "capWidth": 142,
+        "capHeight": 210,
         "shape": "rect",
         "ink": "#18212a"
       },
       "passenger": {
         "x": 288.5,
-        "y": 721,
+        "y": 722,
         "size": 240,
-        "capWidth": 140,
-        "capHeight": 200,
+        "capWidth": 142,
+        "capHeight": 212,
         "shape": "rect",
         "ink": "#18212a"
       },
       "fullscreen": {
         "x": 596.5,
-        "y": 721,
+        "y": 722,
         "size": 240,
-        "capWidth": 140,
-        "capHeight": 200,
+        "capWidth": 142,
+        "capHeight": 212,
         "shape": "rect",
         "ink": "#18212a"
       },
       "traffic": {
         "x": 903,
-        "y": 721,
+        "y": 722,
         "size": 240,
-        "capWidth": 140,
-        "capHeight": 200,
+        "capWidth": 142,
+        "capHeight": 212,
         "shape": "rect",
         "ink": "#18212a"
       },
       "finish": {
         "x": 1225,
-        "y": 720.5,
+        "y": 722,
         "size": 240,
-        "capWidth": 140,
-        "capHeight": 200,
+        "capWidth": 142,
+        "capHeight": 212,
         "shape": "rect",
         "ink": "#18212a"
       },
@@ -145,6 +145,12 @@
       "travel": [
         -20,
         14
+      ],
+      "base": [
+        1250,
+        339,
+        288,
+        288
       ]
     },
     "accessories": [],

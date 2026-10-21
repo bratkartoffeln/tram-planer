@@ -8,74 +8,74 @@
     "height": 1024,
     "buttons": {
       "next": {
-        "x": 275,
-        "y": 430,
+        "x": 265,
+        "y": 427,
         "size": 200,
-        "capWidth": 135,
-        "capHeight": 135,
+        "capWidth": 144,
+        "capHeight": 150,
         "shape": "round",
         "ink": "#fff3df"
       },
       "back": {
         "x": 593.5,
-        "y": 426,
+        "y": 429,
         "size": 200,
-        "capWidth": 135,
-        "capHeight": 135,
+        "capWidth": 150,
+        "capHeight": 156,
         "shape": "round",
         "ink": "#18212a"
       },
       "doors": {
         "x": 930,
-        "y": 430,
+        "y": 428,
         "size": 200,
-        "capWidth": 135,
-        "capHeight": 135,
+        "capWidth": 148,
+        "capHeight": 152,
         "shape": "round",
         "ink": "#fff3df"
       },
       "passenger": {
-        "x": 275,
-        "y": 740,
+        "x": 268,
+        "y": 742,
         "size": 200,
-        "capWidth": 135,
-        "capHeight": 135,
+        "capWidth": 148,
+        "capHeight": 152,
         "shape": "round",
         "ink": "#fff3df"
       },
       "fullscreen": {
         "x": 594.5,
-        "y": 740,
+        "y": 744,
         "size": 200,
-        "capWidth": 135,
-        "capHeight": 135,
+        "capWidth": 150,
+        "capHeight": 158,
         "shape": "round",
         "ink": "#18212a"
       },
       "traffic": {
         "x": 932,
-        "y": 741.5,
+        "y": 744,
         "size": 200,
-        "capWidth": 135,
-        "capHeight": 135,
+        "capWidth": 156,
+        "capHeight": 162,
         "shape": "round",
         "ink": "#3c280c"
       },
       "finish": {
-        "x": 1271.5,
-        "y": 737.5,
+        "x": 1273,
+        "y": 740,
         "size": 200,
-        "capWidth": 135,
-        "capHeight": 135,
+        "capWidth": 154,
+        "capHeight": 158,
         "shape": "round",
         "ink": "#fff3df"
       },
       "emergency": {
         "x": 1269,
-        "y": 423.5,
+        "y": 425,
         "size": 200,
-        "capWidth": 150,
-        "capHeight": 140,
+        "capWidth": 156,
+        "capHeight": 154,
         "shape": "round",
         "ink": "#fff3df",
         "kind": "push"
@@ -146,6 +146,12 @@
       "travel": [
         0,
         7
+      ],
+      "base": [
+        1267,
+        430,
+        160,
+        160
       ]
     },
     "accessories": [],

@@ -1,6 +1,6 @@
 'use strict';
 const CACHE_PREFIX = 'fahrplan-manager-tablet-';
-const CACHE = CACHE_PREFIX + 'v6.2.8-lever-poses';
+const CACHE = CACHE_PREFIX + 'v6.2.9-fixed-sockets';
 const ASSETS = [
   './', './index.html', './app.js', './announcements.js', './erfurt-network.js', './line-editor.js', './network-editor.js', './network-plan.json', './network-plan-data.js',
   './cockpit.js', './cockpit.css', './shell.css', './images/tram-cockpit.jpg', './images/credits.json', './images/cab-panel-photoreal.webp', './audio/effects/catalog.json',

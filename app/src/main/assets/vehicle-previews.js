@@ -1,6 +1,7 @@
 'use strict';
 let vehicleBundlePreview=null,vehiclePreviewTicket=0,vehiclePreviewTimer=null,vehiclePreviewDoorsOpen=false;
 const vehiclePreviewAccessoryStates=new Map();
+const vehiclePreviewRotaryTurns=[0,0];
 const vehiclePreviewLooseScrews=new Set(),vehiclePreviewScrewTouches=new Map();
 const VEHICLE_PREVIEW_SOUNDS={door_open:'Türen öffnen',door_close:'Türen schließen',emergency:'Notfall',traffic:'Stau',passenger:'Fahrgastanzeige',finish:'Fahrtende',back:'Zurück'};
 const VEHICLE_PREVIEW_MECHANICS={down:'Taster drücken',up:'Taster loslassen',latch:'Not-Aus einrasten',rotary:'Drehschalter',screw:'Schraube lösen',ratchet:'Schraube eindrehen'};
@@ -12,7 +13,7 @@ function openVehicleBundlePreview(typeId){
  const type=vehicleType(typeId);if(!type)return;
  closeModal();
  const bundle=getVehicleBundle({vehicleTypeId:typeId}),info=vehicleBundleInfo(bundle);
- vehicleBundlePreview=bundle;vehiclePreviewDoorsOpen=false;vehiclePreviewLooseScrews.clear();vehiclePreviewScrewTouches.clear();vehiclePreviewAccessoryStates.clear();
+ vehicleBundlePreview=bundle;vehiclePreviewDoorsOpen=false;vehiclePreviewLooseScrews.clear();vehiclePreviewScrewTouches.clear();vehiclePreviewAccessoryStates.clear();vehiclePreviewRotaryTurns.fill(0);
  const example={id:'preview-'+typeId,plan:{line:'–',tram:type.name,stops:[{},{},{}]},position:1,doorsOpen:false,status:'running'};
  showModal(`${esc(type.name)} · Fahrpult & Sounds`,`${renderCabControls(example,0,bundle)}<p class="vehicle-preview-instructions">Pulttasten drücken, um die Sounds vorzuhören. Der Türtaster wechselt zwischen Öffnen und Schließen. „Nächster Halt“ spielt eine Beispielansage; „Vollbild“ gibt den Tastenklick wieder. Zusatzschalter und Hebel sind als Reserve ohne Fahrfunktion schaltbar. Die Schrauben lassen sich per Doppelklick oder Doppeltippen ausprobieren.</p><p id="vehicleSoundStatus" role="status" aria-live="polite">Pulttaste für eine Hörprobe drücken.</p><p class="muted">${esc(info.soundNote)}</p>${state.settings.cockpit_muted?'<p class="notice">Tastentöne sind in den Einstellungen stummgeschaltet. Aktiviere sie dort für die Hörprobe.</p>':''}<details><summary>Nachbildung, Varianten & Quellen</summary>${vehicleBundleSources(bundle)}</details>`, '<button type="button" onclick="stopVehiclePreviewSound()">■ Wiedergabe stoppen</button><button type="button" class="primary" onclick="closeModal()">Schließen</button>');
  const modal=document.querySelector('#modalRoot .modal');modal.classList.add('vehicle-bundle-modal');

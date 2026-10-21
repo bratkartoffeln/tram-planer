@@ -95,7 +95,7 @@ async function openPage({seed=null,native=true,frozen=true,now=BASE,viewport={wi
     await page.clock.pauseAt(new Date(now));
   }
   await page.goto(origin+'/index.html',{waitUntil:'load'});
-  await page.locator('#appVersion').filter({hasText:'v6.2.8 Android'}).waitFor();
+  await page.locator('#appVersion').filter({hasText:'v6.2.9 Android'}).waitFor();
   return {context,page};
 }
 const readState = page=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);
@@ -448,7 +448,7 @@ async function testCancellation(label,action,verify) {
       await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
       const cached=await page.evaluate(async()=>{
         const names=await caches.keys();
-        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.8-lever-poses'));
+        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.9-fixed-sockets'));
         return (await cache.keys()).map(request=>new URL(request.url).pathname);
       });
       const required=['/','/index.html','/app.js','/announcements.js','/manifest.webmanifest','/icon-192.png','/icon-512.png','/audio/announcements-data.js','/audio/announcements.json','/audio/catalog.json',...allAudioPaths.map(file=>'/'+file)];
@@ -456,7 +456,7 @@ async function testCancellation(label,action,verify) {
       assert(required.every(file=>cached.includes(file)),'all shell and audio assets must be cached');
       await context.setOffline(true);
       await page.reload({waitUntil:'load'});
-      await page.locator('#appVersion').filter({hasText:'v6.2.8 Android'}).waitFor();
+      await page.locator('#appVersion').filter({hasText:'v6.2.9 Android'}).waitFor();
       assert.equal(await page.evaluate(()=>Object.keys(window.STOP_ANNOUNCEMENTS).length),96);
       const offlineAudio=await page.evaluate(async(audioPaths)=>Promise.all(audioPaths.map(async path=>{
         const response=await fetch(path);

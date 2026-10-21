@@ -11,17 +11,17 @@
         "x": 227.5,
         "y": 352,
         "size": 210,
-        "capWidth": 120,
-        "capHeight": 132,
+        "capWidth": 136,
+        "capHeight": 148,
         "shape": "rect",
         "ink": "#fff3df"
       },
       "back": {
         "x": 585,
-        "y": 348,
+        "y": 350,
         "size": 210,
-        "capWidth": 120,
-        "capHeight": 132,
+        "capWidth": 134,
+        "capHeight": 146,
         "shape": "rect",
         "ink": "#18212a"
       },
@@ -29,26 +29,26 @@
         "x": 953.5,
         "y": 351.5,
         "size": 210,
-        "capWidth": 120,
-        "capHeight": 132,
+        "capWidth": 136,
+        "capHeight": 148,
         "shape": "rect",
         "ink": "#fff3df"
       },
       "passenger": {
-        "x": 225,
-        "y": 750,
+        "x": 227,
+        "y": 745,
         "size": 210,
-        "capWidth": 120,
-        "capHeight": 132,
+        "capWidth": 134,
+        "capHeight": 144,
         "shape": "rect",
         "ink": "#fff3df"
       },
       "fullscreen": {
         "x": 584,
-        "y": 742.5,
+        "y": 746,
         "size": 210,
-        "capWidth": 120,
-        "capHeight": 132,
+        "capWidth": 134,
+        "capHeight": 146,
         "shape": "rect",
         "ink": "#18212a"
       },
@@ -56,8 +56,8 @@
         "x": 952.5,
         "y": 746,
         "size": 210,
-        "capWidth": 120,
-        "capHeight": 132,
+        "capWidth": 136,
+        "capHeight": 148,
         "shape": "rect",
         "ink": "#3c280c"
       },
@@ -65,8 +65,8 @@
         "x": 1309.5,
         "y": 746,
         "size": 210,
-        "capWidth": 120,
-        "capHeight": 132,
+        "capWidth": 138,
+        "capHeight": 148,
         "shape": "rect",
         "ink": "#fff3df"
       },
@@ -146,6 +146,12 @@
       "travel": [
         -4,
         9
+      ],
+      "base": [
+        1310,
+        355,
+        208,
+        208
       ]
     },
     "accessories": [

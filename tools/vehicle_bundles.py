@@ -102,9 +102,13 @@ def compile_bundles(assets, type_ids):
 
         if 'emergencySprites' in cab:
             sprites = cab['emergencySprites']
-            check(isinstance(sprites, dict) and set(sprites) == {'mask', 'ring', 'travel'}, key + ': emergency sprites')
+            check(isinstance(sprites, dict) and {'mask', 'ring', 'travel'} <= set(sprites)
+                  and set(sprites) <= {'mask', 'ring', 'travel', 'base'}, key + ': emergency sprites')
             rectangle(sprites['mask'])
             rectangle(sprites['ring'])
+            if 'base' in sprites:
+                rectangle(sprites['base'])
+                check(sprites['base'][2] == sprites['base'][3], key + ': emergency base must be circular')
             check(isinstance(sprites['travel'], list) and len(sprites['travel']) == 2
                   and all(type(v) in (int, float) and abs(v) <= 100 for v in sprites['travel']), key + ': emergency travel')
         check(isinstance(cab.get('accessories', []), list) and len(cab.get('accessories', [])) <= 24, key + ': accessories')

@@ -9,10 +9,10 @@
     "buttons": {
       "next": {
         "x": 197,
-        "y": 409.5,
+        "y": 410,
         "size": 170,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 128,
+        "capHeight": 132,
         "shape": "round",
         "ink": "#fff3df"
       },
@@ -20,17 +20,17 @@
         "x": 197.5,
         "y": 613,
         "size": 170,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 124,
+        "capHeight": 126,
         "shape": "round",
         "ink": "#18212a"
       },
       "doors": {
         "x": 197.5,
-        "y": 816.5,
+        "y": 817,
         "size": 170,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 128,
+        "capHeight": 132,
         "shape": "round",
         "ink": "#fff3df"
       },
@@ -38,8 +38,8 @@
         "x": 1331,
         "y": 200,
         "size": 170,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 126,
+        "capHeight": 128,
         "shape": "round",
         "ink": "#fff3df"
       },
@@ -47,8 +47,8 @@
         "x": 1330,
         "y": 408.5,
         "size": 170,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 124,
+        "capHeight": 126,
         "shape": "round",
         "ink": "#18212a"
       },
@@ -56,8 +56,8 @@
         "x": 1329,
         "y": 615.5,
         "size": 170,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 130,
+        "capHeight": 132,
         "shape": "round",
         "ink": "#fff3df"
       },
@@ -65,8 +65,8 @@
         "x": 1330,
         "y": 815,
         "size": 170,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 126,
+        "capHeight": 132,
         "shape": "round",
         "ink": "#fff3df"
       },
@@ -145,6 +145,12 @@
       "travel": [
         10,
         11
+      ],
+      "base": [
+        202,
+        194,
+        214,
+        214
       ]
     },
     "accessories": [],

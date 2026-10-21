@@ -11,8 +11,8 @@
         "x": 166,
         "y": 253,
         "size": 180,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 136,
+        "capHeight": 140,
         "shape": "round",
         "ink": "#f7f1df"
       },
@@ -20,8 +20,8 @@
         "x": 405,
         "y": 251.5,
         "size": 180,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 138,
+        "capHeight": 142,
         "shape": "round",
         "ink": "#18212a"
       },
@@ -29,8 +29,8 @@
         "x": 163.5,
         "y": 531,
         "size": 180,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 144,
+        "capHeight": 144,
         "shape": "round",
         "ink": "#f7f1df"
       },
@@ -38,8 +38,8 @@
         "x": 240,
         "y": 795,
         "size": 180,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 142,
+        "capHeight": 144,
         "shape": "round",
         "ink": "#18212a"
       },
@@ -47,8 +47,8 @@
         "x": 578,
         "y": 796,
         "size": 180,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 142,
+        "capHeight": 144,
         "shape": "round",
         "ink": "#18212a"
       },
@@ -56,8 +56,8 @@
         "x": 954.5,
         "y": 795.5,
         "size": 180,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 138,
+        "capHeight": 144,
         "shape": "round",
         "ink": "#3c280c"
       },
@@ -65,8 +65,8 @@
         "x": 1279,
         "y": 794.5,
         "size": 180,
-        "capWidth": 112,
-        "capHeight": 112,
+        "capWidth": 144,
+        "capHeight": 146,
         "shape": "round",
         "ink": "#f7f1df"
       },
@@ -145,6 +145,12 @@
       "travel": [
         -18,
         13
+      ],
+      "base": [
+        1341,
+        263.5,
+        243,
+        243
       ]
     },
     "accessories": [
@@ -154,8 +160,8 @@
         "sprite": [
           1117,
           251,
-          112,
-          112
+          134,
+          138
         ]
       },
       {
@@ -164,8 +170,8 @@
         "sprite": [
           410,
           531,
-          112,
-          112
+          134,
+          138
         ]
       },
       {
@@ -174,8 +180,8 @@
         "sprite": [
           1115,
           531,
-          112,
-          112
+          134,
+          138
         ]
       }
     ],

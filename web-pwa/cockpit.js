@@ -24,7 +24,7 @@ function cabButton({id='',color,label,icon,action,disabled=false,pressed,emergen
  const emergencyCrop=emergency?';'+(panel.emergencySprites?cabEmergencyPhotoLayers(panel):cabPhotoCrop('emergency-mask',x-20,y-140,220,100,panel)+';'+cabPhotoCrop('emergency-ring',x-15,y+10,230,220,panel)):'';
  const previewAction=action?.match(/^previewVehicleCabAction\('([a-z]+)'\)$/)?.[1];
  const offset=CAB_ICON_OFFSETS[icon],adjustment=offset?` transform="translate(${offset.join(' ')})"`:'';
- return `<button ${previewAction?`data-preview-action="${previewAction}"`:""} ${id?`id="${id}"`:''} ${emergency?'aria-label="Notfall"':''} ${id==='cabFullscreenBtn'?`title="${cabFullscreen?'Vollbild beenden':'Vollbild einschalten'}"`:''} class="cab-button cab-${color}${emergency?' cab-emergency':''}" style="${cabPosition(x,y,size,panel)};${crop}${emergencyCrop}" onclick="${action}" ${disabled?'disabled':''} ${pressed===undefined?'':`aria-pressed="${pressed}"`}><span class="cab-bezel">${emergency?'<span class="cab-emergency-mask"></span><span class="cab-emergency-base"></span><span class="cab-emergency-stem"></span><span class="cab-emergency-ring"></span>':''}<span class="cab-face"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="${CAB_ICONS[icon]}"${adjustment}/></svg></span></span>${cabLabel(label,x,y,size,size,labelPad)}</button>`;
+ return `<button ${previewAction?`data-preview-action="${previewAction}"`:""} ${id?`id="${id}"`:''} ${emergency?'aria-label="Notfall"':''} ${id==='cabFullscreenBtn'?`title="${cabFullscreen?'Vollbild beenden':'Vollbild einschalten'}"`:''} class="cab-button cab-${color}${emergency?' cab-emergency':''}" style="${cabPosition(x,y,size,panel)};${crop}${emergencyCrop}" onclick="${action}" ${disabled?'disabled':''} ${pressed===undefined?'':`aria-pressed="${pressed}"`}><span class="cab-bezel">${emergency?'<span class="cab-emergency-mask"></span><span class="cab-emergency-base"></span><span class="cab-emergency-stem"></span><span class="cab-emergency-ring"></span>':'<span class="cab-cap-socket"></span>'}<span class="cab-face"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="${CAB_ICONS[icon]}"${adjustment}/></svg></span></span>${cabLabel(label,x,y,size,size,labelPad)}</button>`;
 }
 function cabPlaceholder(x,y,panel=cabPanel()){
  return `<span class="cab-placeholder cab-reserve" style="${cabPosition(x,y,140,panel)}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"></span></span></span>`;
@@ -33,11 +33,13 @@ function cabPhotoCrop(prefix,x,y,width,height=width,panel=cabPanel()){
  return `--${prefix}-size:${panel.width/width*100}% ${panel.height/height*100}%;--${prefix}-position:${(x-width/2)/(panel.width-width)*100}% ${(y-height/2)/(panel.height-height)*100}%`;
 }
 function cabEmergencyPhotoLayers(panel){
- const button=panel.buttons.emergency,{mask,ring,travel}=panel.emergencySprites;
+ const button=panel.buttons.emergency,{mask,ring,travel,base=ring}=panel.emergencySprites;
  const {x,y,size,capWidth,capHeight}=button;
  const box=(prefix,cx,cy,w,h)=>`--${prefix}-left:${(cx-w/2-x+size/2)/size*100}%;--${prefix}-top:${(cy-h/2-y+size/2)/size*100}%;--${prefix}-width:${w/size*100}%;--${prefix}-height:${h/size*100}%`;
  return [cabPhotoCrop('emergency-mask',...mask,panel),cabPhotoCrop('emergency-ring',...ring,panel),
-  box('emergency-mask',x,y,capWidth+4,capHeight+4),box('emergency-ring',...ring),box('emergency-stem',x+travel[0]*.6,y+travel[1]*.6,capWidth*.80,capHeight*.80),
+  box('emergency-mask',x,y,capWidth+16,capHeight+16),box('emergency-ring',...ring),box('emergency-base',...base),box('emergency-stem',x+travel[0]*.6,y+travel[1]*.6,capWidth*.80,capHeight*.80),
+  `--emergency-base-display:block;--emergency-mask-image:${button.kind==='push'?'none':'var(--cab-image)'};--emergency-mask-fill:${button.kind==='push'?'#27221c':'transparent'}`,
+  `--emergency-socket:${button.kind==='push'?'radial-gradient(circle at 40% 30%,#383029,#211c18 75%,#100e0c)':'linear-gradient(125deg,#ffe354,#efcb11 48%,#c69e06)'}`,
   `--emergency-cut-x:${(x-ring[0]+ring[2]/2)/ring[2]*100}%;--emergency-cut-y:${(y-ring[1]+ring[3]/2)/ring[3]*100}%;--emergency-cut-w:${capWidth/2/ring[2]*100}%;--emergency-cut-h:${capHeight/2/ring[3]*100}%;--emergency-travel-x:${travel[0]/capWidth*100}%;--emergency-travel-y:${travel[1]/capHeight*100}%`].join(';');
 }
 function renderCabAccessory(control,index,panel,preview=false){
@@ -63,15 +65,17 @@ function toggleCabAccessory(index){
  states.set(key,on);button.classList.toggle('is-on',on);button.setAttribute('aria-pressed',String(on));
  playCabMechanical(control.kind==='lever'?'rotary':on?'down':'up',vehicleBundlePreview);
 }
-function cabRotaryLabel(index){return `Reserve-Drehschalter ${index===0?'Scheibe':'Betrieb'}, Stellung ${cabRotaryTurns[index]%4*90}°`;}
-function renderCabRotary(index,x,y,panel=cabPanel()){
+function cabRotaryLabel(index,turns=cabRotaryTurns){return `Reserve-Drehschalter ${index===0?'Scheibe':'Betrieb'}, Stellung ${turns[index]%4*90}°`;}
+function renderCabRotary(index,x,y,panel=cabPanel(),preview=false){
+ const turns=preview?vehiclePreviewRotaryTurns:cabRotaryTurns;
  const crop=Object.entries(panel.rotarySprites).map(([name,rect])=>cabPhotoCrop('rotary-'+name,...rect,panel)).join(';');
- return `<button type="button" id="cabRotary${index}" class="cab-rotary cab-reserve" style="${cabPosition(x,y,180,panel)};${crop};--rotary-angle:${cabRotaryTurns[index]*90}deg" aria-label="${cabRotaryLabel(index)}" title="Reserve: pro Klick 90° im Uhrzeigersinn" onclick="turnCabRotary(${index})"><span class="cab-rotary-mask"></span><span class="cab-rotary-ring"><span class="cab-rotary-disc"></span></span><span class="cab-rotary-turn"><span class="cab-rotary-grip"></span></span></button>`;
+ return `<button type="button" id="cabRotary${index}" class="cab-rotary cab-reserve" style="${cabPosition(x,y,180,panel)};${crop};--rotary-angle:${turns[index]*90}deg" aria-label="${cabRotaryLabel(index,turns)}" title="Reserve: pro Klick 90° im Uhrzeigersinn" onclick="turnCabRotary(${index})"><span class="cab-rotary-mask"></span><span class="cab-rotary-ring"><span class="cab-rotary-disc"></span></span><span class="cab-rotary-turn"><span class="cab-rotary-grip"></span></span></button>`;
 }
 function turnCabRotary(index){
- if(currentView!=='driver'||!state.active||!Number.isInteger(index)||index<0||index>=cabRotaryTurns.length)return;
+ if((!vehicleBundlePreview&&(currentView!=='driver'||!state.active))||!Number.isInteger(index)||index<0||index>=cabRotaryTurns.length)return;
  const knob=document.getElementById('cabRotary'+index);if(!knob)return;
- cabRotaryTurns[index]++;knob.style.setProperty('--rotary-angle',cabRotaryTurns[index]*90+'deg');knob.setAttribute('aria-label',cabRotaryLabel(index));playCabMechanical('rotary');
+ const turns=vehicleBundlePreview?vehiclePreviewRotaryTurns:cabRotaryTurns;
+ turns[index]++;knob.style.setProperty('--rotary-angle',turns[index]*90+'deg');knob.setAttribute('aria-label',cabRotaryLabel(index,turns));playCabMechanical('rotary',vehicleBundlePreview);
 }
 function cabDoorIndicator(x,y,color,label,active,icon,blinking=false,panel=cabPanel(),dimensions={}){
  const {size=140,capWidth=96,capHeight=capWidth,shape='round',labelPad}=dimensions;
@@ -122,7 +126,7 @@ function renderCabControls(a,pause,previewBundle=null){
  <div class="cab-door-indicators" role="status" aria-label="${moving?(doorMotion.opening?'Türen öffnen':'Türen schließen'):a.doorsOpen?'Türen geöffnet':'Türen geschlossen'}">${cabDoorIndicator(panel.indicators.closed.x,panel.indicators.closed.y,'green','Türen zu',!a.doorsOpen,'close',false,panel,panel.indicators.closed)}${cabDoorIndicator(panel.indicators.open.x,panel.indicators.open.y,'amber','Türen offen',a.doorsOpen,'doors',moving,panel,panel.indicators.open)}</div>
  ${spares.map(([x,y])=>cabPlaceholder(x,y,panel)).join('')}
  ${(panel.accessories||[]).map((control,index)=>renderCabAccessory(control,index,panel,!!previewBundle)).join('')}
- ${panel.rotaries.map(([x,y],index)=>renderCabRotary(index,x,y,panel)).join('')}
+ ${panel.rotaries.map(([x,y],index)=>renderCabRotary(index,x,y,panel,!!previewBundle)).join('')}
  </div></div></div><div class="cab-footer"><span>${esc(vehicleBundleInfo(bundle).variant)}</span>${previewBundle?'':`<div><button class="cab-text-button" onclick="toggleCockpitSound()" aria-pressed="${!!state.settings.cockpit_muted}">${state.settings.cockpit_muted?'Tastentöne aus':'Tastentöne an'}</button><button class="cab-text-button" onclick="showCockpitSources()">Bild- & Tonquellen</button></div>`}</div></section>`;
 }
 function updateCabRoutePanel(){
