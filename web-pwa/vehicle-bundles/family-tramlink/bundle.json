@@ -161,6 +161,138 @@
         1628,
         872,
         "unten rechts"
+      ],
+      [
+        613,
+        86,
+        "Displayrahmen 1",
+        26
+      ],
+      [
+        1357,
+        86,
+        "Displayrahmen 2",
+        26
+      ],
+      [
+        612,
+        627,
+        "Displayrahmen 3",
+        26
+      ],
+      [
+        1357,
+        627,
+        "Displayrahmen 4",
+        26
+      ],
+      [
+        43,
+        644,
+        "Pultsegment 1",
+        30
+      ],
+      [
+        1628,
+        643,
+        "Pultsegment 2",
+        30
+      ],
+      [
+        46,
+        706,
+        "Pultsegment 3",
+        30
+      ],
+      [
+        1626,
+        706,
+        "Pultsegment 4",
+        30
+      ],
+      [
+        309,
+        238,
+        "Tachometer 1",
+        18
+      ],
+      [
+        303,
+        486,
+        "Tachometer 2",
+        18
+      ],
+      [
+        117,
+        725,
+        "Tasterring 1",
+        8
+      ],
+      [
+        245,
+        725,
+        "Tasterring 2",
+        8
+      ],
+      [
+        362,
+        725,
+        "Tasterring 3",
+        8
+      ],
+      [
+        490,
+        725,
+        "Tasterring 4",
+        8
+      ],
+      [
+        614,
+        725,
+        "Tasterring 5",
+        8
+      ],
+      [
+        740,
+        725,
+        "Tasterring 6",
+        8
+      ],
+      [
+        865,
+        725,
+        "Tasterring 7",
+        8
+      ],
+      [
+        992,
+        725,
+        "Tasterring 8",
+        8
+      ],
+      [
+        1116,
+        725,
+        "Tasterring 9",
+        8
+      ],
+      [
+        1243,
+        725,
+        "Tasterring 10",
+        8
+      ],
+      [
+        1370,
+        725,
+        "Tasterring 11",
+        8
+      ],
+      [
+        1500,
+        725,
+        "Tasterring 12",
+        8
       ]
     ],
     "rotaries": [
@@ -428,7 +560,7 @@
     "title": "Tramlink · mittleres Instrumentenpult",
     "variant": "Nachbildung · mittleres Pult nach bereitgestelltem Foto",
     "description": "Frontale fotorealistische Nachbildung des mittleren schwarzen Instrumentenpults nach dem bereitgestellten Tramlink-Foto: Analogtacho links, Diagnoseanzeige mittig, Not-Aus rechts und eine untere Bedienleiste. Die Fahrfunktionen sind für die Simulation zugeordnet. Anzeige und Tacho sind Bildkulisse; zusätzliche Taster und die beiden Drehschalter sind als Reserve bedienbar.",
-    "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe.",
+    "soundNote": "Türklänge: vom Nutzer bereitgestellte Tramlink-Aufnahmen für Öffnen, Schließen und Türen zu. Weitere Klänge verwenden die gemeinsamen Standardaufnahmen und Synthesen.",
     "references": [
       {
         "title": "Gestaltung, bereitgestellte Vorlage und Änderungen",
@@ -437,6 +569,14 @@
     ]
   },
   "credits": [
-    "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt."
-  ]
+    "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt.",
+    "Türklänge: vom Nutzer am 21.10.2026 bereitgestellte Dateien door_open_tramlink.mp3, door_close_tramlink.mp3 und door_closed_tramlink.mp3, unverändert übernommen. Weitere Herkunft und Lizenz der Aufnahmen sind nicht angegeben."
+  ],
+  "sounds": {
+    "effects": {
+      "door_open": "vehicle-bundles/family-tramlink/audio/door_open.mp3",
+      "door_close": "vehicle-bundles/family-tramlink/audio/door_close.mp3",
+      "door_closed": "vehicle-bundles/family-tramlink/audio/door_closed.mp3"
+    }
+  }
 }

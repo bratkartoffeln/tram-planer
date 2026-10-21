@@ -3,5 +3,13 @@
   "extends": "family-mgt",
   "presentation": {
     "variant": "Nachbildung · MGT6DE · Referenz Erfurt 612"
+  },
+  "cab": {
+    "layout": {
+      "icon-emergency": {
+        "x": 1290.0918872976727,
+        "y": 321.5846439790648
+      }
+    }
   }
 }

@@ -1,4 +1,84 @@
 {
   "id": "tramlink",
-  "extends": "family-tramlink"
+  "extends": "family-tramlink",
+  "cab": {
+    "layout": {
+      "label-reserve-10": {
+        "x": 864.9880134126109,
+        "y": 708.4078826962685
+      },
+      "label-rotary-0": {
+        "x": 1000.3706746911586,
+        "y": 706.0184171905066
+      },
+      "label-reserve-11": {
+        "x": 1121.9961679966875,
+        "y": 707.0710648647556
+      },
+      "icon-emergency": {
+        "x": 1527.3652089922346,
+        "y": 120.9328050044214
+      },
+      "label-emergency": {
+        "x": 1505.8190559039126,
+        "y": 39.99867141103879
+      },
+      "icon-fullscreen": {
+        "x": 738.941770382272,
+        "y": 779.3319021383812
+      },
+      "icon-next": {
+        "x": 614.2744252056509,
+        "y": 776.6371939912752
+      },
+      "control-rotary-0": {
+        "text": "",
+        "icon": "",
+        "sounds": {
+          "0": "",
+          "1": "",
+          "2": "",
+          "3": ""
+        },
+        "actions": {
+          "0": "",
+          "1": "",
+          "2": "",
+          "3": ""
+        },
+        "action": "",
+        "sound": ""
+      },
+      "actuation-rotary-0": {
+        "press": "",
+        "release": ""
+      },
+      "icon-rotary-0": {
+        "x": 993.6344143102484,
+        "y": 779.3423661043706
+      },
+      "control-reserve-10": {
+        "text": "",
+        "icon": "",
+        "sound": "",
+        "action": ""
+      },
+      "actuation-reserve-10": {
+        "press": "",
+        "release": ""
+      },
+      "label-passenger": {
+        "text": "Fahrgastinfo"
+      },
+      "heading-free-1": {
+        "text": "Vmax 70 km/h",
+        "x": 305.1634992793266,
+        "y": 198.3406960949187,
+        "fontSize": 30,
+        "color": "#000000",
+        "background": "#ffffff",
+        "fontFamily": "serif"
+      }
+    }
+  }
 }

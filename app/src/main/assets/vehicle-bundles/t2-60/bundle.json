@@ -3,5 +3,13 @@
   "extends": "family-gotha-crank",
   "presentation": {
     "variant": "Nachbildung · T2-60 · Kurbel-Familienvergleich"
+  },
+  "cab": {
+    "layout": {
+      "icon-emergency": {
+        "x": 1327.6488850540404,
+        "y": 331.0705970284827
+      }
+    }
   }
 }

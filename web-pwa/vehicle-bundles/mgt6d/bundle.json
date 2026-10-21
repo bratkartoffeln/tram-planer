@@ -3,5 +3,13 @@
   "extends": "family-mgt",
   "presentation": {
     "variant": "Nachbildung · MGT6D · Familienvariante nach MGT6DE 612"
+  },
+  "cab": {
+    "layout": {
+      "icon-emergency": {
+        "x": 1290.0920761574655,
+        "y": 314.1582996240763
+      }
+    }
   }
 }

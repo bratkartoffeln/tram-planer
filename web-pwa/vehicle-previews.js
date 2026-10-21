@@ -4,7 +4,7 @@ let vehiclePreviewVehicleId=null;
 const vehiclePreviewAccessoryStates=new Map();
 const vehiclePreviewRotaryTurns=[0,0];
 const vehiclePreviewLooseScrews=new Set(),vehiclePreviewScrewTouches=new Map();
-const VEHICLE_PREVIEW_SOUNDS={door_open:'Türen öffnen',door_close:'Türen schließen',emergency:'Notfall',traffic:'Stau',passenger:'Fahrgastanzeige',finish:'Fahrtende',back:'Zurück'};
+const VEHICLE_PREVIEW_SOUNDS={door_open:'Türen öffnen',door_close:'Türen schließen',door_closed:'Türen zu · Ding',emergency:'Notfall',traffic:'Stau',passenger:'Fahrgastanzeige',finish:'Fahrtende',back:'Zurück'};
 const VEHICLE_PREVIEW_MECHANICS={down:'Taster drücken',up:'Taster loslassen',latch:'Not-Aus einrasten',rotary:'Drehschalter',screw:'Schraube lösen',ratchet:'Schraube eindrehen'};
 function vehicleCabThumbnail(type,vehicle=null){
  const bundle=getVehicleBundle({vehicleTypeId:type.id}),info=vehicleBundleInfo(bundle);
@@ -29,10 +29,10 @@ function syncVehiclePreviewDoors(moving=false){
  if(!vehicleBundlePreview)return;
  const root=document.querySelector('.vehicle-bundle-modal'),button=root?.querySelector('#doorBtn');if(!button)return;
  button.setAttribute('aria-pressed',String(vehiclePreviewDoorsOpen));button.querySelector('.cab-label').textContent=vehiclePreviewDoorsOpen?'Türen schließen':'Türen öffnen';
- button.disabled=moving||state.settings.cockpit_muted;
+ button.cabDefaultDisabled=moving||state.settings.cockpit_muted;button.disabled=button.cabDefaultDisabled;
  const closed=root.querySelector('[data-door-indicator="closed"]'),open=root.querySelector('[data-door-indicator="open"]');
  closed.classList.toggle('is-lit',!vehiclePreviewDoorsOpen&&!moving);open.classList.toggle('is-lit',vehiclePreviewDoorsOpen||moving);open.classList.toggle('is-blinking',moving);
- cabLayoutRefresh();
+ if(cabLayoutEditor)cabLayoutRefresh();else applyCabLayoutToStage(root.querySelector('.cab-stage'),vehicleBundlePreview);
 }
 function stopVehiclePreviewSound(){
  ++vehiclePreviewTicket;clearTimeout(vehiclePreviewTimer);vehiclePreviewTimer=null;
@@ -56,6 +56,11 @@ async function previewVehicleSound(id,mechanical=false){
  status.textContent=completed?'Hörprobe beendet.':'Wiedergabe gestoppt.';return completed;
 }
 async function previewVehicleCabAction(action){
+ const activity=cabActivitySound;
+ if(activity)activity.handled=true;
+ const pendingBundle=vehicleBundlePreview,pendingTicket=vehiclePreviewTicket;
+ if(cabFollowSoundGate&&!await cabFollowSoundGate.promise)return;
+ if(pendingBundle!==vehicleBundlePreview||pendingTicket!==vehiclePreviewTicket)return;
  if(!vehicleBundlePreview||state.settings.cockpit_muted)return;
  const labels={next:'Beispielansage Anger',back:'Zurück',doors:vehiclePreviewDoorsOpen?'Türen schließen':'Türen öffnen',passenger:'Fahrgastanzeige',fullscreen:'Vollbild · Tastenklick',traffic:'Stau',finish:'Fahrtende',emergency:'Notfall'};
  if(!Object.hasOwn(labels,action))return;
@@ -66,12 +71,16 @@ async function previewVehicleCabAction(action){
  if(action==='doors')syncVehiclePreviewDoors(true);
  if(action==='emergency')button?.setAttribute('aria-pressed','true');
  let completed;
- if(action==='next')completed=await playStopAnnouncementPreview('Anger');
- else if(action==='fullscreen'){playCabMechanical('down',bundle);completed=true;}
- else completed=await playDriverSound(action==='doors'?(opening?'door_open':'door_close'):action,bundle);
+ if(action==='next'){playCabReserveSound(activity?.sound,bundle);completed=await playStopAnnouncementPreview('Anger');}
+ else if(action==='fullscreen'){if(activity?.sound)await playCabReserveSound(activity.sound,bundle);else playCabMechanical('down',bundle);completed=true;}
+ else completed=await playDriverSound(action==='doors'?(opening?'door_open':'door_close'):action,bundle,activity);
  if(ticket!==vehiclePreviewTicket||bundle!==vehicleBundlePreview)return;
  button?.classList.remove('is-sound-playing');if(action==='emergency')button?.setAttribute('aria-pressed','false');
  if(action==='doors'){if(completed)vehiclePreviewDoorsOpen=opening;syncVehiclePreviewDoors();}
+ if(action==='doors'&&!opening&&completed){
+  completed=await playDriverSound('door_closed',bundle,activity?.sound?{sound:'none'}:null);
+  if(ticket!==vehiclePreviewTicket||bundle!==vehicleBundlePreview)return;
+ }
  status.textContent=completed===null?'Beispielansage gestartet.':completed?'Hörprobe beendet.':'Wiedergabe gestoppt.';
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopVehiclePreviewSound();});

@@ -117,19 +117,19 @@
     },
     "indicators": {
       "closed": {
-        "x": 660,
-        "y": 745,
+        "x": 665,
+        "y": 746,
         "size": 96,
-        "capWidth": 60,
-        "capHeight": 60,
+        "capWidth": 80,
+        "capHeight": 84,
         "shape": "round"
       },
       "open": {
-        "x": 860,
-        "y": 745,
+        "x": 865,
+        "y": 746,
         "size": 96,
-        "capWidth": 60,
-        "capHeight": 60,
+        "capWidth": 80,
+        "capHeight": 84,
         "shape": "round"
       }
     },
@@ -155,6 +155,18 @@
         1478,
         960,
         "unten rechts"
+      ],
+      [
+        589,
+        539,
+        "Instrument 1",
+        38
+      ],
+      [
+        941,
+        539,
+        "Instrument 2",
+        38
       ]
     ],
     "rotaries": [],

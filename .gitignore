@@ -39,3 +39,4 @@ id_rsa*
 id_ed25519*
 key.properties
 keystore.properties
+.vscode/settings.json

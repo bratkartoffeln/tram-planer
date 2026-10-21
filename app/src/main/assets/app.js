@@ -1,5 +1,5 @@
 'use strict';
-const APP_VERSION='6.2.10';
+const APP_VERSION='6.2.11';
 const STOP_W2D=['Wiesenhügel','Färberwaidweg','Abzweig Wiesenhügel','Blücherstraße','Sozialversicherungszentrum','Am Schwemmbach','Stadion Ost','Tschaikowskistraße','Robert-Koch-Straße','Hauptbahnhof','Anger','Fischmarkt/Rathaus','Domplatz'];
 const STOP_D2W=[...STOP_W2D].reverse();
 const STOP_L3D=['Melchendorf Betriebshof','Melchendorf','Abzweig Wiesenhügel','Blücherstraße','Sozialversicherungszentrum','Am Schwemmbach','Stadion Ost','Tschaikowskistraße','Robert-Koch-Straße','Hauptbahnhof','Anger','Fischmarkt/Rathaus','Domplatz'];
@@ -309,7 +309,7 @@ function followCurrentRouteStop(map,trip){
  map.scrollTop=Math.max(0,top-(map.clientHeight-row.offsetHeight)/2);
  map.dataset.followedStop=key;
 }
-function updateDriverLive(){if(!state.active||currentView!=='driver')return;updateCabFullscreenStatus();const a=state.active;const p=a.plan;const stop=p.stops[a.position];const now=Date.now();const d=activeDelayMin(now);const clock=document.getElementById('runClock');if(clock)clock.textContent=nowClock();const st=document.getElementById('currentStop');if(st)st.textContent=stop.name;const label=document.getElementById('delayStatus');if(label){label.className='status '+statusClass(d);label.textContent=statusText(d)}const eta=document.getElementById('etaText');if(eta)eta.textContent=fmtTime(etaEpoch());const started=a.actualStartEpoch||a.startedAtEpoch;const elapsed=Math.max(0,Math.floor((now-started)/1000));const dur=document.getElementById('durationText');if(dur)dur.textContent=`Fahrtdauer ${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;const left=currentPauseSeconds(now);const pn=document.getElementById('pauseNotice');if(pn)pn.classList.toggle('hidden',left<=0);const pt=document.getElementById('pauseText');if(pt)pt.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;const nb=document.getElementById('nextStopBtn');if(nb)nb.disabled=left>0||a.doorsOpen||a.position>=p.stops.length-1;const pb=document.getElementById('progressBar');if(pb)pb.style.width=(a.position/(p.stops.length-1))*100+'%';const pos=document.getElementById('positionText');if(pos)pos.textContent=`Haltestelle ${a.position+1} von ${p.stops.length}`;const map=document.getElementById('driverRouteMap');if(map){map.innerHTML=renderRouteMapHTML(a);followCurrentRouteStop(map,a)}}
+function updateDriverLive(){if(!state.active||currentView!=='driver')return;updateCabFullscreenStatus();const a=state.active;const p=a.plan;const stop=p.stops[a.position];const now=Date.now();const d=activeDelayMin(now);const clock=document.getElementById('runClock');if(clock)clock.textContent=nowClock();const st=document.getElementById('currentStop');if(st)st.textContent=stop.name;const label=document.getElementById('delayStatus');if(label){label.className='status '+statusClass(d);label.textContent=statusText(d)}const eta=document.getElementById('etaText');if(eta)eta.textContent=fmtTime(etaEpoch());const started=a.actualStartEpoch||a.startedAtEpoch;const elapsed=Math.max(0,Math.floor((now-started)/1000));const dur=document.getElementById('durationText');if(dur)dur.textContent=`Fahrtdauer ${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;const left=currentPauseSeconds(now);const pn=document.getElementById('pauseNotice');if(pn)pn.classList.toggle('hidden',left<=0);const pt=document.getElementById('pauseText');if(pt)pt.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;const nb=document.getElementById('nextStopBtn');if(nb){nb.cabDefaultDisabled=left>0||a.doorsOpen||a.position>=p.stops.length-1;nb.disabled=nb.cabDefaultDisabled;const stage=nb.closest('.cab-stage'),bundle=getVehicleBundle();applyCabButtonBindings(stage,cabLayoutMerge(bundle.cab.layout,cabLayoutSaved(bundle.cab)));}const pb=document.getElementById('progressBar');if(pb)pb.style.width=(a.position/(p.stops.length-1))*100+'%';const pos=document.getElementById('positionText');if(pos)pos.textContent=`Haltestelle ${a.position+1} von ${p.stops.length}`;const map=document.getElementById('driverRouteMap');if(map){map.innerHTML=renderRouteMapHTML(a);followCurrentRouteStop(map,a)}}
 function tick(){updatePassengerDisplay();document.getElementById('clock').textContent=nowClock();if(state.active&&state.active.status==='running'){if(state.active.pauseEndEpoch&&Date.now()>=state.active.pauseEndEpoch){state.active.pauseEndEpoch=null;saveState();showToast('Planmäßige Pause beendet — weiterfahren möglich.')}if(currentView==='driver')updateDriverLive();}updateShell()}
 function nextStop(){
  const active=state.active;
@@ -333,15 +333,16 @@ function driverPrevious(){
 let doorMotion=null;
 async function toggleDoors(){
  const trip=state.active;if(!trip||trip.status!=='running'||doorMotion)return;
- const motion={tripId:trip.id,opening:!trip.doorsOpen};
+ const motion={tripId:trip.id,opening:!trip.doorsOpen},bundle=getVehicleBundle(),activity=cabActivitySound;
  doorMotion=motion;trip.doorsOpen=true;saveState();showView('driver');
- const completed=await playDriverSound(motion.opening?'door_open':'door_close');
+ const completed=await playDriverSound(motion.opening?'door_open':'door_close',bundle);
  if(doorMotion!==motion)return;
  doorMotion=null;
  if(state.active?.id!==motion.tripId)return;
  // An interrupted closing operation leaves the doors open for a fresh attempt.
  state.active.doorsOpen=motion.opening||!completed;
  saveState();if(currentView==='driver')renderDriver(document.getElementById('view'));
+ if(completed&&!motion.opening&&state.active.status==='running')void playDriverSound('door_closed',bundle,activity?.sound?{sound:'none'}:null);
 }
 function openTrafficModal(){if(!state.active||state.active.status!=='running'){showToast('Keine laufende Fahrt.');return}playDriverSound('traffic');showModal('🚧 Stau melden','Wie viel zusätzliche Verspätung soll durch den Stau entstehen?',`<div class="traffic-actions">${[1,2,5,10].map(n=>`<button onclick="applyTraffic(${n})">+${n} Min.</button>`).join('')}<button onclick="closeModal()">Abbrechen</button></div>`)}
 function applyTraffic(n){if(!state.active)return;state.active.trafficDelayMin=(Number(state.active.trafficDelayMin)||0)+n;state.history.unshift({id:'h'+Date.now(),type:'STAU',at:Date.now(),title:'Stau +'+n+' min',line:state.active.plan.line,tram:state.active.plan.tram,route:state.active.plan.routeName,stop:state.active.plan.stops[state.active.position].name,delta:n});saveState();closeModal();showView('driver');showToast(`Stau gemeldet: +${n} min`)}

@@ -81,15 +81,15 @@ for activity in app.findall('activity'):
 manifest.write(out/'AndroidManifest.xml',encoding='utf-8',xml_declaration=True)
 assets=root/'app/src/main/assets'
 app_source='\n'.join(p.read_text(encoding='utf-8') for p in (assets/'index.html',assets/'app.js') if p.is_file())
-if not re.search(r"APP_VERSION\s*=\s*['\"]6\.2\.10['\"]",app_source):
-    raise SystemExit('App HTML version must be 6.2.10 before a release build.')
+if not re.search(r"APP_VERSION\s*=\s*['\"]6\.2\.11['\"]",app_source):
+    raise SystemExit('App HTML version must be 6.2.11 before a release build.')
 if not (root/'app/src/main/assets/audio/chimes/ding_dong.mp3').is_file():
     raise SystemExit('Missing embedded announcement audio/chimes/ding_dong.mp3.')
 PY
 "$BUILD_TOOLS/aapt2" compile --dir "$PROJECT/app/src/main/res" -o "$BUILD/resources.zip"
 "$BUILD_TOOLS/aapt2" link -o "$BUILD/resources.apk" \
     --manifest "$BUILD/AndroidManifest.xml" -I "$PLATFORM" \
-    --min-sdk-version 26 --target-sdk-version 35 --version-code 630 --version-name 6.2.10 \
+    --min-sdk-version 26 --target-sdk-version 35 --version-code 631 --version-name 6.2.11 \
     --java "$BUILD/generated" -A "$PROJECT/app/src/main/assets" \
     -0 wav -0 mp3 -0 ogg "$BUILD/resources.zip"
 python3 - "$BUILD" <<'PY'
@@ -105,26 +105,12 @@ PY
 "$BUILD_TOOLS/zipalign" -f -p 4 "$BUILD/unsigned.apk" "$BUILD/aligned.apk"
 
 SIGNING=${FPM_SIGNING_DIR:-"$PROJECT/signing"}
-mkdir -p "$SIGNING"
-chmod 700 "$SIGNING"
-if [[ ! -f "$SIGNING/fahrplan-manager.p12" ]]; then
-    if [[ -e "$SIGNING/storepass.txt" ]]; then
-        echo "Signing password exists without a key. Restore the matching key or choose a new FPM_SIGNING_DIR." >&2
-        exit 1
-    fi
-    python3 - "$SIGNING/storepass.txt" <<'PY'
-import secrets,sys
-from pathlib import Path
-p=Path(sys.argv[1]);p.write_text(secrets.token_urlsafe(36)+'\n',encoding='utf-8');p.chmod(0o600)
-PY
-    keytool -genkeypair -keystore "$SIGNING/fahrplan-manager.p12" -storetype PKCS12 \
-        -storepass:file "$SIGNING/storepass.txt" -keypass:file "$SIGNING/storepass.txt" \
-        -alias fahrplan-manager -keyalg RSA -keysize 3072 -sigalg SHA256withRSA \
-        -validity 10000 -dname 'CN=Fahrplan Manager, OU=Private Android Build'
-fi
-[[ -f "$SIGNING/storepass.txt" ]] || { echo "Missing signing password file." >&2; exit 1; }
+[[ -f "$SIGNING/fahrplan-manager.p12" && -f "$SIGNING/storepass.txt" ]] || {
+    echo "Restore the existing release key and password file before signing. No new key is generated." >&2
+    exit 1
+}
 chmod 600 "$SIGNING/fahrplan-manager.p12" "$SIGNING/storepass.txt"
-APK="$PROJECT/app/build/outputs/apk/release/FahrplanManager_Tablet_v6.2.10${SUFFIX}.apk"
+APK="$PROJECT/app/build/outputs/apk/release/FahrplanManager_Tablet_v6.2.11${SUFFIX}.apk"
 "$BUILD_TOOLS/apksigner" sign --ks "$SIGNING/fahrplan-manager.p12" --ks-key-alias fahrplan-manager \
     --ks-pass "file:$SIGNING/storepass.txt" \
     --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true \

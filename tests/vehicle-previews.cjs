@@ -15,10 +15,10 @@ const root=path.resolve(__dirname,process.env.FAHRPLAN_ASSET_ROOT||'../app/src/m
    const result=await b.evaluate(`(()=>{const bundle=vehicleBundlePreview,p=document.querySelector('.vehicle-bundle-modal');return {id:bundle.id,image:bundle.cab.image,screws:p.querySelectorAll('.cab-screw').length,buttons:p.querySelectorAll('.cab-button').length,sounds:p.querySelectorAll('[data-preview-action]').length,description:bundle.presentation.description,variant:bundle.presentation.variant,sourceCount:p.querySelectorAll('a[href^="https://"]').length,missing:p.querySelectorAll('.cab-screw.is-missing').length,photo:p.querySelector('.cab-panel-front')!==null}})()`);
    // Cached images may still finish decoding after the DOM is built.
    await b.evaluate('Promise.all([...document.querySelectorAll(".vehicle-bundle-modal img")].map(i=>i.decode()))');
-   assert.equal(result.id,type);assert.equal(result.screws,4);assert.equal(result.buttons,8);assert.equal(result.sounds,8);assert.equal(result.photo,!type.startsWith('combino-'));assert(result.sourceCount);assert.equal(result.missing,0);
+   assert.equal(result.id,type);assert.equal(result.screws,await b.evaluate("vehicleBundlePreview.cab.screws.length"));assert.equal(result.buttons,8);assert.equal(result.sounds,8);assert.equal(result.photo,!type.startsWith('combino-'));assert(result.sourceCount);assert.equal(result.missing,0);
    if(type.startsWith('combino-')){
     assert.equal(result.image,'images/cab-panel-photoreal.webp');assert(result.variant.includes('Standard-Fallback'));
-    assert.equal(await b.evaluate('JSON.stringify(vehicleBundlePreview.cab)===JSON.stringify(VEHICLE_BUNDLES.default.cab)'),true);
+    assert.equal(await b.evaluate('JSON.stringify({...vehicleBundlePreview.cab,layout:null})===JSON.stringify({...VEHICLE_BUNDLES.default.cab,layout:null})'),true);
     const turns=await b.evaluate('JSON.stringify(cabRotaryTurns)');
     await b.evaluate('document.getElementById("cabRotary0").click();document.getElementById("cabRotary1").click()');
     assert.deepEqual(await b.evaluate('vehiclePreviewRotaryTurns'),[1,1]);
@@ -43,6 +43,11 @@ const root=path.resolve(__dirname,process.env.FAHRPLAN_ASSET_ROOT||'../app/src/m
    await b.evaluate('document.querySelector(\'[data-preview-action="'+(id==='door_close'?'doors':id)+'"]\').click()');
    assert.equal(await b.evaluate('previewCalls.findLast(c=>c.id).id'),id);
    await b.evaluate('onNativeDriverSoundEnd(previewCalls.findLast(c=>c.id).ticket,true)');
+   if(id==='door_close'){
+    assert.equal(await b.evaluate('previewCalls.findLast(c=>c.id).id'),'door_closed');
+    assert.equal(await b.evaluate("document.querySelector('.vehicle-bundle-modal [data-door-indicator=closed]').classList.contains('is-lit')"),true);
+    await b.evaluate('onNativeDriverSoundEnd(previewCalls.findLast(c=>c.id).ticket,true)');
+   }
    assert.equal(await b.evaluate('document.getElementById("vehicleSoundStatus").textContent'),'Hörprobe beendet.');
   }
   assert.equal(await b.evaluate('vehiclePreviewDoorsOpen'),false);

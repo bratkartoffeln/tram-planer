@@ -3,5 +3,29 @@
   "extends": "family-combino",
   "presentation": {
     "variant": "Standard-Fallback · Combino Advanced kurz"
+  },
+  "cab": {
+    "layout": {
+      "icon-passenger": {
+        "x": 405.9743098982788,
+        "y": 751.684819126208
+      },
+      "label-emergency": {
+        "x": 1499.1515299057207,
+        "y": 114.11097280993036
+      },
+      "icon-traffic": {
+        "x": 872.3424497983834,
+        "y": 754.7537773784584
+      },
+      "icon-emergency": {
+        "x": 1512.6968043562476,
+        "y": 218.63423543196896
+      },
+      "icon-finish": {
+        "x": 1495.6910662866674,
+        "y": 750.690060118747
+      }
+    }
   }
 }

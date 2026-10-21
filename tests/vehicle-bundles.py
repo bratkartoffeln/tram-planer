@@ -50,8 +50,16 @@ with tempfile.TemporaryDirectory(prefix='bundle-validation-', dir=project / 'bui
     assert result['cab']['colors']['console'] == '#112233'
     assert result['cab']['screws'] == []
     assert result['sounds']['effects']['door_close'] == 'audio/effects/door_close.mp3'
-    assert result['sounds']['mechanical']['down'] == 'synth:down'
+    assert result['sounds']['mechanical']['down'] == 'vehicle-bundles/default/audio/push-button.mp3'
     assert 'vehicle-bundles/tramlink/audio/open.mp3' in json.loads((assets / 'vehicle-bundle-assets.json').read_text(encoding='utf-8'))
+    write({'id': 'tramlink', 'cab': {'layout': {'control-next': {'action': 'traffic', 'text': 'Meldung', 'icon': 'traffic', 'sound': 'effect:passenger'}}}})
+    compile_bundles(assets, type_ids)
+    write(original)
+    write({'id': 'tramlink', 'cab': {'screws': [[100, 100, 'small', 12], [200, 200, 'legacy']]}})
+    compile_bundles(assets, type_ids)
+    write(original)
+    rejected({'id': 'tramlink', 'cab': {'screws': [[100, 100, 'invalid', -1]]}})
+    rejected({'id': 'tramlink', 'cab': {'screws': [[2, 2, 'outside', 30]]}})
     rejected({'id': 'tramlink', 'extends': 'tramlink'})
     rejected({'id': 'tramlink', 'extends': 'missing'})
     rejected({'id': 'tramlink', 'extends': ['default']})

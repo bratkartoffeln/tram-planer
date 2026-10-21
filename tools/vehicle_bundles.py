@@ -4,7 +4,7 @@ import json
 import re
 
 
-EFFECTS = {'door_open', 'door_close', 'emergency', 'traffic', 'passenger', 'finish', 'back'}
+EFFECTS = {'door_open', 'door_close', 'door_closed', 'emergency', 'traffic', 'passenger', 'finish', 'back'}
 MECHANICAL = {'down', 'up', 'latch', 'rotary', 'screw', 'ratchet'}
 BUTTONS = {'next', 'back', 'doors', 'passenger', 'fullscreen', 'traffic', 'finish', 'emergency'}
 
@@ -102,10 +102,11 @@ def compile_bundles(assets, type_ids):
                 continue
             if name.startswith('control-'):
                 match = re.fullmatch(r'control-(reserve|rotary|spare)-(\d+)', name)
-                check(match is not None, key + ': binding target')
-                kind, index = match[1], int(match[2])
-                controls = cab.get({'reserve': 'accessories', 'rotary': 'rotaries', 'spare': 'spares'}[kind], [])
-                check(index < len(controls) and set(overlay) <= {'action', 'actions', 'text', 'icon', 'sound', 'sounds'}, key + ': binding target/fields')
+                target = name[8:]
+                check(match is not None or target in BUTTONS, key + ': binding target')
+                kind, index = (match[1], int(match[2])) if match else ('button', 0)
+                controls = cab.get({'reserve': 'accessories', 'rotary': 'rotaries', 'spare': 'spares'}.get(kind, 'buttons'), [])
+                check((target in BUTTONS if kind == 'button' else index < len(controls)) and set(overlay) <= {'action', 'actions', 'text', 'icon', 'sound', 'sounds'}, key + ': binding target/fields')
                 actions = {'', 'next', 'back', 'doors', 'passenger', 'fullscreen', 'traffic', 'finish', 'emergency'}
                 check(isinstance(overlay.get('action', ''), str) and overlay.get('action', '') in actions, key + ': control action')
                 positions = 4 if kind == 'rotary' else 2 if kind == 'reserve' and controls[index].get('kind') == 'lever' else 1
@@ -215,10 +216,14 @@ def compile_bundles(assets, type_ids):
         for field, length in [('spares', 2), ('screws', 3), ('rotaries', 2), ('headings', 3)]:
             check(isinstance(cab.get(field), list), key + ': ' + field)
             for entry in cab[field]:
-                check(isinstance(entry, list) and len(entry) == length, key + ': ' + field)
+                check(isinstance(entry, list) and (len(entry) in (3, 4) if field == 'screws' else len(entry) == length), key + ': ' + field)
                 point(*(entry[1:] if field == 'headings' else entry[:2]))
                 if field in ('screws', 'headings'):
-                    check(isinstance(entry[-1] if field == 'screws' else entry[0], str), key + ': label')
+                    check(isinstance(entry[2] if field == 'screws' else entry[0], str), key + ': label')
+                if field == 'screws' and len(entry) == 4:
+                    check(type(entry[3]) in (int, float) and 4 <= entry[3] <= 120, key + ': screw cap')
+                    check(entry[3]/2 <= entry[0] <= width-entry[3]/2
+                          and entry[3]/2 <= entry[1] <= height-entry[3]/2, key + ': screw outside panel')
         check(len(cab['rotaries']) <= 2, key + ': at most two reserve rotaries')
         check({'mask', 'ring', 'grip'} <= set(cab.get('rotarySprites', {})) <= {'mask', 'ring', 'grip', 'image'}, key + ': rotary sprites')
         if 'image' in cab['rotarySprites']:

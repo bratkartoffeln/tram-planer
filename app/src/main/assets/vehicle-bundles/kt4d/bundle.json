@@ -3,5 +3,17 @@
   "extends": "family-kt4d",
   "presentation": {
     "variant": "Nachbildung · KT4D · klassischer Baureihenvergleich"
+  },
+  "cab": {
+    "layout": {
+      "icon-closed": {
+        "x": 659.9903482317602,
+        "y": 743.7533261619031
+      },
+      "icon-emergency": {
+        "x": 177.32154541656894,
+        "y": 180.5233075939544
+      }
+    }
   }
 }
