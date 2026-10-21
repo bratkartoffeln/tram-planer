@@ -3,10 +3,10 @@ const CAB_LAYOUT_FONTS=['system-ui','Arial','Verdana','Georgia','Courier New','s
 const CAB_LAYOUT_STORAGE='fahrplan-cab-layouts-v1';
 const CAB_LAYOUT_ACTIONS={'':'Keine Funktion',next:'Nächster Halt',back:'Zurück',doors:'Türen öffnen / schließen',passenger:'Fahrgastanzeige',fullscreen:'Vollbild',traffic:'Stau',finish:'Fahrt beenden',emergency:'Not-Aus'};
 const CAB_LAYOUT_SYMBOLS=['', 'next','back','doors','close','passenger','fullscreen','traffic','finish','emergency','route'];
-const CAB_LAYOUT_SOUNDS={'':'Standard-Bedienklang',none:'Kein Bedienklang','effect:door_open':'Türen öffnen','effect:door_close':'Türen schließen','effect:emergency':'Notfall','effect:traffic':'Stau','effect:passenger':'Fahrgastanzeige','effect:finish':'Fahrtende','effect:back':'Zurück','mechanical:down':'Taster drücken','mechanical:up':'Taster loslassen','mechanical:latch':'Not-Aus einrasten','mechanical:rotary':'Drehschalter','mechanical:screw':'Schraube lösen','mechanical:ratchet':'Schraube eindrehen'};
+const CAB_LAYOUT_SOUNDS={'':'Standard-Bedienklang',none:'Kein Bedienklang','effect:door_open':'Türen öffnen','effect:door_close':'Türen schließen','effect:door_closed':'Türen zu · Ding','effect:emergency':'Notfall','effect:traffic':'Stau','effect:passenger':'Fahrgastanzeige','effect:finish':'Fahrtende','effect:back':'Zurück','mechanical:down':'Taster drücken','mechanical:up':'Taster loslassen','mechanical:latch':'Not-Aus einrasten','mechanical:rotary':'Drehschalter','mechanical:screw':'Schraube lösen','mechanical:ratchet':'Schraube eindrehen'};
 const CAB_ACTUATION_TONES={'':'Standard',none:'Kein Betätigungston','mechanical:down':'Klick · Taster','mechanical:up':'Klick · Loslassen','mechanical:latch':'Klack · Einrasten','mechanical:rotary':'Drehschalter','mechanical:screw':'Schraube lösen','mechanical:ratchet':'Ratsche'};
 let cabLayoutEditor=null,cabLayoutTouch=null,cabLayoutSuppressClickUntil=0;
-function cabReserveExists(panel,key){const match=/^(reserve|rotary|spare)-(\d+)$/.exec(key);return !!match&&Number(match[2])<(panel[{reserve:'accessories',rotary:'rotaries',spare:'spares'}[match[1]]]?.length||0);}
+function cabReserveExists(panel,key){if(Object.hasOwn(panel.buttons,key))return true;const match=/^(reserve|rotary|spare)-(\d+)$/.exec(key);return !!match&&Number(match[2])<(panel[{reserve:'accessories',rotary:'rotaries',spare:'spares'}[match[1]]]?.length||0);}
 function cabControlExists(panel,key){return Object.hasOwn(panel.buttons,key)||cabReserveExists(panel,key)||/^screw-\d+$/.test(key)&&Number(key.slice(6))<panel.screws.length;}
 function cabControlKey(node){const button=node?.closest('.cab-button,[data-cab-reserve],.cab-screw');return button?.dataset.cabReserve||button?.dataset.cabControl||(button?.classList.contains('cab-screw')?'screw-'+button.id.replace('cabScrew',''):null);}
 function cabReservePositions(panel,key){return key.startsWith('rotary-')?4:key.startsWith('reserve-')&&panel.accessories[Number(key.slice(8))]?.kind==='lever'?2:1;}
@@ -34,7 +34,7 @@ function cabLayoutEntries(stage,panel){
  const entries=[],box=stage.getBoundingClientRect();
  const add=(node,key,title,icon=false)=>{
   if(!node)return;const rect=icon?cabLayoutRestIconRect(node):node.getBoundingClientRect(),css=getComputedStyle(node);
-  entries.push({node,key,title,icon,style:node.getAttribute('style'),symbol:icon?node.querySelector('path')?.getAttribute('d'):'',text:icon?'':node.textContent,
+  entries.push({node,key,title,icon,style:node.getAttribute('style'),symbol:icon?node.querySelector('path')?.getAttribute('d'):'',symbolTransform:icon?node.querySelector('path')?.getAttribute('transform'):null,text:icon?'':node.textContent,
    defaults:{x:(rect.x+rect.width/2-box.x)/box.width*panel.width,y:(rect.y+rect.height/2-box.y)/box.height*panel.height,
     iconSize:rect.width/box.width*panel.width,color:'#'+(css.color.match(/\d+/g)||['238','238','238']).slice(0,3).map(c=>Number(c).toString(16).padStart(2,'0')).join(''),fontSize:parseFloat(css.fontSize)/box.width*panel.width,fontFamily:CAB_LAYOUT_FONTS.find(font=>css.fontFamily.replaceAll('"','').split(',')[0].trim()===font)||'system-ui',bold:Number(css.fontWeight)>=600,italic:css.fontStyle==='italic',underline:css.textDecorationLine.includes('underline')}});
   node.dataset.cabLayoutKey=key;
@@ -68,12 +68,17 @@ function cabLayoutValid(layout,panel){
 function cabLayoutApply(stage,panel,entries,layout){
  const box=stage.getBoundingClientRect();if(!box.width)return;
  for(const entry of entries){
-  const node=entry.node,reserve=node.closest('[data-cab-reserve]'),binding=reserve?layout['control-'+reserve.dataset.cabReserve]:null;
+  const node=entry.node,reserve=node.closest('[data-cab-reserve],.cab-button'),binding=reserve?layout['control-'+cabControlKey(reserve)]:null;
   const value={...(!entry.icon&&binding?.text!==undefined?{text:binding.text}:{}),...layout[entry.key]};
   if(entry.style===null)node.removeAttribute('style');else node.setAttribute('style',entry.style);
   if(!entry.icon)node.textContent=value.text??entry.text;
   if(entry.key.startsWith('heading-')&&value.hidden)node.style.display='none';
-  if(entry.icon&&reserve)node.querySelector('path').setAttribute('d',binding?.icon!==undefined?(CAB_ICONS[binding.icon]||''):entry.symbol||'');
+  if(entry.icon&&reserve){
+   const path=node.querySelector('path'),offset=binding?.icon!==undefined?CAB_ICON_OFFSETS[binding.icon]:null;
+   path.setAttribute('d',binding?.icon!==undefined?(CAB_ICONS[binding.icon]||''):entry.symbol||'');
+   const transform=binding?.icon!==undefined?(offset?'translate('+offset.join(' ')+')':null):entry.symbolTransform;
+   if(transform)path.setAttribute('transform',transform);else path.removeAttribute('transform');
+  }
   if(entry.icon&&value.iconSize!==undefined){node.style.width=value.iconSize/panel.width*100+'cqw';node.style.height=value.iconSize/panel.width*100+'cqw';}
   if(value.color)node.style.color=value.color;
   if(!entry.icon&&value.background!==undefined)node.style.backgroundColor=value.background;
@@ -93,6 +98,7 @@ function cabLayoutApply(stage,panel,entries,layout){
    node.style.bottom='auto';node.style.transform='translate(-50%,-50%)';
   }
  }
+ applyCabButtonBindings(stage,layout);
  applyCabControlModes(stage,panel,layout);
 }
 function applyCabLayoutToStage(stage,bundle){
@@ -175,7 +181,7 @@ function cabLayoutEntryValue(editor,entry){
 function cabLayoutProperties(){
  const editor=cabLayoutEditor;if(!editor?.active)return;
  const entry=editor.entries.find(item=>item.key===editor.selected);if(!entry){document.getElementById('cabLayoutProperties').innerHTML='';return;}
- const reserve=entry.node.closest('[data-cab-reserve]'),binding=reserve?cabLayoutMerge(editor.panel.layout,editor.draft)['control-'+reserve.dataset.cabReserve]:null;
+ const reserve=entry.node.closest('[data-cab-reserve],.cab-button'),binding=reserve?cabLayoutMerge(editor.panel.layout,editor.draft)['control-'+cabControlKey(reserve)]:null;
  const value={...(!entry.icon&&binding?.text!==undefined?{text:binding.text}:{}),...cabLayoutEntryValue(editor,entry)};
  const color=/^#[0-9a-f]{6}$/i.test(value.color)?value.color:'#eeeeee';
  document.getElementById('cabLayoutProperties').innerHTML=`<div class="cab-layout-fields"><label>Element<select id="cabLayoutElement" onchange="selectCabLayout(this.value)">${editor.entries.filter(item=>!cabLayoutMerge(editor.panel.layout,editor.draft)[item.key]?.hidden).map(item=>`<option value="${item.key}" ${item.key===entry.key?'selected':''}>${esc(item.title)}</option>`).join('')}</select></label><label>X<input id="cabLayoutX" type="number" min="0" max="${editor.panel.width}" step="0.5" value="${Number(value.x.toFixed(1))}" onchange="editCabLayout('x',this.value)"></label><label>Y<input id="cabLayoutY" type="number" min="0" max="${editor.panel.height}" step="0.5" value="${Number(value.y.toFixed(1))}" onchange="editCabLayout('y',this.value)"></label><label>Farbe<input id="cabLayoutColor" type="color" value="${color}" onchange="editCabLayout('color',this.value)"></label>${entry.icon?'':`<label class="cab-layout-text">Text<input id="cabLayoutText" maxlength="200" value="${esc(value.text??entry.text)}" onchange="editCabLayout('text',this.value)"></label><label>Schriftart<select id="cabLayoutFont" onchange="editCabLayout('fontFamily',this.value)">${CAB_LAYOUT_FONTS.map(font=>`<option ${font===value.fontFamily?'selected':''}>${font}</option>`).join('')}</select></label><label>Schriftgröße (Pultpixel)<input id="cabLayoutFontSize" type="number" min="4" max="120" step="0.5" value="${Math.max(4,Math.min(120,Number(value.fontSize.toFixed(1))))}" onchange="editCabLayout('fontSize',this.value)"></label><div class="cab-layout-format">${[['bold','Fett'],['italic','Kursiv'],['underline','Unterstrichen']].map(([field,label])=>`<label><input type="checkbox" id="cabLayout-${field}" ${value[field]?'checked':''} onchange="editCabLayout('${field}',this.checked)">${label}</label>`).join('')}</div>`}</div>`;
@@ -273,7 +279,7 @@ function saveCabActuation(){
 }
 function openCabReserveMenu(key,x,y){
  if(!cabLayoutAllowed()||!cabReserveExists(cabLayoutEditor.panel,key))return;
- closeCabReserveMenu();const editor=cabLayoutEditor,binding=cabLayoutMerge(editor.panel.layout,editor.draft)['control-'+key]||{},count=cabReservePositions(editor.panel,key);
+ closeCabReserveMenu();const editor=cabLayoutEditor,binding=cabLayoutMerge(editor.panel.layout,editor.draft)['control-'+key]|| (Object.hasOwn(editor.panel.buttons,key)?{action:key,icon:key}:{}),count=cabReservePositions(editor.panel,key);
  const options=value=>Object.entries(CAB_LAYOUT_ACTIONS).map(([action,label])=>`<option value="${action}" ${action===value?'selected':''}>${label}</option>`).join('');
  const menu=document.createElement('section');menu.id='cabReserveMenu';menu.className='cab-reserve-menu';menu.setAttribute('role','dialog');menu.setAttribute('aria-modal','false');menu.setAttribute('aria-label','Bedienelement zuweisen');menu.dataset.key=key;
  const text=editor.draft['label-'+key]?.text??editor.panel.layout?.['label-'+key]?.text??binding.text??editor.entries.find(entry=>entry.key==='label-'+key)?.text??'';
@@ -300,7 +306,7 @@ function saveCabReserveBinding(){
  if(fields.length>1)binding.action='';
  if(fields.length===1&&base?.sounds)binding.sounds={'0':binding.sound};
  if(fields.length>1)binding.sound='';
- draft['control-'+key]=binding;if(draft['label-'+key])delete draft['label-'+key].text;cabActuationDraft(menu,draft);
+ draft['control-'+key]=binding;const labelKey='label-'+key;if(draft[labelKey]?.text!==undefined||editor.panel.layout?.[labelKey]?.text!==undefined)draft[labelKey]={...draft[labelKey],text:binding.text};cabActuationDraft(menu,draft);
  if(!cabLayoutValid(draft,editor.panel))return;
  if(JSON.stringify(draft)!==JSON.stringify(editor.draft)){cabLayoutRemember(clone(editor.draft));editor.draft=draft;cabLayoutPersist();}
  closeCabReserveMenu();cabLayoutRefresh();cabLayoutProperties();

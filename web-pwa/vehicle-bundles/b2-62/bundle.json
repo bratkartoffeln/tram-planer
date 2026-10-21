@@ -5,5 +5,13 @@
     "title": "Zugfahrzeug · Gotha · Schaltplatte am Handradpult",
     "variant": "Beiwagen · zugeordnetes Zugfahrzeugpult",
     "description": "Dieser Beiwagen besitzt kein eigenes Fahrerpult. Für die Simulation ist die Schaltplatte eines passenden Gotha-Zugfahrzeugs zugeordnet. Frontale Nachbildung der hellen Schaltplatte links neben dem Fahrschalter-Handrad eines G4-65, Naumburg 202. Bakelittaster und Metallringe; Spieltasten angepasst. G4-61, G4-65, Katerexpress und T2D teilen diesen gekennzeichneten Familienvergleich."
+  },
+  "cab": {
+    "layout": {
+      "icon-emergency": {
+        "x": 1272.7349537856028,
+        "y": 575.2590452468679
+      }
+    }
   }
 }

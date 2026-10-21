@@ -4,7 +4,7 @@ import json
 import re
 
 
-EFFECTS = {'door_open', 'door_close', 'emergency', 'traffic', 'passenger', 'finish', 'back'}
+EFFECTS = {'door_open', 'door_close', 'door_closed', 'emergency', 'traffic', 'passenger', 'finish', 'back'}
 MECHANICAL = {'down', 'up', 'latch', 'rotary', 'screw', 'ratchet'}
 BUTTONS = {'next', 'back', 'doors', 'passenger', 'fullscreen', 'traffic', 'finish', 'emergency'}
 
@@ -102,10 +102,11 @@ def compile_bundles(assets, type_ids):
                 continue
             if name.startswith('control-'):
                 match = re.fullmatch(r'control-(reserve|rotary|spare)-(\d+)', name)
-                check(match is not None, key + ': binding target')
-                kind, index = match[1], int(match[2])
-                controls = cab.get({'reserve': 'accessories', 'rotary': 'rotaries', 'spare': 'spares'}[kind], [])
-                check(index < len(controls) and set(overlay) <= {'action', 'actions', 'text', 'icon', 'sound', 'sounds'}, key + ': binding target/fields')
+                target = name[8:]
+                check(match is not None or target in BUTTONS, key + ': binding target')
+                kind, index = (match[1], int(match[2])) if match else ('button', 0)
+                controls = cab.get({'reserve': 'accessories', 'rotary': 'rotaries', 'spare': 'spares'}.get(kind, 'buttons'), [])
+                check((target in BUTTONS if kind == 'button' else index < len(controls)) and set(overlay) <= {'action', 'actions', 'text', 'icon', 'sound', 'sounds'}, key + ': binding target/fields')
                 actions = {'', 'next', 'back', 'doors', 'passenger', 'fullscreen', 'traffic', 'finish', 'emergency'}
                 check(isinstance(overlay.get('action', ''), str) and overlay.get('action', '') in actions, key + ': control action')
                 positions = 4 if kind == 'rotary' else 2 if kind == 'reserve' and controls[index].get('kind') == 'lever' else 1

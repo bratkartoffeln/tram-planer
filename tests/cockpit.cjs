@@ -30,7 +30,7 @@ async function main(){
   // Decode every bundled effect in the real browser and verify signal levels.
   const levels=await b.evaluate(`(async()=>{const c=new AudioContext(),list=await(await fetch('audio/effects/catalog.json')).json(),result={};for(const item of list){const r=await fetch(item.file);if(!r.ok)throw Error(item.file);const buffer=await c.decodeAudioData(await r.arrayBuffer());let sum=0,peak=0;const data=buffer.getChannelData(0);for(const s of data){sum+=s*s;peak=Math.max(peak,Math.abs(s));}result[item.id]={duration:buffer.duration,rms:Math.sqrt(sum/data.length),peak};}const gong=await c.decodeAudioData(await(await fetch('audio/chimes/ding_dong.mp3')).arrayBuffer());let sum=0;for(const s of gong.getChannelData(0))sum+=s*s;result.gongRms=Math.sqrt(sum/gong.length);await c.close();return result;})()`);
   const catalog=JSON.parse(fs.readFileSync(path.join(root,'audio/effects/catalog.json'),'utf8'));
-  assert.equal(catalog.length,7);assert.ok(catalog.every(item=>item.file.endsWith('.mp3')));
+  assert.equal(catalog.length,8);assert.ok(catalog.every(item=>item.file.endsWith('.mp3')));
   for(const item of catalog)assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,item.file))).digest('hex'),item.sha256,item.id+' checksum');
   const back=catalog.find(item=>item.id==='back');
   if(back.midiNotes){assert.deepEqual(back.midiNotes,[65,58,64,65,67,65,62,58,64]);assert.ok(back.noteCount<=10);}
@@ -40,7 +40,7 @@ async function main(){
   await b.evaluate("window.cabEvents=[];window.AndroidAnnouncements={playEffect:(id,ticket)=>{cabEvents.push({name:'Fahrpult: '+id,paths:['audio/effects/'+id+'.mp3']});queueMicrotask(()=>onNativeDriverSoundEnd(ticket,true))},playSequence:(name,json)=>cabEvents.push({name,paths:JSON.parse(json)}),stop:()=>cabEvents.push({stop:true})}");
   async function check(action,id){await b.evaluate(action);assert.equal(await b.evaluate('cabEvents.filter(e=>e.paths).at(-1).paths[0]'),'audio/effects/'+id+'.mp3');}
   await check("document.getElementById('doorBtn').click()",'door_open');assert.equal(await b.evaluate('state.active.doorsOpen'),true);assert.equal(await b.evaluate('document.getElementById("nextStopBtn").disabled'),true);
-  await check("document.getElementById('doorBtn').click()",'door_close');assert.equal(await b.evaluate('state.active.doorsOpen'),false);
+  await check("document.getElementById('doorBtn').click()",'door_closed');assert.equal(await b.evaluate('state.active.doorsOpen'),false);
   await check('openTrafficModal()','traffic');
   for(const width of [1280,390]){
    await b.cdp('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width<500});

@@ -26,12 +26,13 @@
     "effects": {
       "door_open": "audio/effects/door_open.mp3",
       "door_close": "audio/effects/door_close.mp3",
+      "door_closed": "audio/effects/door_closed.mp3",
       "emergency": "audio/effects/emergency.mp3",
       "traffic": "audio/effects/traffic.mp3",
       "passenger": "audio/effects/passenger.mp3",
       "finish": "audio/effects/finish.mp3",
       "back": "audio/effects/back.mp3"
     },
-    "mechanical": {"down": "synth:down", "up": "synth:up", "latch": "synth:latch", "rotary": "synth:rotary", "screw": "synth:screw", "ratchet": "synth:ratchet"}
+    "mechanical": {"down": "vehicle-bundles/default/audio/push-button.mp3", "up": "vehicle-bundles/default/audio/release-button.mp3", "latch": "synth:latch", "rotary": "vehicle-bundles/default/audio/switch.mp3", "screw": "synth:screw", "ratchet": "synth:ratchet"}
   }
 }

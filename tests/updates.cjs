@@ -5,9 +5,9 @@ const session=require('../tools/browser-session.cjs');
  const b=await session(path.resolve(__dirname,'../app/src/main/assets'),path.resolve(__dirname,'../build/qa-updates'));
  try{
   await b.navigate();
-  await b.evaluate(`window.updateCalls=[];window.AndroidUpdates={check:id=>updateCalls.push(id),openDownload:url=>updateCalls.push(url)};window.releaseFixture={tag_name:'v6.2.11',draft:false,prerelease:false,assets:[{name:'FahrplanManager_v6.2.11_release.apk',state:'uploaded',browser_download_url:'https://github.com/bratkartoffeln/tram-planer/releases/download/v6.2.11/FahrplanManager_v6.2.11_release.apk'}]};state.settings.auto_updates=false;showView('settings');`);
-  assert.deepEqual(await b.evaluate('[isNewerAppVersion("6.2.11"),isNewerAppVersion("6.10.0"),isNewerAppVersion("6.2.10"),isNewerAppVersion("6.2.6"),isNewerAppVersion("7.0.0-beta"),isNewerAppVersion("garbage")]'),[true,true,false,false,false,false]);
-  assert.deepEqual(await b.evaluate(`['http://github.com/bratkartoffeln/tram-planer/releases/download/v6.2.11/a.apk','https://evil.example/a.apk','https://github.com/other/repo/releases/download/v1/a.apk','https://github.com@evil.example/bratkartoffeln/tram-planer/releases/download/v1/a.apk'].map(releaseDownloadUrl)`),[null,null,null,null]);
+  await b.evaluate(`window.updateCalls=[];window.AndroidUpdates={check:id=>updateCalls.push(id),openDownload:url=>updateCalls.push(url)};window.releaseFixture={tag_name:'v6.2.12',draft:false,prerelease:false,assets:[{name:'FahrplanManager_v6.2.12_release.apk',state:'uploaded',browser_download_url:'https://github.com/bratkartoffeln/tram-planer/releases/download/v6.2.12/FahrplanManager_v6.2.12_release.apk'}]};state.settings.auto_updates=false;showView('settings');`);
+  assert.deepEqual(await b.evaluate('[isNewerAppVersion("6.2.12"),isNewerAppVersion("6.10.0"),isNewerAppVersion("6.2.11"),isNewerAppVersion("6.2.6"),isNewerAppVersion("7.0.0-beta"),isNewerAppVersion("garbage")]'),[true,true,false,false,false,false]);
+  assert.deepEqual(await b.evaluate(`['http://github.com/bratkartoffeln/tram-planer/releases/download/v6.2.12/a.apk','https://evil.example/a.apk','https://github.com/other/repo/releases/download/v1/a.apk','https://github.com@evil.example/bratkartoffeln/tram-planer/releases/download/v1/a.apk'].map(releaseDownloadUrl)`),[null,null,null,null]);
   assert.equal(await b.evaluate('selectAppRelease({...releaseFixture,prerelease:true})'),null);
   assert.equal(await b.evaluate('selectAppRelease({...releaseFixture,tag_name:"6.2.6"})'),null);
   assert.equal(await b.evaluate('selectAppRelease({...releaseFixture,assets:[{...releaseFixture.assets[0],name:"app-debug.apk"}]}).download'),null);
@@ -21,9 +21,9 @@ const session=require('../tools/browser-session.cjs');
   await b.evaluate('downloadAppUpdate()');assert.equal(await b.evaluate('updateCalls.at(-1)'),await b.evaluate('releaseFixture.assets[0].browser_download_url'));
   await b.evaluate('state.settings.auto_updates=true;checkForAppUpdate()');assert.equal(await b.evaluate('updateCalls.length'),2);
   // Cached notification survives an app restart even when the daily check is throttled.
-  await b.evaluate('appUpdate={status:"idle",release:null,message:"",checkedAt:0};checkForAppUpdate()');assert.equal(await b.evaluate('appUpdate.release.version'),'6.2.11');
-  await b.evaluate('checkForAppUpdate(true);onNativeAppUpdate(updateCalls.at(-1),null,"Offline");');assert.equal(await b.evaluate('appUpdate.status'),'error');assert.equal(await b.evaluate('appUpdate.release.version'),'6.2.11');
-  await b.evaluate('checkForAppUpdate(true);onNativeAppUpdate(updateCalls.at(-1),{tag_name:"6.2.10",assets:[]},null)');assert.equal(await b.evaluate('appUpdate.status'),'current');assert.equal(await b.evaluate('document.getElementById("appUpdateNotice").hidden'),true);
+  await b.evaluate('appUpdate={status:"idle",release:null,message:"",checkedAt:0};checkForAppUpdate()');assert.equal(await b.evaluate('appUpdate.release.version'),'6.2.12');
+  await b.evaluate('checkForAppUpdate(true);onNativeAppUpdate(updateCalls.at(-1),null,"Offline");');assert.equal(await b.evaluate('appUpdate.status'),'error');assert.equal(await b.evaluate('appUpdate.release.version'),'6.2.12');
+  await b.evaluate('checkForAppUpdate(true);onNativeAppUpdate(updateCalls.at(-1),{tag_name:"6.2.11",assets:[]},null)');assert.equal(await b.evaluate('appUpdate.status'),'current');assert.equal(await b.evaluate('document.getElementById("appUpdateNotice").hidden'),true);
   assert.equal(b.errors.length,0);console.log('Update checks passed.');
  }finally{await b.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});

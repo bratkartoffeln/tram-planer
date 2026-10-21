@@ -12,7 +12,7 @@ async function evaluate(expression){const r=await cdp('Runtime.evaluate',{expres
 async function run(){
  server=http.createServer((req,res)=>{const file=path.join(root,decodeURIComponent(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}fs.readFile(file,(e,b)=>{if(e){res.writeHead(404).end();return;}const ext=path.extname(file);res.setHeader('Content-Type',({'.css':'text/css','.js':'text/javascript','.html':'text/html','.json':'application/json','.mp3':'audio/mpeg','.jpg':'image/jpeg','.png':'image/png','.webp':'image/webp'})[ext]||'application/octet-stream');res.end(b);});});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
- proc=spawn(browserPath,['--headless=new','--disable-gpu','--in-process-gpu','--no-sandbox','--no-first-run','--no-default-browser-check','--remote-debugging-port='+debugPort,'--user-data-dir='+path.join(output,'profile-'+Date.now()),'about:blank'],{windowsHide:true,stdio:'ignore'});
+ proc=spawn(browserPath,['--headless=new','--mute-audio','--disable-gpu','--in-process-gpu','--no-sandbox','--no-first-run','--no-default-browser-check','--remote-debugging-port='+debugPort,'--user-data-dir='+path.join(output,'profile-'+Date.now()),'about:blank'],{windowsHide:true,stdio:'ignore'});
  let tabs;for(let i=0;i<30;i++){try{tabs=await(await fetch('http://127.0.0.1:'+debugPort+'/json',{signal:AbortSignal.timeout(1000)})).json();break;}catch{await delay(100);}}
  if(!tabs)throw new Error('Browser DevTools did not start');
  socket=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);
@@ -135,7 +135,7 @@ async function run(){
  // Confirm service worker caches the new modules for an offline restart.
  await evaluate("navigator.serviceWorker.ready.then(()=>true)");
  await delay(1200);
- assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.10-vehicle-layouts').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
+ assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.11-release').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
  await cdp('Network.enable');await cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
  await cdp('Page.reload');await delay(600);assert.equal(await evaluate('Object.keys(ROUTES).length'),26);
  await evaluate("showView('network')");assert.equal(await evaluate('!!document.getElementById("lineMapSvg")'),true);

@@ -3,5 +3,25 @@
   "extends": "family-kt4dc",
   "presentation": {
     "variant": "Nachbildung · KT4D-C · Referenz Erfurt 522"
+  },
+  "cab": {
+    "layout": {
+      "icon-emergency": {
+        "x": 1389.592669141558,
+        "y": 250.58013833513695
+      },
+      "label-emergency": {
+        "x": 1346.2819810728306,
+        "y": 116.51967202003328
+      },
+      "icon-traffic": {
+        "x": 945.8242990378417,
+        "y": 797.9615466866102
+      },
+      "icon-open": {
+        "x": 866.1853365002596,
+        "y": 580.7030914458793
+      }
+    }
   }
 }

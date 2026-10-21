@@ -50,22 +50,38 @@ function cabReserveSoundSelection(key,stage,position=0){const binding=cabReserve
 function playCabReserveSound(sound,bundle){
  if(!sound||sound==='none'||!Object.hasOwn(CAB_LAYOUT_SOUNDS,sound))return;
  const [category,id]=sound.split(':');
- if(category==='effect')void playCabMechanicalAsset(bundle.sounds.effects[id],'down');
- else playCabMechanical(id,bundle);
+ if(category==='effect')return playCabMechanicalAsset(bundle.sounds.effects[id],'down');
+ return playCabMechanical(id,bundle);
 }
 function playCabActuation(button,phase,standard,allowDefault=true){
  if(cabLayoutAllowed())return;const bundle=vehicleBundlePreview||getVehicleBundle(),key=cabControlKey(button),stage=button.closest('.cab-stage');
  const layout=cabLayoutMerge(bundle.cab.layout,cabLayoutEditor?.stage===stage?cabLayoutEditor.draft:cabLayoutSaved(bundle.cab));
  const tone=layout['actuation-'+key]?.[phase]||'';
- if(tone)playCabReserveSound(tone,bundle);else if(allowDefault)playCabMechanical(standard,bundle);
+ if(tone)return playCabReserveSound(tone,bundle);else if(allowDefault){
+  const switching=button.matches('.cab-rotary,.cab-accessory-lever');
+  return playCabMechanical(switching?'rotary':standard,bundle);
+ }
 }
 function activateCabReserve(key,stage,position=0){
  if(cabLayoutAllowed()||!stage||(!vehicleBundlePreview&&(currentView!=='driver'||!state.active)))return;
  const bundle=vehicleBundlePreview||getVehicleBundle(),binding=cabReserveBinding(key,stage),action=binding.actions?.[position]??binding.action;
  const target=action&&Object.hasOwn(CAB_LAYOUT_ACTIONS,action)?stage.querySelector('.cab-button[data-cab-control="'+action+'"]'):null;
- if(target?.disabled)return;
- target?.click();
- playCabReserveSound(binding.sounds?.[position]??binding.sound,bundle);
+ if(target&&(target.cabOriginalAction?target.cabDefaultDisabled:target.disabled))return;
+ if(target)(target.cabOriginalAction||target.onclick)?.call(target,new Event('click'));
+ const sound=binding.sounds?.[position]??binding.sound,gate=cabFollowSoundGate,preview=vehicleBundlePreview,view=currentView;
+ if(gate)void gate.promise.then(completed=>{if(completed&&preview===vehicleBundlePreview&&view===currentView)playCabReserveSound(sound,bundle);});else playCabReserveSound(sound,bundle);
+}
+function applyCabButtonBindings(stage,layout){
+ const buttons=[...stage.querySelectorAll('.cab-button')];
+ for(const button of buttons)button.cabDefaultDisabled??=button.disabled;
+ for(const button of buttons){
+  const key=button.dataset.cabControl,binding=layout['control-'+key];
+  if(binding){button.cabOriginalAction??=button.onclick;button.onclick=()=>activateCabReserve(key,stage);}
+  else if(button.cabOriginalAction){button.onclick=button.cabOriginalAction;delete button.cabOriginalAction;}
+  const action=binding?.actions?.['0']??binding?.action;
+  const target=action?buttons.find(n=>n.dataset.cabControl===action):null;
+  button.disabled=binding?(target?.cabDefaultDisabled??false):button.cabDefaultDisabled;
+ }
 }
 function cabPhotoCrop(prefix,x,y,width,height=width,panel=cabPanel()){
  return `--${prefix}-size:${panel.width/width*100}% ${panel.height/height*100}%;--${prefix}-position:${(x-width/2)/(panel.width-width)*100}% ${(y-height/2)/(panel.height-height)*100}%`;
@@ -104,7 +120,7 @@ function toggleCabAccessory(index){
  const states=vehicleBundlePreview?vehiclePreviewAccessoryStates:cabAccessoryStates,key=bundle.id+':'+index,on=button.dataset.cabMode?cabModeIsOn(button):!states.get(key);
  states.set(key,on);button.classList.toggle('is-on',on);button.setAttribute('aria-pressed',String(on));
  const position=control.kind==='lever'&&on?1:0;
- playCabActuation(button,on?'press':'release',control.kind==='lever'?'rotary':on?'down':'up',!cabReserveSoundSelection('reserve-'+index,button.closest('.cab-stage'),position));
+ if(control.kind==='lever')playCabActuation(button,on?'press':'release','rotary',!cabReserveSoundSelection('reserve-'+index,button.closest('.cab-stage'),position));
  activateCabReserve('reserve-'+index,button.closest('.cab-stage'),position);
 }
 function cabRotaryLabel(index,turns=cabRotaryTurns){return `Reserve-Drehschalter ${index===0?'Scheibe':'Betrieb'}, Stellung ${turns[index]%4*90}°`;}
@@ -246,17 +262,24 @@ function resetCabEmergency(){if(state.active?.status==='running')document.getEle
 function toggleCockpitSound(){state.settings.cockpit_muted=!state.settings.cockpit_muted;stopCabMechanics();stopDriverSound();saveState();showView('driver');}
 function showCockpitSources(){
  const bundle=getVehicleBundle();
- showModal('Fahrpult · Bild- und Tonquellen',`${vehicleBundleSources(bundle)}${bundle.id==='default'?'<p>Fotorealistische Pultgrafik mit dem integrierten Imagegen-Tool nach der vom Nutzer bereitgestellten Vorlage erzeugt. Weiße Gruppenumrandungen, elfenbeinfarbene Tasterringe und vier Schrauben sind Teil der Grafik. Acht Funktionstaster sind interaktiv, darunter Vollbild. Zwei separate Kontrollleuchten zeigen den Türzustand; zwei Reserve-Drehschalter lassen sich ohne Fahrfunktion drehen; zehn graue Reserveelemente bleiben rein grafisch. Quelle, Arbeitsdatei und Prompt sind in IMAGE_SOURCES.md dokumentiert.</p>':''}<p>Mechanischer Tasterdruck, Loslassen und Einrasten des Not-Aus: eigene digitale Synthese, getrennt von Ansagen und Funktionssounds. Notfallbuzzer: eigene Synthese.</p><p>Türen: „Tram doors open and close hiss and beeping“, stephan, Public Domain. <a href="https://commons.wikimedia.org/wiki/File:Tram_doors_open_and_close_hiss_and_beeping.ogg" target="_blank" rel="noopener">Quelle</a>. Ausschnitte, Pegel angepasst, synthetischer Vorwarnton ergänzt.</p><p>Stau: „Audio sound of a busy traffic in Porthacourt“, ElemePodcast, CC BY 4.0, und „Car Horn“, 15HPanska_Ruttner_Jan, CC0. Ausschnitte mit Hupe gemischt. Fahrtende: Windows XP Shutdown, Microsoft, aus dem Winhistory-Archiv, leiser abgemischt. Zurück: bereitgestellter Jingle aus „Back to the Future“, Alan Silvestri. Details und Quellenlinks: AUDIO_SOURCES.md.</p>`, '<button class="primary" onclick="closeModal()">Schließen</button>');
+ showModal('Fahrpult · Bild- und Tonquellen',`${vehicleBundleSources(bundle)}${bundle.id==='default'?'<p>Fotorealistische Pultgrafik mit dem integrierten Imagegen-Tool nach der vom Nutzer bereitgestellten Vorlage erzeugt. Weiße Gruppenumrandungen, elfenbeinfarbene Tasterringe und vier Schrauben sind Teil der Grafik. Acht Funktionstaster sind interaktiv, darunter Vollbild. Zwei separate Kontrollleuchten zeigen den Türzustand; zwei Reserve-Drehschalter lassen sich ohne Fahrfunktion drehen; zehn graue Reserveelemente bleiben rein grafisch. Quelle, Arbeitsdatei und Prompt sind in IMAGE_SOURCES.md dokumentiert.</p>':''}<p>Tasterdruck und Loslassen sowie Umschalter und Drehschalter: vom Nutzer bereitgestellte Aufnahmen, getrennt von Ansagen und Funktionssounds. Der Not-Aus verwendet weiterhin seinen eigenen synthetischen Einrastton. Notfallbuzzer: eigene Synthese.</p><p>Türen: „Tram doors open and close hiss and beeping“, stephan, Public Domain. <a href="https://commons.wikimedia.org/wiki/File:Tram_doors_open_and_close_hiss_and_beeping.ogg" target="_blank" rel="noopener">Quelle</a>. Ausschnitte, Pegel angepasst, synthetischer Vorwarnton ergänzt.</p><p>Stau: „Audio sound of a busy traffic in Porthacourt“, ElemePodcast, CC BY 4.0, und „Car Horn“, 15HPanska_Ruttner_Jan, CC0. Ausschnitte mit Hupe gemischt. Fahrtende: Windows XP Shutdown, Microsoft, aus dem Winhistory-Archiv, leiser abgemischt. Zurück: bereitgestellter Jingle aus „Back to the Future“, Alan Silvestri. Details und Quellenlinks: AUDIO_SOURCES.md.</p>`, '<button class="primary" onclick="closeModal()">Schließen</button>');
 }
 // A separate Web Audio channel keeps short mechanical transients independent of
 // stop announcements and the Android MediaPlayer sequence. No runtime downloads.
 let cabAudioContext=null;
 const cabMechanicalSources=new Set();
-function stopCabMechanics(){cabMechanicalGeneration++;if(window.AndroidAnnouncements?.stopMechanical)AndroidAnnouncements.stopMechanical();for(const s of cabMechanicalSources){try{s.stop();}catch{}}cabMechanicalSources.clear();}
+let cabFollowSoundGate=null,cabHoldSoundGate=null,cabMechanicalRequest=0;
+const cabNativeMechanicalPending=new Map();
+window.onNativeCabMechanicalEnd=(id,completed)=>{const resolve=cabNativeMechanicalPending.get(id);cabNativeMechanicalPending.delete(id);resolve?.(completed===true);};
+function beginCabFollowSound(){
+ const gate={};gate.promise=new Promise(resolve=>gate.resolve=resolve);cabFollowSoundGate=gate;cabHoldSoundGate=gate;
+ void gate.promise.then(()=>{if(cabFollowSoundGate===gate)cabFollowSoundGate=null;});
+}
+function stopCabMechanics(){cabMechanicalGeneration++;cabFollowSoundGate?.resolve(false);cabHoldSoundGate=null;if(window.AndroidAnnouncements?.stopMechanical)AndroidAnnouncements.stopMechanical();for(const resolve of cabNativeMechanicalPending.values())resolve(false);cabNativeMechanicalPending.clear();for(const s of cabMechanicalSources){try{s.stop();}catch{}}cabMechanicalSources.clear();}
 function playCabMechanical(kind,bundle=vehicleBundlePreview){
  const sound=bundle?.sounds.mechanical[kind]||cabMechanicalSound(kind);
- if(sound&&!sound.startsWith('synth:')){void playCabMechanicalAsset(sound,kind);return;}
- playCabMechanicalSynth(kind);
+ if(sound&&!sound.startsWith('synth:'))return playCabMechanicalAsset(sound,kind);
+ return playCabMechanicalSynth(kind);
 }
 function playCabMechanicalSynth(kind){
  if(kind==='screw'||kind==='ratchet'){playCabScrewSound(kind==='ratchet');return;}
@@ -273,13 +296,19 @@ function playCabMechanicalSynth(kind){
    data[i]=rotary?(strike(0,130,1150)*.025+strike(.155,95,780)*.4+strike(.172,160,1450)*.2):(strike(0,latch?65:up?180:125,up?2600:latch?420:1150)+(latch?strike(.043,90,760)*.7:0))*.32;
   }
   const source=ctx.createBufferSource();source.buffer=buffer;source.connect(ctx.destination);cabMechanicalSources.add(source);
-  source.onended=()=>cabMechanicalSources.delete(source);source.start();
+  return new Promise(resolve=>{source.onended=()=>{cabMechanicalSources.delete(source);resolve(true);};source.start();});
  }catch{/* A muted/unavailable audio device must not prevent operating the cab. */}
 }
 const cabMechanicalBuffers=new Map();
 let cabMechanicalGeneration=0;
 async function playCabMechanicalAsset(path,kind){
  if(state.settings.cockpit_muted||document.hidden)return;
+ if(window.AndroidAnnouncements?.playMechanicalWithCompletion){
+  const id=++cabMechanicalRequest,generation=cabMechanicalGeneration;
+  const completed=await new Promise(resolve=>{cabNativeMechanicalPending.set(id,resolve);AndroidAnnouncements.playMechanicalWithCompletion(path,kind,id);});
+  if(!completed&&generation===cabMechanicalGeneration)return playCabMechanicalSynth(kind);
+  return completed;
+ }
  if(window.AndroidAnnouncements?.playMechanical){AndroidAnnouncements.playMechanical(path,kind);return;}
  const generation=cabMechanicalGeneration;
  try{
@@ -288,8 +317,9 @@ async function playCabMechanicalAsset(path,kind){
   if(!cabMechanicalBuffers.has(path))cabMechanicalBuffers.set(path,fetch(path).then(r=>{if(!r.ok)throw Error(path);return r.arrayBuffer();}).then(bytes=>cabAudioContext.decodeAudioData(bytes)).catch(error=>{cabMechanicalBuffers.delete(path);throw error;}));
   const buffer=await cabMechanicalBuffers.get(path);
   if(generation!==cabMechanicalGeneration||state.settings.cockpit_muted||document.hidden)return;
-  const source=cabAudioContext.createBufferSource();source.buffer=buffer;source.connect(cabAudioContext.destination);cabMechanicalSources.add(source);source.onended=()=>cabMechanicalSources.delete(source);source.start();
- }catch{if(generation===cabMechanicalGeneration)playCabMechanicalSynth(kind);}
+  const source=cabAudioContext.createBufferSource();source.buffer=buffer;source.connect(cabAudioContext.destination);cabMechanicalSources.add(source);
+  return await new Promise(resolve=>{source.onended=()=>{cabMechanicalSources.delete(source);resolve(generation===cabMechanicalGeneration);};source.start();});
+ }catch{if(generation===cabMechanicalGeneration)return playCabMechanicalSynth(kind);return false;}
 }
 let cabHeld=null,cabHeldCustomSound=false;
 function playCabScrewSound(tightening=false){
@@ -325,17 +355,25 @@ function playCabScrewSound(tightening=false){
   source.onended=()=>cabMechanicalSources.delete(source);source.start();
  }catch{/* The visual Easter egg also works without an audio device. */}
 }
-function releaseCabButton(){if(!cabHeld)return;cabHeld.classList.remove('is-down');playCabActuation(cabHeld,'release','up',!cabHeldCustomSound&&!cabHeld.classList.contains('cab-emergency'));if(cabHeld.dataset.cabMode==='latching')syncCabModeVisual(cabHeld);cabHeld=null;cabHeldCustomSound=false;}
+function releaseCabButton(){
+ if(!cabHeld)return;const button=cabHeld,gate=cabHoldSoundGate;cabHoldSoundGate=null;
+ button.classList.remove('is-down');
+ const sound=button.dataset.cabMode!=='latching'||button.classList.contains('cab-emergency')?playCabActuation(button,'release','up',!button.classList.contains('cab-emergency')):null;
+ if(gate)void Promise.resolve(sound).then(completed=>gate.resolve(completed!==false),()=>gate.resolve(false));
+ if(button.dataset.cabMode==='latching')syncCabModeVisual(button);cabHeld=null;cabHeldCustomSound=false;
+}
 function holdCabButton(button){
  if(cabLayoutAllowed())return;
  releaseCabButton();cabHeld=button;button.classList.add('is-down');
- cabHeldCustomSound=button.classList.contains('cab-spare')&&!!cabReserveSoundSelection(button.dataset.cabReserve,button.closest('.cab-stage'));
- playCabActuation(button,'press',button.classList.contains('cab-emergency')?'latch':'down',!cabHeldCustomSound);
+ cabHeldCustomSound=!!cabReserveSoundSelection(cabControlKey(button),button.closest('.cab-stage'));
+ if(button.dataset.cabMode!=='latching'&&!button.classList.contains('cab-emergency'))beginCabFollowSound();
+ const emergency=button.classList.contains('cab-emergency'),releasing=button.dataset.cabMode==='latching'&&!emergency&&cabModeIsOn(button);
+ playCabActuation(button,releasing?'release':'press',emergency?'latch':releasing?'up':'down',!cabHeldCustomSound);
 }
-document.addEventListener('pointerdown',e=>{const b=e.target.closest('.cab-button,.cab-spare');if(!b||b.disabled||e.button!==0)return;holdCabButton(b);},true);
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('.cab-button,.cab-spare,.cab-accessory-button');if(!b||b.disabled||e.button!==0)return;holdCabButton(b);},true);
 document.addEventListener('pointerup',releaseCabButton,true);
 document.addEventListener('pointercancel',releaseCabButton,true);
-document.addEventListener('keydown',e=>{const b=e.target.closest('.cab-button,.cab-spare');if(!b||b.disabled||e.repeat||!['Enter',' '].includes(e.key))return;holdCabButton(b);},true);
+document.addEventListener('keydown',e=>{const b=e.target.closest('.cab-button,.cab-spare,.cab-accessory-button');if(!b||b.disabled||e.repeat||!['Enter',' '].includes(e.key))return;holdCabButton(b);},true);
 document.addEventListener('keyup',e=>{if(['Enter',' '].includes(e.key))releaseCabButton();},true);
 window.addEventListener('blur',()=>{releaseCabButton();stopCabMechanics();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){releaseCabButton();stopCabMechanics();}});
@@ -377,12 +415,17 @@ function releaseCabMode(cancelled=false){
   (vehicleBundlePreview?vehiclePreviewRotaryTurns:cabRotaryTurns)[Number(key.slice(7))]=0;
   if(!cancelled)activateCabReserve(key,button.closest('.cab-stage'),0);
  }
- if(!button.matches('.cab-button,.cab-spare'))playCabActuation(button,'release','up');
+ if(!button.matches('.cab-button,.cab-spare,.cab-accessory-button')){
+  const gate=cabHoldSoundGate;cabHoldSoundGate=null;
+  const sound=playCabActuation(button,'release','up');
+  if(gate)void Promise.resolve(sound).then(completed=>gate.resolve(!cancelled&&completed!==false),()=>gate.resolve(false));
+ }
  cabModeClickSuppression.set(button,performance.now()+700);
 }
 function holdCabMode(button){
  if(cabLayoutAllowed()||button.disabled||button.dataset.cabMode!=='momentary')return;
  releaseCabMode(true);cabModeHeld=button;cabModeSet(button,true);
+ if(button.matches('.cab-accessory-lever,.cab-rotary'))beginCabFollowSound();
  if(button.matches('.cab-accessory,.cab-rotary')){
   cabModeDispatching=true;try{button.click();}finally{cabModeDispatching=false;}
   syncCabModeVisual(button);

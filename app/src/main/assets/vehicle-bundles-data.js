@@ -182,6 +182,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -189,10 +190,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -423,6 +424,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -430,10 +432,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -681,12 +683,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "flipX": true
         }
+      },
+      "layout": {
+        "icon-emergency": {
+          "x": 1326.410909112147,
+          "y": 332.30832108764747
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -694,10 +703,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -945,12 +954,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "flipX": true
         }
+      },
+      "layout": {
+        "icon-emergency": {
+          "x": 1328.8864832763486,
+          "y": 331.0705852246713
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -958,10 +974,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -1410,6 +1426,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -1417,10 +1434,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -1868,12 +1885,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             1327
           ]
         }
+      },
+      "layout": {
+        "icon-emergency": {
+          "x": 1272.7349537856028,
+          "y": 575.2590452468679
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -1881,10 +1905,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -2338,6 +2362,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -2345,10 +2370,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -2563,6 +2588,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -2570,10 +2596,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -2766,12 +2792,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "console": "#242932",
         "panel": "#65636f",
         "text": "#eef1f3"
+      },
+      "layout": {
+        "icon-traffic": {
+          "x": 872.3425531425604,
+          "y": 754.753725706147
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -2779,10 +2812,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -2975,12 +3008,35 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "console": "#242932",
         "panel": "#65636f",
         "text": "#eef1f3"
+      },
+      "layout": {
+        "icon-passenger": {
+          "x": 405.9743098982788,
+          "y": 751.684819126208
+        },
+        "label-emergency": {
+          "x": 1499.1515299057207,
+          "y": 114.11097280993036
+        },
+        "icon-traffic": {
+          "x": 872.3424497983834,
+          "y": 754.7537773784584
+        },
+        "icon-emergency": {
+          "x": 1512.6968043562476,
+          "y": 218.63423543196896
+        },
+        "icon-finish": {
+          "x": 1495.6910662866674,
+          "y": 750.690060118747
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -2988,10 +3044,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -3184,12 +3240,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "console": "#242932",
         "panel": "#65636f",
         "text": "#eef1f3"
+      },
+      "layout": {
+        "icon-traffic": {
+          "x": 870.9880210147247,
+          "y": 753.3991877344506
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -3197,10 +3260,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -3393,12 +3456,27 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "console": "#242932",
         "panel": "#65636f",
         "text": "#eef1f3"
+      },
+      "layout": {
+        "icon-traffic": {
+          "x": 872.3425531425604,
+          "y": 752.0446497627546
+        },
+        "label-emergency": {
+          "x": 1495.0876234896828,
+          "y": 115.46553661778223
+        },
+        "icon-emergency": {
+          "x": 1512.6968043562476,
+          "y": 219.98879923982082
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -3406,10 +3484,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -3609,6 +3687,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -3616,10 +3695,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -3860,6 +3939,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -3867,10 +3947,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -4153,6 +4233,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -4160,10 +4241,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -4365,6 +4446,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -4372,10 +4454,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -4823,8 +4905,9 @@ window.VEHICLE_BUNDLES = Object.freeze({
     },
     "sounds": {
       "effects": {
-        "door_open": "audio/effects/door_open.mp3",
-        "door_close": "audio/effects/door_close.mp3",
+        "door_open": "vehicle-bundles/family-tramlink/audio/door_open.mp3",
+        "door_close": "vehicle-bundles/family-tramlink/audio/door_close.mp3",
+        "door_closed": "vehicle-bundles/family-tramlink/audio/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -4832,10 +4915,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -4844,7 +4927,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "title": "Tramlink · mittleres Instrumentenpult",
       "variant": "Nachbildung · mittleres Pult nach bereitgestelltem Foto",
       "description": "Frontale fotorealistische Nachbildung des mittleren schwarzen Instrumentenpults nach dem bereitgestellten Tramlink-Foto: Analogtacho links, Diagnoseanzeige mittig, Not-Aus rechts und eine untere Bedienleiste. Die Fahrfunktionen sind für die Simulation zugeordnet. Anzeige und Tacho sind Bildkulisse; zusätzliche Taster und die beiden Drehschalter sind als Reserve bedienbar.",
-      "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe.",
+      "soundNote": "Türklänge: vom Nutzer bereitgestellte Tramlink-Aufnahmen für Öffnen, Schließen und Türen zu. Weitere Klänge verwenden die gemeinsamen Standardaufnahmen und Synthesen.",
       "references": [
         {
           "title": "Gestaltung, bereitgestellte Vorlage und Änderungen",
@@ -4853,7 +4936,8 @@ window.VEHICLE_BUNDLES = Object.freeze({
       ]
     },
     "credits": [
-      "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt."
+      "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt.",
+      "Türklänge: vom Nutzer am 21.10.2026 bereitgestellte Dateien door_open_tramlink.mp3, door_close_tramlink.mp3 und door_closed_tramlink.mp3, unverändert übernommen. Weitere Herkunft und Lizenz der Aufnahmen sind nicht angegeben."
     ]
   },
   "g4-61": {
@@ -5276,6 +5360,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -5283,10 +5368,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -5740,6 +5825,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -5747,10 +5833,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -5960,12 +6046,31 @@ window.VEHICLE_BUNDLES = Object.freeze({
         ]
       },
       "accessories": [],
-      "labelColor": "#fff8df"
+      "labelColor": "#fff8df",
+      "layout": {
+        "icon-emergency": {
+          "x": 1273.9244680095671,
+          "y": 426.21059788610336
+        },
+        "icon-next": {
+          "x": 261.26349094908505,
+          "y": 430.70700902023293
+        },
+        "icon-back": {
+          "x": 597.1957699586899,
+          "y": 428.9857919919439
+        },
+        "icon-passenger": {
+          "x": 255.5971217324935,
+          "y": 751.8854927007719
+        }
+      }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -5973,10 +6078,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -6421,6 +6526,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -6428,10 +6534,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -6675,12 +6781,23 @@ window.VEHICLE_BUNDLES = Object.freeze({
         ]
       },
       "accessories": [],
-      "labelColor": "#fff8df"
+      "labelColor": "#fff8df",
+      "layout": {
+        "icon-closed": {
+          "x": 659.9903482317602,
+          "y": 743.7533261619031
+        },
+        "icon-emergency": {
+          "x": 177.32154541656894,
+          "y": 180.5233075939544
+        }
+      }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -6688,10 +6805,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -6968,12 +7085,31 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ]
         }
       ],
-      "labelColor": "#fff8df"
+      "labelColor": "#fff8df",
+      "layout": {
+        "icon-emergency": {
+          "x": 1389.592669141558,
+          "y": 250.58013833513695
+        },
+        "label-emergency": {
+          "x": 1346.2819810728306,
+          "y": 116.51967202003328
+        },
+        "icon-traffic": {
+          "x": 945.8242990378417,
+          "y": 797.9615466866102
+        },
+        "icon-open": {
+          "x": 866.1853365002596,
+          "y": 580.7030914458793
+        }
+      }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -6981,10 +7117,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -7180,12 +7316,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
         ]
       },
       "accessories": [],
-      "labelColor": "#fff8df"
+      "labelColor": "#fff8df",
+      "layout": {
+        "icon-emergency": {
+          "x": 1290.0920761574655,
+          "y": 314.1582996240763
+        }
+      }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -7193,10 +7336,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -7392,12 +7535,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
         ]
       },
       "accessories": [],
-      "labelColor": "#fff8df"
+      "labelColor": "#fff8df",
+      "layout": {
+        "icon-emergency": {
+          "x": 1290.0918872976727,
+          "y": 321.5846439790648
+        }
+      }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -7405,10 +7555,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -7849,6 +7999,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -7856,10 +8007,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -8313,6 +8464,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -8320,10 +8472,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -8576,12 +8728,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "flipX": true
         }
+      },
+      "layout": {
+        "icon-emergency": {
+          "x": 1327.6488850540404,
+          "y": 331.0705970284827
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -8589,10 +8748,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -8840,12 +8999,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "flipX": true
         }
+      },
+      "layout": {
+        "icon-emergency": {
+          "x": 1328.8864832763486,
+          "y": 331.07061768515274
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -8853,10 +9019,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -9305,6 +9471,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -9312,10 +9479,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -9568,12 +9735,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "flipX": true
         }
+      },
+      "layout": {
+        "icon-emergency": {
+          "x": 1325.1734997496317,
+          "y": 329.8329319883751
+        }
       }
     },
     "sounds": {
       "effects": {
         "door_open": "audio/effects/door_open.mp3",
         "door_close": "audio/effects/door_close.mp3",
+        "door_closed": "audio/effects/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -9581,10 +9755,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -10036,12 +10210,91 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ]
         }
       ],
-      "labelColor": "#f6f2de"
+      "labelColor": "#f6f2de",
+      "layout": {
+        "label-reserve-10": {
+          "x": 864.9880134126109,
+          "y": 708.4078826962685
+        },
+        "label-rotary-0": {
+          "x": 1000.3706746911586,
+          "y": 706.0184171905066
+        },
+        "label-reserve-11": {
+          "x": 1121.9961679966875,
+          "y": 707.0710648647556
+        },
+        "icon-emergency": {
+          "x": 1527.3652089922346,
+          "y": 120.9328050044214
+        },
+        "label-emergency": {
+          "x": 1505.8190559039126,
+          "y": 39.99867141103879
+        },
+        "icon-fullscreen": {
+          "x": 738.941770382272,
+          "y": 779.3319021383812
+        },
+        "icon-next": {
+          "x": 614.2744252056509,
+          "y": 776.6371939912752
+        },
+        "control-rotary-0": {
+          "text": "",
+          "icon": "",
+          "sounds": {
+            "0": "",
+            "1": "",
+            "2": "",
+            "3": ""
+          },
+          "actions": {
+            "0": "",
+            "1": "",
+            "2": "",
+            "3": ""
+          },
+          "action": "",
+          "sound": ""
+        },
+        "actuation-rotary-0": {
+          "press": "",
+          "release": ""
+        },
+        "icon-rotary-0": {
+          "x": 993.6344143102484,
+          "y": 779.3423661043706
+        },
+        "control-reserve-10": {
+          "text": "",
+          "icon": "",
+          "sound": "",
+          "action": ""
+        },
+        "actuation-reserve-10": {
+          "press": "",
+          "release": ""
+        },
+        "label-passenger": {
+          "text": "Fahrgastinfo"
+        },
+        "heading-free-1": {
+          "text": "Vmax 70 km/h",
+          "x": 305.1634992793266,
+          "y": 198.3406960949187,
+          "fontSize": 30,
+          "color": "#000000",
+          "background": "#ffffff",
+          "fontFamily": "serif"
+        }
+      }
     },
     "sounds": {
       "effects": {
-        "door_open": "audio/effects/door_open.mp3",
-        "door_close": "audio/effects/door_close.mp3",
+        "door_open": "vehicle-bundles/family-tramlink/audio/door_open.mp3",
+        "door_close": "vehicle-bundles/family-tramlink/audio/door_close.mp3",
+        "door_closed": "vehicle-bundles/family-tramlink/audio/door_closed.mp3",
         "emergency": "audio/effects/emergency.mp3",
         "traffic": "audio/effects/traffic.mp3",
         "passenger": "audio/effects/passenger.mp3",
@@ -10049,10 +10302,10 @@ window.VEHICLE_BUNDLES = Object.freeze({
         "back": "audio/effects/back.mp3"
       },
       "mechanical": {
-        "down": "synth:down",
-        "up": "synth:up",
+        "down": "vehicle-bundles/default/audio/push-button.mp3",
+        "up": "vehicle-bundles/default/audio/release-button.mp3",
         "latch": "synth:latch",
-        "rotary": "synth:rotary",
+        "rotary": "vehicle-bundles/default/audio/switch.mp3",
         "screw": "synth:screw",
         "ratchet": "synth:ratchet"
       }
@@ -10061,7 +10314,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "title": "Tramlink · mittleres Instrumentenpult",
       "variant": "Nachbildung · mittleres Pult nach bereitgestelltem Foto",
       "description": "Frontale fotorealistische Nachbildung des mittleren schwarzen Instrumentenpults nach dem bereitgestellten Tramlink-Foto: Analogtacho links, Diagnoseanzeige mittig, Not-Aus rechts und eine untere Bedienleiste. Die Fahrfunktionen sind für die Simulation zugeordnet. Anzeige und Tacho sind Bildkulisse; zusätzliche Taster und die beiden Drehschalter sind als Reserve bedienbar.",
-      "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe.",
+      "soundNote": "Türklänge: vom Nutzer bereitgestellte Tramlink-Aufnahmen für Öffnen, Schließen und Türen zu. Weitere Klänge verwenden die gemeinsamen Standardaufnahmen und Synthesen.",
       "references": [
         {
           "title": "Gestaltung, bereitgestellte Vorlage und Änderungen",
@@ -10070,7 +10323,8 @@ window.VEHICLE_BUNDLES = Object.freeze({
       ]
     },
     "credits": [
-      "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt."
+      "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt.",
+      "Türklänge: vom Nutzer am 21.10.2026 bereitgestellte Dateien door_open_tramlink.mp3, door_close_tramlink.mp3 und door_closed_tramlink.mp3, unverändert übernommen. Weitere Herkunft und Lizenz der Aufnahmen sind nicht angegeben."
     ]
   }
 });

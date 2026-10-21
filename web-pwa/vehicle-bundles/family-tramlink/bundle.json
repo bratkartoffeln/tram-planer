@@ -428,7 +428,7 @@
     "title": "Tramlink · mittleres Instrumentenpult",
     "variant": "Nachbildung · mittleres Pult nach bereitgestelltem Foto",
     "description": "Frontale fotorealistische Nachbildung des mittleren schwarzen Instrumentenpults nach dem bereitgestellten Tramlink-Foto: Analogtacho links, Diagnoseanzeige mittig, Not-Aus rechts und eine untere Bedienleiste. Die Fahrfunktionen sind für die Simulation zugeordnet. Anzeige und Tacho sind Bildkulisse; zusätzliche Taster und die beiden Drehschalter sind als Reserve bedienbar.",
-    "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe.",
+    "soundNote": "Türklänge: vom Nutzer bereitgestellte Tramlink-Aufnahmen für Öffnen, Schließen und Türen zu. Weitere Klänge verwenden die gemeinsamen Standardaufnahmen und Synthesen.",
     "references": [
       {
         "title": "Gestaltung, bereitgestellte Vorlage und Änderungen",
@@ -437,6 +437,14 @@
     ]
   },
   "credits": [
-    "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt."
-  ]
+    "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt.",
+    "Türklänge: vom Nutzer am 21.10.2026 bereitgestellte Dateien door_open_tramlink.mp3, door_close_tramlink.mp3 und door_closed_tramlink.mp3, unverändert übernommen. Weitere Herkunft und Lizenz der Aufnahmen sind nicht angegeben."
+  ],
+  "sounds": {
+    "effects": {
+      "door_open": "vehicle-bundles/family-tramlink/audio/door_open.mp3",
+      "door_close": "vehicle-bundles/family-tramlink/audio/door_close.mp3",
+      "door_closed": "vehicle-bundles/family-tramlink/audio/door_closed.mp3"
+    }
+  }
 }

@@ -5,5 +5,13 @@
     "title": "Zugfahrzeug · Gotha · Schalterkasten am Kurbelpult",
     "variant": "Beiwagen · zugeordnetes Zugfahrzeugpult",
     "description": "Dieser Beiwagen besitzt kein eigenes Fahrerpult. Für die Simulation ist die Schaltplatte eines passenden Gotha-Zugfahrzeugs zugeordnet. Frontale Nachbildung des mittleren grauen Schalterkastens eines T57 der Kirnitzschtalbahn, ohne umgebende Kurbel und Handbremse. Eckige Bakelittaster und roter Druckknopf; Auswahl und Anordnung für die Simulation angepasst. T57E, T2-60 und T2-61 sind gekennzeichnete Familienvarianten."
+  },
+  "cab": {
+    "layout": {
+      "icon-emergency": {
+        "x": 1326.410909112147,
+        "y": 332.30832108764747
+      }
+    }
   }
 }

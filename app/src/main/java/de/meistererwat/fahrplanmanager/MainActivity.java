@@ -69,6 +69,7 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri[]> fileCallback;
     private AppUpdateBridge appUpdates;
     private final java.util.Set<MediaPlayer> mechanicalPlayers = new java.util.HashSet<>();
+    private final java.util.Map<MediaPlayer, Integer> mechanicalRequests = new java.util.HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,7 +200,7 @@ public class MainActivity extends Activity {
         public void playEffectAsset(String path, String fallbackId, int requestId) {
             mainHandler.post(() -> {
                 if (!resumed || !isTrustedPage()) return;
-                if (fallbackId == null || !fallbackId.matches("door_open|door_close|emergency|traffic|passenger|finish|back")) return;
+                if (fallbackId == null || !fallbackId.matches("door_open|door_close|door_closed|emergency|traffic|passenger|finish|back")) return;
                 stopAnnouncement();
                 driverEffectRequest = requestId;
                 final long generation = announcementGeneration;
@@ -218,15 +219,29 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public void playMechanical(String path, String kind) {
+            playMechanicalInternal(path, kind, 0);
+        }
+
+        @JavascriptInterface
+        public void playMechanicalWithCompletion(String path, String kind, int requestId) {
+            playMechanicalInternal(path, kind, requestId);
+        }
+
+        private void playMechanicalInternal(String path, String kind, int requestId) {
             mainHandler.post(() -> {
                 if (!resumed || !isTrustedPage() || !validCabAudioPath(path)
-                        || kind == null || !kind.matches("down|up|latch|rotary|screw|ratchet")) return;
+                        || kind == null || !kind.matches("down|up|latch|rotary|screw|ratchet")) {
+                    notifyCabMechanicalEnd(requestId, false);
+                    return;
+                }
                 // Independent of announcements and door-completion callbacks.
                 if (mechanicalPlayers.size() >= 12) stopMechanicalPlayers();
                 MediaPlayer sound = new MediaPlayer();
                 mechanicalPlayers.add(sound);
+                mechanicalRequests.put(sound, requestId);
                 Runnable release = () -> {
                     if (!mechanicalPlayers.remove(sound)) return;
+                    mechanicalRequests.remove(sound);
                     sound.setOnPreparedListener(null);
                     sound.setOnCompletionListener(null);
                     sound.setOnErrorListener(null);
@@ -235,7 +250,8 @@ public class MainActivity extends Activity {
                 Runnable failure = () -> {
                     if (!mechanicalPlayers.contains(sound)) return;
                     release.run();
-                    if (resumed && isTrustedPage()) webView.evaluateJavascript(
+                    notifyCabMechanicalEnd(requestId, false);
+                    if (requestId == 0 && resumed && isTrustedPage()) webView.evaluateJavascript(
                             "playCabMechanicalSynth(" + JSONObject.quote(kind) + ")", null);
                 };
                 try (AssetFileDescriptor descriptor = getAssets().openFd(path)) {
@@ -244,7 +260,7 @@ public class MainActivity extends Activity {
                     sound.setOnPreparedListener(player -> {
                         try { player.start(); } catch (IllegalStateException error) { failure.run(); }
                     });
-                    sound.setOnCompletionListener(player -> release.run());
+                    sound.setOnCompletionListener(player -> { release.run(); notifyCabMechanicalEnd(requestId, true); });
                     sound.setOnErrorListener((player, what, extra) -> { failure.run(); return true; });
                     sound.prepareAsync();
                 } catch (IOException | RuntimeException error) { failure.run(); }
@@ -262,7 +278,7 @@ public class MainActivity extends Activity {
                 driverEffectRequest = requestId;
                 final long generation = announcementGeneration;
                 if (!resumed || effectId == null
-                        || !effectId.matches("door_open|door_close|emergency|traffic|passenger|finish|back")) {
+                        || !effectId.matches("door_open|door_close|door_closed|emergency|traffic|passenger|finish|back")) {
                     stopAnnouncement();
                     return;
                 }
@@ -330,14 +346,21 @@ public class MainActivity extends Activity {
         return path != null && path.matches("(audio/effects|vehicle-bundles/[a-z0-9-]+/audio)/[a-z0-9_-]+\\.mp3");
     }
 
+    private void notifyCabMechanicalEnd(int requestId, boolean completed) {
+        if (requestId > 0 && !destroyed && isTrustedPage()) webView.evaluateJavascript(
+                "onNativeCabMechanicalEnd(" + requestId + "," + completed + ")", null);
+    }
+
     private void stopMechanicalPlayers() {
         for (MediaPlayer sound : mechanicalPlayers) {
+            notifyCabMechanicalEnd(mechanicalRequests.getOrDefault(sound, 0), false);
             sound.setOnPreparedListener(null);
             sound.setOnCompletionListener(null);
             sound.setOnErrorListener(null);
             sound.release();
         }
         mechanicalPlayers.clear();
+        mechanicalRequests.clear();
     }
 
     private void playAnnouncement(String rawStopName, String assetPath) {

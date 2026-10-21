@@ -3,5 +3,13 @@
   "extends": "family-combino",
   "presentation": {
     "variant": "Standard-Fallback · Combino Basic"
+  },
+  "cab": {
+    "layout": {
+      "icon-traffic": {
+        "x": 870.9880210147247,
+        "y": 753.3991877344506
+      }
+    }
   }
 }

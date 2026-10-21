@@ -22,7 +22,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),session=req
    await b.evaluate('undoCabLayout()');
    assert.equal(await b.evaluate('Object.values(cabLayoutExportData().cab.layout).filter(v=>v.mode==="latching").length'),controls.length-1,type+' mode undo');
    await setMode(controls.at(-1).key,'latching');
-   await b.evaluate('toggleCabLayoutEditor();window.modeCalls=0;document.querySelectorAll(".cab-button").forEach(n=>n.onclick=()=>modeCalls++)');
+   await b.evaluate('toggleCabLayoutEditor();window.modeCalls=0;document.querySelectorAll(".cab-button").forEach(n=>n.onclick=n.cabOriginalAction=()=>modeCalls++)');
    for(const {key,selector} of controls.filter(c=>!c.key.startsWith('screw-'))){
     await pointer(selector,true);await pointer(selector,false);
     assert.equal(await b.evaluate(`document.querySelector(${JSON.stringify(selector)}).classList.contains('cab-mode-on')`),true,type+' latch '+key);
@@ -33,7 +33,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),session=req
    }
    await b.evaluate('toggleCabLayoutEditor()');
    for(const {key} of controls)await setMode(key,'momentary');
-   await b.evaluate('toggleCabLayoutEditor();document.querySelectorAll(".cab-button").forEach(n=>n.onclick=()=>modeCalls++)');
+   await b.evaluate('toggleCabLayoutEditor();document.querySelectorAll(".cab-button").forEach(n=>n.onclick=n.cabOriginalAction=()=>modeCalls++)');
    for(const {key,selector} of controls.filter(c=>!c.key.startsWith('screw-'))){
     await pointer(selector,true);
     assert.equal(await b.evaluate(`document.querySelector(${JSON.stringify(selector)}).classList.contains('cab-mode-on')`),true,type+' held '+key);
@@ -45,7 +45,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),session=req
   }
   // A spring-return lever invokes the assigned positions once each, including
   // keyboard operation. Cancellation restores the hardware without an action.
-  await b.evaluate(`openVehicleBundlePreview('t57e');toggleCabLayoutEditor();openCabReserveMenu('reserve-0');document.getElementById('cabControlMode').value='momentary';document.querySelector('[data-cab-position="0"]').value='back';document.querySelector('[data-cab-position="1"]').value='next';saveCabReserveBinding();toggleCabLayoutEditor();window.modeActions=[];document.querySelector('[data-cab-control="next"]').onclick=()=>modeActions.push('next');document.querySelector('[data-cab-control="back"]').onclick=()=>modeActions.push('back')`);
+  await b.evaluate(`openVehicleBundlePreview('t57e');toggleCabLayoutEditor();openCabReserveMenu('reserve-0');document.getElementById('cabControlMode').value='momentary';document.querySelector('[data-cab-position="0"]').value='back';document.querySelector('[data-cab-position="1"]').value='next';saveCabReserveBinding();toggleCabLayoutEditor();window.modeActions=[];document.querySelector('[data-cab-control="next"]').cabOriginalAction=()=>modeActions.push('next');document.querySelector('[data-cab-control="back"]').cabOriginalAction=()=>modeActions.push('back')`);
   await pointer('[data-cab-reserve="reserve-0"]',true);await pointer('[data-cab-reserve="reserve-0"]',false);
   assert.deepEqual(await b.evaluate('modeActions'),['next','back']);
   await b.evaluate('modeActions=[];document.querySelector("[data-cab-reserve=reserve-0]").focus()');

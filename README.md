@@ -1,8 +1,10 @@
-# Fahrplan Manager Audio – Version 6.2.10
+# Fahrplan Manager Audio – Version 6.2.11
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
 ## Neu
+
+Version 6.2.11 übernimmt die exportierten Fahrzeuglayouts, erweitert den Layouteditor auf vorbelegte Funktionstasten und führt neue Standard-Bedienklänge sowie eigene Tramlink-Türklänge ein. Tastende Bedienelemente spielen den Loslasston vor ihren Folgesounds; einrastende Drucktasten wechseln zwischen Druck- und Loslasston. Die automatischen Browsertests bleiben stumm.
 
 Unter **Meine Fahrzeuge → Fahrpult & Sounds** wird jede einzelne Bahn über ihre stabile Fahrzeug-ID separat bearbeitet, auch bei gleichem Fahrzeugtyp und Pult. Der Typenkatalog bearbeitet dagegen die Vorlage des ausgewählten Typs. Ohne eigene Anpassung dient die Typvorlage als Ausgangslayout; beim ersten Speichern wird sie für dieses Fahrzeug übernommen. Frühere, nach Pultbild gespeicherte Layouts bleiben als Fallback erhalten. Umbenennen verändert die Zuordnung nicht; bei Typ-/Pultwechsel bleiben die passenden Layouts separat gespeichert. Einzelexporte enthalten bei eigenen Fahrzeugen `vehicleId` und `vehicleCode`; der Sammelexport berücksichtigt alle Fahrzeuge. **Projektlayout laden** setzt ausschließlich die aktuell bearbeitete Zuordnung zurück. Prüfung: `node tests/cab-vehicle-layouts.cjs`.
 
@@ -19,6 +21,8 @@ Alle physischen Bedienelemente einschließlich **Not-Aus**, Drehschaltern, Hebel
 Die Symbole **Tür offen** und **Tür zu** besitzen im Editor auch bei unbeleuchteter Kontrollleuchte eine klar sichtbare blau gestrichelte Umrandung. Die Umrandungen des Not-Aus werden im Vordergrund gezeichnet, damit Knopf, Ring und benachbarte Bedienelemente sie nicht verdecken. Diese Markierungen erscheinen nur während der Layoutbearbeitung.
 
 Die Symbolauswahl zeigt jede Grafik zusammen mit ihrem Namen als auswählbare Kachel und markiert die aktuelle Auswahl. Das Menü bleibt auch nach einer Größenänderung innerhalb des Bildschirms. Verschobene Not-Aus-Symbole werden relativ zur ungedrückten Kappe verankert: Die erste Betätigung, erneutes Drücken und Aktualisierungen während des Zurückfederns verändern ihre gespeicherte Position nicht. Prüfung: `node tests/cab-emergency-layout.cjs`.
+
+Im Layouteditor lassen sich auch vorbelegte Funktionstasten vollständig wie Reservetasten bearbeiten: Fahrfunktion, Beschriftung, Symbol, Bedienklang, Betätigungstöne und Schaltverhalten. Die ursprünglichen Fahrfunktionen behalten ihre Tür- und Haltestellensperren, auch wenn sie einer anderen Taste zugewiesen sind. Bei tastenden Bedienelementen läuft beim Loslassen zuerst der Release-Ton vollständig; erst danach starten Funktionssounds und zugewiesene Bedienklänge. Browser und Android melden das tatsächliche Wiedergabeende zurück. Prüfung: `node tests/cab-complete-controls.cjs`.
 
 Unter **Meine Fahrzeuge → Erfurter Fahrzeugtypen** erscheint im Dev-Modus **Alle Fahrpult-Layouts exportieren**. Die Datei `cab-layouts-alle.json` enthält alle verfügbaren Pulte einschließlich Default und lokal gespeicherter Anpassungen mit Positionen, Formatierung und Funktionszuweisungen. Identische Layouts stehen einmal im Export; `vehicleTypes` nennt ihre Fahrzeugtypen und `vehicles` die zugehörigen einzelnen Fahrzeuge mit ID, Kürzel und Typ. Unterschiedliche Fahrzeugbelegungen werden getrennt exportiert. Jede Position in `layouts` entspricht dem bisherigen Einzelexport mit eigenem `targetBundle` und `cab.layout`. Auf Android wird ebenfalls nur ein Speicherdialog geöffnet.
 
@@ -40,7 +44,7 @@ Version 6.2.7 bereitet modellabhängige Fahrerpulte und Sounds vor. Alle 23 Fahr
 
 Version 6.2.6 richtet den oberen Streckenstrich der Fahrgastanzeige exakt am weiteren Verlauf aus. Im Vollbild des Fahrpults lässt sich der Streckenverlauf über ein eigenes Symbol weich aus- und wieder einblenden; im Hochformat wird der untere Bereich zusammengefahren. Tastaturbedienung und reduzierte Bewegung werden berücksichtigt.
 
-Beim Öffnen und Schließen blinkt „Türen offen“ bis zum tatsächlichen Wiedergabeende des jeweiligen Türsounds. Danach leuchtet beim Öffnen „Türen offen“ dauerhaft, beim Schließen wechselt die Anzeige auf „Türen zu“. Während der Bewegung ist der Türtaster gesperrt und die Weiterfahrt blockiert. Ein abgebrochener Schließvorgang meldet weiterhin offene Türen. Android meldet das Ende über den MediaPlayer zurück, die PWA über Web Audio; ohne Ton erfolgt der Zustandswechsel sofort. Prüfungen: `node tests/door-motion.cjs`, `node tests/cab-route-panel.cjs` und `node tests/passenger-display.cjs`.
+Beim Öffnen und Schließen blinkt „Türen offen“ bis zum tatsächlichen Wiedergabeende des jeweiligen Türsounds. Danach leuchtet beim Öffnen „Türen offen“ dauerhaft, beim Schließen wechselt die Anzeige auf „Türen zu“. Das abschließende Ding ist als `door_closed.mp3` getrennt und startet erst mit dem Aufleuchten von „Türen zu“, auch in der Fahrzeugvorschau. Ein abgebrochener Schließvorgang spielt kein Ding. Während der Bewegung ist der Türtaster gesperrt und die Weiterfahrt blockiert. Ein abgebrochener Schließvorgang meldet weiterhin offene Türen. Android meldet das Ende über den MediaPlayer zurück, die PWA über Web Audio; ohne Ton erfolgt der Zustandswechsel sofort. Prüfungen: `node tests/door-motion.cjs`, `node tests/cab-route-panel.cjs` und `node tests/passenger-display.cjs`.
 
 Version 6.2.5 ergänzt Rückgängig in der Linienwerkstatt, das Einrasten ausschließlich auf Netzplanhaltestellen sowie auswählbare Linienbuttons für beide Fahrtrichtungen. Die aktive Linie bleibt farbig, andere Linien werden entsättigt.
 
@@ -157,7 +161,7 @@ Optional setzt `cab.labelColor` die Schriftfarbe auf der Platte. `labelPad: {x, 
 
 `cab.emergencySprites.base: [MitteX, MitteY, Durchmesser, Durchmesser]` legt den festen kreisrunden Not-Aus-Sockel fest. Seine Lage ist unabhängig von der versetzten roten Kappe. Die Sockelfarbe folgt `buttons.emergency.kind`: `mushroom` verwendet Gelb, `push` den dunklen ursprünglichen Sitz. Sockel und Rückfüllung bleiben in Ruhe und im Druckzustand identisch; nur Kappe und Schaft bilden den Druck ab. Pixelprüfung von Sockelfarbe, Ringkontur und festen Befestigungsrändern: `node tests/panel-press.cjs`.
 
-Effektschlüssel: `door_open`, `door_close`, `emergency`, `traffic`, `passenger`, `finish`, `back`. Mechanische Schlüssel: `down`, `up`, `latch`, `rotary`, `screw`, `ratchet`; deren Standardwerte `synth:<Schlüssel>` verwenden die bisherigen Synthesen. Mechanik spielt unabhängig von Funktionssounds und Ansagen. Haltestellenansagen bleiben streckenabhängig. Eigene Quellenangaben erscheinen über „Bild- & Tonquellen“; bei Übernahme von Standardbestandteilen deren Quellen in IMAGE_SOURCES.md und AUDIO_SOURCES.md beibehalten.
+Effektschlüssel: `door_open`, `door_close`, `door_closed`, `emergency`, `traffic`, `passenger`, `finish`, `back`. Mechanische Schlüssel: `down`, `up`, `latch`, `rotary`, `screw`, `ratchet`; `synth:<Schlüssel>` wählt die bisherigen Synthesen. Standardmäßig verwenden `down` und `up` die bereitgestellten Druck-/Loslassaufnahmen für alle Drucktasten; der Not-Aus behält `latch`. Prüfung: `node tests/cab-button-sounds.cjs`. Mechanik spielt unabhängig von Funktionssounds und Ansagen. `rotary` verwendet standardmäßig den bereitgestellten Switch-Sound für alle Pulte, einschließlich Hebeln. Einrastende Drucktasten spielen beim Einrasten `down` und beim erneuten Drücken zum Ausrasten `up`; das tatsächliche Loslassen bleibt stumm. Eigene Betätigungstöne bleiben vorrangig. Prüfung: `node tests/cab-switch-sound.cjs`. Haltestellenansagen bleiben streckenabhängig. Eigene Quellenangaben erscheinen über „Bild- & Tonquellen“; bei Übernahme von Standardbestandteilen deren Quellen in IMAGE_SOURCES.md und AUDIO_SOURCES.md beibehalten.
 
 Die Zuordnung verwendet zuerst `vehicleTypeId` der Fahrt, für ältere Pläne die verknüpfte Fahrzeug-ID beziehungsweise das Kürzel. Ein unbekannter oder fehlender Typ nutzt `default`; gelöschte Fahrzeuge behalten über die gespeicherte Typkennung ihr Bündel. Neue Typen sowohl im Fahrzeugkatalog als auch mit eigenem Bündel anlegen.
 
@@ -165,9 +169,11 @@ Nach Änderungen `python tools/sync-assets.py` ausführen. Das prüft Vererbung,
 
 ## Bauen und prüfen
 
+Automatische Browsertests starten grundsätzlich mit `--mute-audio`: Es ist kein Testton hörbar, Audio-Decodierung, Wiedergabeablauf und Abschlussrückmeldungen werden dennoch geprüft. Die manuell geöffnete Test-PWA bleibt hörbar.
+
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.10_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.11_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 

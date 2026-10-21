@@ -38,10 +38,11 @@
     driverEffect = false;
     pending.resolve(completed === true);
   };
-  const effects = new Set(['door_open','door_close','emergency','traffic','passenger','finish','back']);
+  const effects = new Set(['door_open','door_close','door_closed','emergency','traffic','passenger','finish','back']);
   window.stopDriverSound = () => { if (driverEffect) window.cancelStopAnnouncement(); };
   window.playDriverSound = async (id, bundle = null) => {
     if (!effects.has(id)) return false;
+    if (id!=='door_closed' && cabFollowSoundGate) { const queuedTicket=ticket; if (!await cabFollowSoundGate.promise || queuedTicket!==ticket) return false; }
     window.cancelStopAnnouncement();
     if (state.settings.cockpit_muted) return true;
     driverEffect = true;
@@ -202,6 +203,8 @@
   }
 
   async function playAnnouncement(name, expectedTicket) {
+    if (cabFollowSoundGate && !await cabFollowSoundGate.promise) return;
+    if (expectedTicket !== ticket) return;
     const paths = window.buildStopAnnouncement(name);
     if (!paths) {
       window.onAnnouncementError(`Für „${name}“ ist keine Aufnahme vorhanden.`);

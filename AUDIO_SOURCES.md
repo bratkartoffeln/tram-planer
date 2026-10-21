@@ -30,9 +30,23 @@ Die sieben am 19.10.2026 vom Nutzer ergänzten MP3-Dateien werden unverändert v
 
 Damit enthält die Zuordnung 96 aufgenommene Haltestellennamen; alle 93 unterschiedlichen Haltestellen der eingebauten Streckenvorlagen sind einschließlich ihrer Namensvarianten abgedeckt. Der Ansagenkatalog enthält nun 105 gelieferte Aufnahmen, zusätzlich zu den beiden Gongs und sieben Fahrpulteffekten. Dateinamen und SHA-256-Prüfsummen der Ergänzungen stehen in `audio/catalog.json`; der Offline-Cache enthält auch diese Dateien. Die Ansagefolge bleibt Ding-Dong → Nächste Haltestelle → Haltestellenname. Es wird keine Sprachsynthese verwendet.
 
+## Tramlink-Türklänge (21.10.2026)
+
+Für alle Tramlink-Fahrzeuge verwendet das gemeinsame Bündel `family-tramlink` die bereitgestellten Dateien `door_open_tramlink.mp3`, `door_close_tramlink.mp3` und `door_closed_tramlink.mp3`. Sie liegen unverändert als `door_open.mp3`, `door_close.mp3` und `door_closed.mp3` unter `vehicle-bundles/family-tramlink/audio/`. Das Türen-zu-Signal startet mit dem Aufleuchten der Tür-zu-Lampe nach erfolgreichem Schließen. Andere Fahrzeugtypen verwenden weiterhin ihre bisherigen Türklänge. Weitere Herkunft und Lizenz der Aufnahmen sind nicht angegeben.
+
+## Standardtöne für Drucktasten (21.10.2026)
+
+Die vom Nutzer bereitgestellten Dateien `push button.mp3` und `release button.mp3` liegen nach Bereinigung der Klangränder unter `vehicle-bundles/default/audio/push-button.mp3` und `vehicle-bundles/default/audio/release-button.mp3`. Alle Pulte erben sie über `sounds.mechanical.down` und `up`. Funktionstasten und Reservetaster spielen den Druckton beim Drücken und den Loslasston beim Loslassen, auch per Tastatur. Bei tastenden Bedienelementen warten Funktionssounds und zugewiesene Bedienklänge bis zum tatsächlichen Ende des Loslasstons. Der Not-Aus behält seinen bisherigen Einrastton und erhält keinen standardmäßigen Loslasston. Einrastende Drucktasten spielen beim ersten Drücken den Druckton und beim zweiten Drücken den Loslasston; das tatsächliche Loslassen bleibt stumm. Hebel und Drehschalter behalten den Switch-Sound. Eigene Klangzuweisungen und Stummschaltung haben Vorrang. Herkunft und Lizenz der bereitgestellten Aufnahmen sind nicht weiter angegeben. Prüfung: `node tests/cab-button-sounds.cjs`.
+
+## Standardton für Umschalter und Drehschalter (21.10.2026)
+
+Die vom Nutzer bereitgestellte Datei `switch sound.mp3` liegt nach Bereinigung der Klangränder unter `vehicle-bundles/default/audio/switch.mp3` (MP3, mono, 44.100 Hz, rund 0,28 s). Alle Pulte erben sie über `sounds.mechanical.rotary`. Hebel und Drehschalter verwenden sie bei jedem Stellungswechsel; beim Loslassen eines einrastenden Tasters erklingt kein zweiter Standardton. Eigene Betätigungstöne und Stummschaltung haben Vorrang. Die Wiedergabe erfolgt unabhängig von Ansagen und Türsounds. Herkunft und Lizenz der bereitgestellten Aufnahme sind nicht weiter angegeben.
+
+Die drei Bedienaufnahmen hatten einen Gleichspannungsversatz von etwa +0,35, der an den Dateigrenzen Sprünge zur Stille verursachte. `python3 scripts/clean-control-sounds.py` entfernt den gemessenen Versatz, filtert tiefe Restanteile unter 60 Hz und glättet die ersten 2 ms sowie die letzten 6 ms. Die Längen bleiben unverändert; MP3, 192 kbit/s. Die Originale liegen für wiederholbare Bearbeitung unter `build/control-sound-cleanup/`. FFmpeg ist erforderlich; `FFMPEG_PATH` kann den Encoder festlegen.
+
 ## Fahrpult-Sounds (19.10.2026)
 
-Die sieben Effekte unter `audio/effects/` sind lokal enthalten und werden auch von der PWA offline gespeichert. `audio/effects/catalog.json` enthält Dauer und SHA-256. MP3, mono, 44.100 Hz, 96 kbit/s; der nachträglich bereitgestellte Back-Jingle bleibt unverändert in Stereo, 48.000 Hz, 192 kbit/s. Die neuen Effekte verändern die gelieferten Sprachaufnahmen nicht.
+Die acht Effekte unter `audio/effects/` sind lokal enthalten und werden auch von der PWA offline gespeichert. `audio/effects/catalog.json` enthält Dauer und SHA-256. MP3, mono, 44.100 Hz, 96 kbit/s; der nachträglich bereitgestellte Back-Jingle bleibt unverändert in Stereo, 48.000 Hz, 192 kbit/s. Die neuen Effekte verändern die gelieferten Sprachaufnahmen nicht.
 
 | Taste | Datei | Herkunft und Bearbeitung |
 | --- | --- | --- |
@@ -43,6 +57,8 @@ Die sieben Effekte unter `audio/effects/` sind lokal enthalten und werden auch v
 | Fahrgastanzeige | `passenger.mp3` | Eigener vorhandener Ding-Dong, auf 20 % Amplitude reduziert und tiefpassgefiltert. |
 | Fahrt beenden / Ziel erreichen | `finish.mp3` | Original Windows XP Shutdown, Microsoft, aus dem [Winhistory-Archiv](https://www.winhistory.de/more/winstart/winstart_en.htm), [WAV-Download](https://www.winhistory.de/more/winstart/down/winxpshutdown.wav). Amplitude auf 75 % reduziert. Proprietärer Microsoft-Sound; keine CC- oder Public-Domain-Lizenz behauptet. |
 | Zurück | `back.mp3` | Während der Bearbeitung im Projekt bereitgestellte Aufnahme, unverändert übernommen. ID3-Titel: „Back To The Future Chimes Jingle sound - single“, Laufzeit 5,02 s. Melodie: „Back to the Future“, Alan Silvestri. Die externe Herkunft und eine Lizenz der Aufnahme sind im Projekt nicht angegeben; es wird keine freie Lizenz behauptet. |
+
+Der aktuell verwendete, bereinigte Türschließsound wurde bei 3,78 s vor dem abschließenden Ding getrennt: `door_close.mp3` enthält die Schließbewegung (3,78 s), `door_closed.mp3` den unveränderten Ton samt Ausklang (3,02 s). Der zweite Sound startet erst, wenn „Türen zu“ aufleuchtet. Schnittkanten sind über 5 ms beziehungsweise 3 ms eingeblendet. Beide Teile sind mit 192 kbit/s neu kodiert; Herkunft und Rechte entsprechen der bisherigen Aufnahme. Wiederholbarer Schnitt: `python3 scripts/split-door-close.py` mit FFmpeg; die vollständige Eingabedatei bleibt unter `build/door-close-split/door_close-original.mp3` erhalten.
 
 Die Urheber- und Lizenzhinweise sind auch direkt im Fahrpult unter „Tonquellen“ zugänglich. „Tastentöne aus“ schaltet nur die neuen Effekte stumm; Haltestellenansagen bleiben aktiv. Neue Soundaktionen ersetzen vorherige Wiedergaben. Verlassen des Fahrermodus, Hintergrundwechsel und „Nächster Halt“ brechen laufende Effekte ab. Modaldialoge stoppen ihren Sound beim Schließen. Die Türlogik bleibt unverändert: Türen müssen vor dem nächsten Halt geschlossen sein.
 

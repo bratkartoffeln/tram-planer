@@ -1,4 +1,24 @@
 {
   "id": "gotha-standard",
-  "extends": "family-gotha-vintage"
+  "extends": "family-gotha-vintage",
+  "cab": {
+    "layout": {
+      "icon-emergency": {
+        "x": 1273.9244680095671,
+        "y": 426.21059788610336
+      },
+      "icon-next": {
+        "x": 261.26349094908505,
+        "y": 430.70700902023293
+      },
+      "icon-back": {
+        "x": 597.1957699586899,
+        "y": 428.9857919919439
+      },
+      "icon-passenger": {
+        "x": 255.5971217324935,
+        "y": 751.8854927007719
+      }
+    }
+  }
 }
