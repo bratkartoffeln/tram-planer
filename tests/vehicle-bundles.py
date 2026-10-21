@@ -67,6 +67,7 @@ with tempfile.TemporaryDirectory(prefix='bundle-validation-', dir=project / 'bui
     rejected({'id': 'tramlink', 'cab': {'buttons': {'doors': {'labelPad': {'x': 100, 'y': 100, 'width': 100, 'ink': 'red;background:black'}}}}})
     rejected({'id': 'tramlink', 'cab': {'buttons': {'doors': {'labelPad': {'x': 9000, 'y': 100, 'width': 100, 'ink': '#ffffff'}}}}})
     rejected({'id': 'tramlink', 'extends': 'family-gotha-wheel', 'cab': {'leverSprites': {'on': {'image': '../outside.png'}}}})
+    rejected({'id': 'tramlink', 'extends': 'family-tramlink', 'cab': {'emergencySprites': {'base': [100, 100, 100, 90]}}})
     rejected({'id': 'tramlink', 'extends': 'family-tramlink', 'presentation': {'references': [{'title': 'Unsafe', 'url': 'javascript:alert(1)'}]}})
     rejected({'id': 'tramlink', 'extends': 'family-tramlink', 'presentation': {'unknown': True}})
     rejected({'id': 'wrong-id', 'extends': 'default'})

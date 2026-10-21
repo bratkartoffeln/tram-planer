@@ -15,7 +15,17 @@ const root=path.resolve(__dirname,process.env.FAHRPLAN_ASSET_ROOT||'../app/src/m
    const result=await b.evaluate(`(()=>{const bundle=vehicleBundlePreview,p=document.querySelector('.vehicle-bundle-modal');return {id:bundle.id,image:bundle.cab.image,screws:p.querySelectorAll('.cab-screw').length,buttons:p.querySelectorAll('.cab-button').length,sounds:p.querySelectorAll('[data-preview-action]').length,description:bundle.presentation.description,variant:bundle.presentation.variant,sourceCount:p.querySelectorAll('a[href^="https://"]').length,missing:p.querySelectorAll('.cab-screw.is-missing').length,photo:p.querySelector('.cab-panel-front')!==null}})()`);
    // Cached images may still finish decoding after the DOM is built.
    await b.evaluate('Promise.all([...document.querySelectorAll(".vehicle-bundle-modal img")].map(i=>i.decode()))');
-   assert.equal(result.id,type);assert.equal(result.screws,4);assert.equal(result.buttons,8);assert.equal(result.sounds,8);assert(result.photo);assert(result.sourceCount);assert.equal(result.missing,0);
+   assert.equal(result.id,type);assert.equal(result.screws,4);assert.equal(result.buttons,8);assert.equal(result.sounds,8);assert.equal(result.photo,!type.startsWith('combino-'));assert(result.sourceCount);assert.equal(result.missing,0);
+   if(type.startsWith('combino-')){
+    assert.equal(result.image,'images/cab-panel-photoreal.webp');assert(result.variant.includes('Standard-Fallback'));
+    assert.equal(await b.evaluate('JSON.stringify(vehicleBundlePreview.cab)===JSON.stringify(VEHICLE_BUNDLES.default.cab)'),true);
+    const turns=await b.evaluate('JSON.stringify(cabRotaryTurns)');
+    await b.evaluate('document.getElementById("cabRotary0").click();document.getElementById("cabRotary1").click()');
+    assert.deepEqual(await b.evaluate('vehiclePreviewRotaryTurns'),[1,1]);
+    assert.equal(await b.evaluate('JSON.stringify(cabRotaryTurns)'),turns);
+    await b.evaluate('closeModal();openVehicleBundlePreview('+JSON.stringify(type)+')');
+    assert.deepEqual(await b.evaluate('vehiclePreviewRotaryTurns'),[0,0]);
+   }
    if(type.includes('trailer')||type.startsWith('b2'))assert(result.description.includes('kein eigenes Fahrerpult'));
    if(!families.has(result.image)){families.add(result.image);await b.screenshot('preview-'+type+'.png');}
    await b.evaluate('closeModal()');

@@ -11,8 +11,8 @@
         "x": 265,
         "y": 583.5,
         "size": 180,
-        "capWidth": 116,
-        "capHeight": 116,
+        "capWidth": 134,
+        "capHeight": 138,
         "shape": "round",
         "ink": "#fff3df",
         "labelPad": {
@@ -24,10 +24,10 @@
       },
       "back": {
         "x": 592,
-        "y": 577.5,
+        "y": 580,
         "size": 180,
-        "capWidth": 116,
-        "capHeight": 116,
+        "capWidth": 128,
+        "capHeight": 134,
         "shape": "round",
         "ink": "#18212a",
         "labelPad": {
@@ -38,11 +38,11 @@
         }
       },
       "doors": {
-        "x": 930,
-        "y": 580,
+        "x": 933,
+        "y": 582,
         "size": 180,
-        "capWidth": 116,
-        "capHeight": 116,
+        "capWidth": 136,
+        "capHeight": 138,
         "shape": "round",
         "ink": "#f7f1df",
         "labelPad": {
@@ -56,8 +56,8 @@
         "x": 259,
         "y": 813.5,
         "size": 180,
-        "capWidth": 116,
-        "capHeight": 116,
+        "capWidth": 128,
+        "capHeight": 130,
         "shape": "round",
         "ink": "#18212a",
         "labelPad": {
@@ -71,8 +71,8 @@
         "x": 592.5,
         "y": 814,
         "size": 180,
-        "capWidth": 116,
-        "capHeight": 116,
+        "capWidth": 128,
+        "capHeight": 130,
         "shape": "round",
         "ink": "#18212a",
         "labelPad": {
@@ -86,8 +86,8 @@
         "x": 935.5,
         "y": 815,
         "size": 180,
-        "capWidth": 116,
-        "capHeight": 116,
+        "capWidth": 130,
+        "capHeight": 132,
         "shape": "round",
         "ink": "#3c280c",
         "labelPad": {
@@ -101,8 +101,8 @@
         "x": 1270,
         "y": 815.5,
         "size": 180,
-        "capWidth": 116,
-        "capHeight": 116,
+        "capWidth": 134,
+        "capHeight": 132,
         "shape": "round",
         "ink": "#f7f1df",
         "labelPad": {
@@ -116,8 +116,8 @@
         "x": 1271.5,
         "y": 579,
         "size": 180,
-        "capWidth": 126,
-        "capHeight": 122,
+        "capWidth": 132,
+        "capHeight": 130,
         "shape": "round",
         "ink": "#f7f1df",
         "kind": "push",
@@ -194,6 +194,12 @@
       "travel": [
         0,
         7
+      ],
+      "base": [
+        1271.5,
+        579,
+        136,
+        136
       ]
     },
     "accessories": [

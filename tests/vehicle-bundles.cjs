@@ -44,8 +44,8 @@ const root=path.resolve(__dirname,process.env.FAHRPLAN_ASSET_ROOT||'../app/src/m
   assert(files.includes('vehicle-bundles/tramlink/bundle.json'));assert(files.includes('images/cab-panel-photoreal.webp'));
   for(const file of files)assert(fs.existsSync(path.join(root,file)),file);
   await b.evaluate('navigator.serviceWorker.ready.then(()=>true)');
-  assert.equal(await b.evaluate(`caches.keys().then(async keys=>{const cache=await caches.open(keys.find(key=>key.includes('v6.2.8-lever-poses')));return (await Promise.all(['vehicle-bundles-data.js','vehicle-bundles/tramlink/bundle.json','images/cab-panel-photoreal.webp','updates.js'].map(file=>cache.match('./'+file)))).every(Boolean)})`),true);
-  assert.equal(await b.evaluate(`caches.keys().then(async keys=>{const cache=await caches.open(keys.find(key=>key.includes('v6.2.8-lever-poses')));return (await Promise.all([...new Set(Object.values(VEHICLE_BUNDLES).map(b=>b.cab.image)),'vehicle-previews.js'].map(file=>cache.match('./'+file)))).every(Boolean)})`),true);
+  assert.equal(await b.evaluate(`caches.keys().then(async keys=>{const cache=await caches.open(keys.find(key=>key.includes('v6.2.9-fixed-sockets')));return (await Promise.all(['vehicle-bundles-data.js','vehicle-bundles/tramlink/bundle.json','images/cab-panel-photoreal.webp','updates.js'].map(file=>cache.match('./'+file)))).every(Boolean)})`),true);
+  assert.equal(await b.evaluate(`caches.keys().then(async keys=>{const cache=await caches.open(keys.find(key=>key.includes('v6.2.9-fixed-sockets')));return (await Promise.all([...new Set(Object.values(VEHICLE_BUNDLES).map(b=>b.cab.image)),'vehicle-previews.js'].map(file=>cache.match('./'+file)))).every(Boolean)})`),true);
   await b.cdp('Network.enable');await b.cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});await b.navigate();
   assert.equal(await b.evaluate('getVehicleBundle({vehicleTypeId:"tramlink"}).id'),'tramlink');
   assert.equal(await b.evaluate('fetch("vehicle-bundles/tramlink/bundle.json").then(r=>r.ok)'),true);

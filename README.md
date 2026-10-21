@@ -1,8 +1,12 @@
-# Fahrplan Manager Audio – Version 6.2.8
+# Fahrplan Manager Audio – Version 6.2.9
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
 ## Neu
+
+Version 6.2.9 verwendet für alle vier Combino-Typen das Default-Fallback-Fahrpult mit denselben Tasten, Druckanimationen, Drehschaltern und Eckschrauben. Die Fahrzeugübersicht kennzeichnet diesen Standard-Fallback und verwendet ihn auch für die interaktive Vorschau.
+
+Die übrigen Pulte bewegen beim Drücken die vollständigen Tastenkappen einschließlich ihrer abgeschrägten Kanten; die Befestigungsränder bleiben fest. Hinter dem Not-Aus bleibt ein runder, ortsfester Sockel sichtbar, dessen Form und Farbe sich beim Drücken nicht ändern. Gelbe Sockel bleiben gelb; Taster ohne gelben Ring behalten ihren dunklen Sockel. Nur der rote Kopf sinkt perspektivisch ein. Die Richtungspfeile im Netzplan sind offene `>`-Zeichen statt ausgefüllter Dreiecke.
 
 Version 6.2.8 ergänzt acht fotorealistische frontale Schalterpanels nach Referenzfotos und ordnet sie allen 23 Fahrzeugtypen zu. Belegte Erfurter Pulte, Baureihenvergleiche und gemeinsam verwendete Varianten sind in der Fahrzeugübersicht gekennzeichnet; Beiwagen verwenden ein zugeordnetes Zugfahrzeugpult. Die eigentliche Schaltplatte wird wie beim Default frontal gezeigt. Tasterformen, Kappenfarben und Bildausschnitte passen zum jeweiligen Panel. Vier fotografierte Eckschrauben bleiben interaktiv. Unter „Fahrpult & Sounds ausprobieren“ spielen die Pulttasten direkt die Hörproben: sieben Funktionssounds, eine Beispielansage sowie die mechanischen Tasten- und Schraubenklänge. Der Vorschau-Türtaster wechselt zwischen Öffnen und Schließen; Vollbild spielt den Tastenklick. Die vorhandenen Standardklänge bleiben als Fallback ausdrücklich beschriftet. Hörproben verändern keine Fahrt und enden beim Schließen, Ansichtswechsel oder Wechsel in den Hintergrund. Quellen und Einschränkungen: [IMAGE_SOURCES.md](IMAGE_SOURCES.md).
 
@@ -131,6 +135,8 @@ Alle Medienpfade gelten relativ zum Asset-Stamm. MP3-Dateien für neue Modelle l
 
 Optional setzt `cab.labelColor` die Schriftfarbe auf der Platte. `labelPad: {x, y, width, ink}` an Tastern, Anzeigen oder Zubehör positioniert transparente Beschriftungen auf den vorhandenen Schildern (Bildkoordinaten und Hexfarbe). `cab.emergencySprites` enthält `mask`, `ring` (jeweils `[MitteX, MitteY, Breite, Höhe]`) und `travel` (`[dx, dy]`) für den tiefen Druck bei festem Ring. `cab.accessories` beschreibt weitere Reservebedienelemente mit `kind` (`button`/`lever`), `label` und `sprite` (Bildrechteck). Hebel benötigen zusätzlich `onSprite` für die gegenüberliegende Stellung und `cab.leverSprites.off/on` mit `image`, `width`, `height` und `crop`. Die freigestellten Griffe stehen auf einer Pultgrafik mit freiem Lager; der Renderer blendet zwischen den Stellungen um, ohne die Grafik zu rotieren. Alle referenzierten Medien werden geprüft und automatisch im Offline-Cache registriert. Beispiel: `vehicle-bundles/family-gotha-wheel/bundle.json`. Browserprüfung: `node tests/panel-controls.cjs`.
 
+`cab.emergencySprites.base: [MitteX, MitteY, Durchmesser, Durchmesser]` legt den festen kreisrunden Not-Aus-Sockel fest. Seine Lage ist unabhängig von der versetzten roten Kappe. Die Sockelfarbe folgt `buttons.emergency.kind`: `mushroom` verwendet Gelb, `push` den dunklen ursprünglichen Sitz. Sockel und Rückfüllung bleiben in Ruhe und im Druckzustand identisch; nur Kappe und Schaft bilden den Druck ab. Pixelprüfung von Sockelfarbe, Ringkontur und festen Befestigungsrändern: `node tests/panel-press.cjs`.
+
 Effektschlüssel: `door_open`, `door_close`, `emergency`, `traffic`, `passenger`, `finish`, `back`. Mechanische Schlüssel: `down`, `up`, `latch`, `rotary`, `screw`, `ratchet`; deren Standardwerte `synth:<Schlüssel>` verwenden die bisherigen Synthesen. Mechanik spielt unabhängig von Funktionssounds und Ansagen. Haltestellenansagen bleiben streckenabhängig. Eigene Quellenangaben erscheinen über „Bild- & Tonquellen“; bei Übernahme von Standardbestandteilen deren Quellen in IMAGE_SOURCES.md und AUDIO_SOURCES.md beibehalten.
 
 Die Zuordnung verwendet zuerst `vehicleTypeId` der Fahrt, für ältere Pläne die verknüpfte Fahrzeug-ID beziehungsweise das Kürzel. Ein unbekannter oder fehlender Typ nutzt `default`; gelöschte Fahrzeuge behalten über die gespeicherte Typkennung ihr Bündel. Neue Typen sowohl im Fahrzeugkatalog als auch mit eigenem Bündel anlegen.
@@ -141,7 +147,7 @@ Nach Änderungen `python tools/sync-assets.py` ausführen. Das prüft Vererbung,
 
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.8_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.9_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 

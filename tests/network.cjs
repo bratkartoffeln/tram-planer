@@ -114,7 +114,8 @@ async function run(){
  assert.notEqual(outbound,inbound);
  await evaluate("state.networkEdits.lineColors['2']='#ffff00';renderNetworkMap()");
  assert.equal(await evaluate("[...document.querySelectorAll('.network-node.is-route-stop circle')].every(c=>c.getAttribute('fill')==='#ffff00'&&c.getAttribute('stroke')==='#ffff00')"),true);
- assert.equal(await evaluate("document.querySelector('.network-stop-direction').getAttribute('fill')"),'#111827');
+ assert.equal(await evaluate("document.querySelector('.network-stop-direction').getAttribute('stroke')"),'#111827');
+ assert.equal(await evaluate("[...document.querySelectorAll('.network-stop-direction')].every(arrow=>arrow.getAttribute('fill')==='none'&&!/[zZ]/.test(arrow.getAttribute('d')))"),true);
  await cdp('Page.captureScreenshot',{format:'png',captureBeyondViewport:true}).then(r=>fs.writeFileSync(path.join(output,'selected-direction.png'),Buffer.from(r.data,'base64')));
  await evaluate("openLineEditor('EF2R')");
  assert.equal(await evaluate("document.querySelectorAll('.network-stop-direction,.network-node.is-route-stop').length"),0);
@@ -134,7 +135,7 @@ async function run(){
  // Confirm service worker caches the new modules for an offline restart.
  await evaluate("navigator.serviceWorker.ready.then(()=>true)");
  await delay(1200);
- assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.8-lever-poses').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
+ assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.9-fixed-sockets').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
  await cdp('Network.enable');await cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
  await cdp('Page.reload');await delay(600);assert.equal(await evaluate('Object.keys(ROUTES).length'),26);
  await evaluate("showView('network')");assert.equal(await evaluate('!!document.getElementById("lineMapSvg")'),true);

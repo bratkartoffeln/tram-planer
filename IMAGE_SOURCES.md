@@ -1,5 +1,9 @@
 # Bilder und App-Icon
 
+Ab Version 6.2.9 verwenden alle vier Combino-Typen das Standard-Fallback-Fahrpult (`images/cab-panel-photoreal.webp`), einschließlich der interaktiven Vorschau. Gestaltung und Bildquelle stehen im Abschnitt „Fotorealistisches Fahrerpult in 6.2.3“. Das zuvor nach dem BERNMOBIL-Vergleich erzeugte Combino-Panel wird nicht mehr verwendet; seine nachfolgende Dokumentation beschreibt den Stand von 6.2.8.
+
+Ebenfalls ab 6.2.9 sind die bewegten Tastenausschnitte an die vollständigen Kappen samt Fasen angepasst. HTML/CSS ergänzt dahinter die Vertiefung. Die übrigen Not-Aus-Taster besitzen eine feste kreisrunde Sockelebene, die bereits im Ruhezustand hinter dem perspektivisch versetzten roten Kopf liegt. Beim Drücken wird mehr derselben Fläche sichtbar. Gelbe Sockel bleiben gelb; Varianten mit dunklem Sitz erhalten keinen gelben Ring. Hierfür wurden keine neuen Bitmapdateien erzeugt.
+
 ## Modellabhängige frontale Panels ab 6.2.8
 
 Recherche und Erzeugung: 21.10.2026. Acht separate frontale Schalterplatten mit dem integrierten Imagegen-Tool. Die vom Nutzer gewünschte Default-Grafik dient als Referenz für die frontale Ansicht; die Hardwaretypen und Materialien stammen aus den unten verlinkten, visuell geprüften Referenzfotos. Ausgegeben wird jeweils ein ausgewähltes Schalterfeld, ohne den umgebenden Fahrerraum. Anzahl, Auswahl und Anordnung der Taster sind für die acht Spielaktionen angepasst. Es handelt sich um fotorealistische Nachbildungen, keine unveränderten Originalfotos oder exakten Restaurierungszeichnungen. Instrumente bleiben Bildkulisse. TW 92 besitzt eine ausdrücklich als Simulationsnachbildung bezeichnete stilgerechte Schaltplatte, deren Originalausführung mit acht Tastern nicht belegt ist.
