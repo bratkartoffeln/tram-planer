@@ -1,0 +1,28 @@
+{
+  "tool": "Built-in image_gen",
+  "date": "2026-10-21",
+  "reference": "Vom Nutzer bereitgestelltes Foto; ausschließlich das mittlere Instrumentenpult als Frontalansicht nachgebildet. Keine genaue Erfurter Werksausführung.",
+  "assets": [
+    {
+      "file": "app/src/main/assets/vehicle-bundles/family-tramlink/panel-front.webp",
+      "steps": [
+        {
+          "step": "tramlink-central-prompt",
+          "prompt": "Use case: product-mockup. Create a photorealistic, straight-on frontal reconstruction of ONLY THE MIDDLE DRIVER INSTRUMENT PANEL in the user-supplied tram cab photograph. The photograph is the hardware/material/layout reference. Exclude the seat, window, rails, desk apron, left drive lever console and separate angled right screen console. Fill the landscape image with the central flat black instrument fascia and narrow charcoal metal frame. Orthographic frontal elevation, no room perspective. Preserve the reference's upper central rectangular diagnostics display, left round analog speedometer and small upper-left green/amber indicator lamps, and right vertical column with a large red emergency mushroom at top on a DARK black collar (NO yellow ring), followed by three smaller red/red/amber pushbuttons. Beneath the instruments, a straight horizontal row of individually separated physical controls in the reference style: twelve large controls, left to right: white round button, white round button, amber round button, amber round button, blue round button, blue round button, ivory round button, black rotary selector with a short vertical black handle, blue round button, red round button, black rotary selector with a short vertical black handle, green round button. Pale silver circular mounting rings are fixed around the pushbutton caps. Match the photo's real industrial materials, engraved blank label pads, tactile translucent caps, black Bakelite rotary grips, fine wear, reflections and shadows. Front caps visible in full with slight protrusion toward camera; enough clear face area for later software symbols. Keep white/amber/blue/red/green cap colors true. Four fully visible recessed metal corner screws for interactive easter eggs. Do not add extra handles, screens, instruments, buttons or yellow emergency bases. The display should show plausible muted generic tram diagnostic lines and a small tram silhouette with no legible text or branding; it is photographic instrument scenery. Leave physical label pads BLANK: all captions and button symbols will be placed in software, so no words or icons on any cap. Crisp realistic product photography, not an illustration, SVG, CAD drawing or glossy game render. Wide landscape 3:2 image. This is an adapted simulation panel derived from the central panel in the reference, not an exact certified equipment layout."
+        },
+        {
+          "step": "tramlink-crop-prompt",
+          "prompt": "Edit target: the supplied generated front-panel photograph. Remove ONLY the blank WHITE canvas margins above and below the black tram instrument panel. Frame the physical black rectangular panel tightly so its outer frame fills the full image edges. Keep the ENTIRE panel, every screw and all bottom controls visible. Preserve EVERY instrument, pushbutton, rotary handle, color, label pad, position relative to the panel, photographed texture and lighting EXACTLY. No newly invented controls and no hardware rearrangement. This is solely a tighter crop/framing of the same front-on panel, with no white margin. The panel itself is wide, so use its natural wide landscape proportions instead of adding blank padding."
+        },
+        {
+          "step": "tramlink-rotary-clean-prompt",
+          "prompt": "Edit this exact front-panel photograph. Remove ONLY the TWO elongated vertical black rotary selector HANDLES in the bottom row: the one between the ivory and blue pushbuttons, and the one between the red and green pushbuttons. Keep their circular silver mounting collars and dark inner discs exactly fixed and intact, restoring each dark disc behind its removed handle. Do not remove the two small black round pushbuttons next to the speedometer. Do not change any button, cap, lamp, display, gauge, screw, label space, frame, lighting, materials, positions, image size or tight framing. Every pixel outside the two removable handle silhouettes should stay registered. This is a clean background for animating the two original handles as separate photographic layers."
+        }
+      ]
+    },
+    {
+      "file": "app/src/main/assets/vehicle-bundles/family-tramlink/rotary-source.webp",
+      "description": "Unveränderte erzeugte Zwischenfassung mit fotografierten Drehgriffen, deren Ausschnitte separat animiert werden."
+    }
+  ]
+}

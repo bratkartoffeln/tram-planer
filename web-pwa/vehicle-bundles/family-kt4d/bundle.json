@@ -11,64 +11,99 @@
         "x": 197,
         "y": 410,
         "size": 170,
-        "capWidth": 128,
-        "capHeight": 132,
+        "capWidth": 120,
+        "capHeight": 120,
         "shape": "round",
-        "ink": "#fff3df"
+        "ink": "#fff3df",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "back": {
         "x": 197.5,
-        "y": 613,
+        "y": 614,
         "size": 170,
-        "capWidth": 124,
-        "capHeight": 126,
+        "capWidth": 118,
+        "capHeight": 118,
         "shape": "round",
-        "ink": "#18212a"
+        "ink": "#18212a",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "doors": {
         "x": 197.5,
         "y": 817,
         "size": 170,
-        "capWidth": 128,
-        "capHeight": 132,
+        "capWidth": 120,
+        "capHeight": 120,
         "shape": "round",
-        "ink": "#fff3df"
+        "ink": "#fff3df",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "passenger": {
         "x": 1331,
-        "y": 200,
+        "y": 201,
         "size": 170,
-        "capWidth": 126,
-        "capHeight": 128,
+        "capWidth": 118,
+        "capHeight": 118,
         "shape": "round",
-        "ink": "#fff3df"
+        "ink": "#fff3df",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "fullscreen": {
         "x": 1330,
-        "y": 408.5,
+        "y": 410.5,
         "size": 170,
-        "capWidth": 124,
-        "capHeight": 126,
+        "capWidth": 116,
+        "capHeight": 116,
         "shape": "round",
-        "ink": "#18212a"
+        "ink": "#18212a",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "traffic": {
-        "x": 1329,
-        "y": 615.5,
+        "x": 1328,
+        "y": 616.5,
         "size": 170,
-        "capWidth": 130,
-        "capHeight": 132,
+        "capWidth": 118,
+        "capHeight": 118,
         "shape": "round",
-        "ink": "#fff3df"
+        "ink": "#fff3df",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "finish": {
-        "x": 1330,
-        "y": 815,
+        "x": 1328,
+        "y": 818,
         "size": 170,
-        "capWidth": 126,
-        "capHeight": 132,
+        "capWidth": 118,
+        "capHeight": 118,
         "shape": "round",
-        "ink": "#fff3df"
+        "ink": "#fff3df",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "emergency": {
         "x": 186,

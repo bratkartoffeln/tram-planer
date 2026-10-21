@@ -8,14 +8,14 @@ async function main(){
  try{
   await b.cdp('Emulation.setDeviceMetricsOverride',{width:1280,height:1000,deviceScaleFactor:1,mobile:false});await b.navigate();
   await b.evaluate(`(()=>{const p={id:'plan-cab-test',routeId:'EF5H',routeCode:'5',routeName:'Zoopark → Hauptbahnhof',line:'5',tram:'615',stops:allRouteStops('EF5H'),createdAt:Date.now()};state.plans=[p];state.active={id:'trip-cab-test',plan:clone(p),departure:'10:00',position:1,startedAtEpoch:Date.now(),actualStartEpoch:Date.now(),positionReachedAt:Date.now(),pauseEndEpoch:null,doorsOpen:false,trafficDelayMin:0,status:'running'};saveState();showView('driver');})()`);
-  assert.equal(await b.evaluate('document.querySelectorAll(".cab-controls button").length'),10);
+  assert.equal(await b.evaluate('document.querySelectorAll(".cab-controls button").length'),20);
   assert.equal(await b.evaluate('getComputedStyle(document.querySelector(".cab-face")).borderRadius'),'50%');
   assert.equal(await b.evaluate('getComputedStyle(document.querySelector(".cab-controls")).display'),'grid');
   assert.deepEqual(await b.evaluate("buildStopAnnouncement('Lutherkirche/SWE')"),['audio/chimes/ding_dong.mp3','audio/phrases/naechste_haltestelle.mp3','audio/stops/lutherkirche_stadtwerke.mp3']);
   assert.deepEqual(await b.evaluate("buildStopAnnouncement('Boyneburgufer')"),['audio/chimes/ding_dong.mp3','audio/phrases/naechste_haltestelle.mp3','audio/stops/boyneburg_ufer.mp3']);
   assert.deepEqual(await b.evaluate("buildStopAnnouncement('Stadtmuseum/Kaisersaal')"),['audio/chimes/ding_dong.mp3','audio/phrases/naechste_haltestelle.mp3','audio/stops/stadtmuseum_kaisersaal.mp3']);
   assert.equal(await b.evaluate('document.querySelectorAll(".cab-screw").length'),4);
-  assert.equal(await b.evaluate('document.querySelectorAll(".cab-placeholder").length'),10);
+  assert.equal(await b.evaluate('document.querySelectorAll(".cab-spare").length'),10);
   assert.equal(await b.evaluate('document.querySelectorAll(".cab-photo").length'),0);
   await b.evaluate('document.querySelector(".cab-panel-photo").decode()');assert.equal(await b.evaluate('document.querySelector(".cab-panel-photo").naturalWidth'),1681);
   await b.evaluate("showPlan(state.plans[0].id);document.getElementById('departureNowButton').click()");

@@ -55,7 +55,7 @@ def compile_bundles(assets, type_ids):
         bundle = resolve(key)
         cab, sounds = bundle.get('cab', {}), bundle.get('sounds', {})
         check(isinstance(cab, dict) and isinstance(sounds, dict), key)
-        check(set(cab) - {'skin', 'screwCap', 'emergencySprites', 'accessories', 'leverSprites', 'labelColor'} == {'image', 'width', 'height', 'buttons', 'indicators', 'headings', 'spares',
+        check(set(cab) - {'skin', 'screwCap', 'emergencySprites', 'accessories', 'leverSprites', 'labelColor', 'layout'} == {'image', 'width', 'height', 'buttons', 'indicators', 'headings', 'spares',
                            'screws', 'rotaries', 'rotarySprites', 'colors'}
               and set(sounds) == {'effects', 'mechanical'}, key + ': unknown/missing cab or sound section')
         check(cab.get('skin', 'photo') in ('photo', 'panel'), key + ': cab skin')
@@ -78,6 +78,70 @@ def compile_bundles(assets, type_ids):
         def ink(value):
             check(isinstance(value, str) and re.fullmatch(r'#[0-9a-fA-F]{6}', value) is not None, key + ': label/control ink')
 
+        def press(value):
+            check(isinstance(value, list) and len(value) == 3
+                  and all(type(v) in (int, float) for v in value)
+                  and abs(value[0]) <= 12 and abs(value[1]) <= 12 and .88 <= value[2] <= 1, key + ': press travel')
+
+        layout = cab.get('layout', {})
+        check(isinstance(layout, dict) and len(layout) <= 100, key + ': cab layout')
+        for name, overlay in layout.items():
+            check(isinstance(name, str) and re.fullmatch(r'(label|icon|heading|control|actuation)-[a-z0-9-]+', name)
+                  and isinstance(overlay, dict), key + ': layout overlay')
+            if name.startswith('actuation-'):
+                target = name[10:]
+                match = re.fullmatch(r'(reserve|rotary|spare|screw)-(\d+)', target)
+                exists = target in BUTTONS
+                if match:
+                    collection = {'reserve': 'accessories', 'rotary': 'rotaries', 'spare': 'spares', 'screw': 'screws'}[match[1]]
+                    exists = int(match[2]) < len(cab.get(collection, []))
+                tones = {'', 'none'} | {'mechanical:' + value for value in MECHANICAL}
+                check(exists and set(overlay) <= {'press', 'release', 'mode'}
+                      and all(isinstance(value, str) and value in ({'', 'momentary', 'latching'} if field == 'mode' else tones)
+                              for field, value in overlay.items()), key + ': actuation tone/mode')
+                continue
+            if name.startswith('control-'):
+                match = re.fullmatch(r'control-(reserve|rotary|spare)-(\d+)', name)
+                check(match is not None, key + ': binding target')
+                kind, index = match[1], int(match[2])
+                controls = cab.get({'reserve': 'accessories', 'rotary': 'rotaries', 'spare': 'spares'}[kind], [])
+                check(index < len(controls) and set(overlay) <= {'action', 'actions', 'text', 'icon', 'sound', 'sounds'}, key + ': binding target/fields')
+                actions = {'', 'next', 'back', 'doors', 'passenger', 'fullscreen', 'traffic', 'finish', 'emergency'}
+                check(isinstance(overlay.get('action', ''), str) and overlay.get('action', '') in actions, key + ': control action')
+                positions = 4 if kind == 'rotary' else 2 if kind == 'reserve' and controls[index].get('kind') == 'lever' else 1
+                assigned = overlay.get('actions', {})
+                check(isinstance(assigned, dict) and all(isinstance(pos, str) and re.fullmatch(r'[0-3]', pos) and int(pos) < positions
+                      and isinstance(action, str) and action in actions for pos, action in assigned.items()), key + ': control positions')
+                allowed_sounds = {'', 'none'} | {'effect:' + value for value in EFFECTS} | {'mechanical:' + value for value in MECHANICAL}
+                check(isinstance(overlay.get('sound', ''), str) and overlay.get('sound', '') in allowed_sounds, key + ': control sound')
+                assigned_sounds = overlay.get('sounds', {})
+                check(isinstance(assigned_sounds, dict) and all(isinstance(pos, str) and re.fullmatch(r'[0-3]', pos) and int(pos) < positions
+                      and isinstance(sound, str) and sound in allowed_sounds for pos, sound in assigned_sounds.items()), key + ': position sounds')
+                check(isinstance(overlay.get('text', ''), str) and len(overlay.get('text', '')) <= 200, key + ': control text')
+                check(isinstance(overlay.get('icon', ''), str) and overlay.get('icon', '') in actions | {'close', 'route'}, key + ': control icon')
+                continue
+            check(set(overlay) <= {'x', 'y', 'text', 'color', 'background', 'fontFamily', 'fontSize', 'iconSize', 'bold', 'italic', 'underline', 'hidden'}, key + ': layout fields')
+            if 'hidden' in overlay:
+                check(name.startswith('heading-') and type(overlay['hidden']) is bool, key + ': hidden pult text')
+            if 'iconSize' in overlay:
+                check(name.startswith('icon-') and type(overlay['iconSize']) in (int, float) and 4 <= overlay['iconSize'] <= 200, key + ': icon size')
+            if 'background' in overlay:
+                check(not name.startswith('icon-'), key + ': background on text only')
+                if overlay['background'] != 'transparent':
+                    ink(overlay['background'])
+            for field, limit in [('x', width), ('y', height), ('fontSize', 120)]:
+                if field in overlay:
+                    check(type(overlay[field]) in (int, float) and (4 if field == 'fontSize' else 0) <= overlay[field] <= limit, key + ': layout bounds')
+            if 'text' in overlay:
+                check(not name.startswith('icon-') and isinstance(overlay['text'], str) and len(overlay['text']) <= 200, key + ': layout text')
+            if 'color' in overlay:
+                ink(overlay['color'])
+            if 'fontFamily' in overlay:
+                check(overlay['fontFamily'] in ('system-ui', 'Arial', 'Verdana', 'Georgia', 'Courier New', 'sans-serif', 'serif', 'monospace'), key + ': font family')
+            for field in ('bold', 'italic', 'underline'):
+                if field in overlay:
+                    check(type(overlay[field]) is bool, key + ': font decoration')
+
         def label_pad(pad):
             check(isinstance(pad, dict) and set(pad) == {'x', 'y', 'width', 'ink'}, key + ': label pad')
             point(pad['x'], pad['y'])
@@ -90,7 +154,9 @@ def compile_bundles(assets, type_ids):
             sprites = cab['leverSprites']
             check(isinstance(sprites, dict) and set(sprites) == {'off', 'on'}, key + ': lever sprites')
             for sprite in sprites.values():
-                check(isinstance(sprite, dict) and set(sprite) == {'image', 'width', 'height', 'crop'}, key + ': lever sprite')
+                check(isinstance(sprite, dict) and {'image', 'width', 'height', 'crop'} <= set(sprite)
+                      and set(sprite) <= {'image', 'width', 'height', 'crop', 'flipX'}
+                      and type(sprite.get('flipX', False)) is bool, key + ': lever sprite')
                 asset(sprite['image'], {'.webp', '.png'})
                 sw, sh, rect = sprite['width'], sprite['height'], sprite['crop']
                 check(type(sw) is int and type(sh) is int and sw > 0 and sh > 0
@@ -103,7 +169,9 @@ def compile_bundles(assets, type_ids):
         if 'emergencySprites' in cab:
             sprites = cab['emergencySprites']
             check(isinstance(sprites, dict) and {'mask', 'ring', 'travel'} <= set(sprites)
-                  and set(sprites) <= {'mask', 'ring', 'travel', 'base'}, key + ': emergency sprites')
+                  and set(sprites) <= {'mask', 'ring', 'travel', 'base', 'color'}, key + ': emergency sprites')
+            if 'color' in sprites:
+                ink(sprites['color'])
             rectangle(sprites['mask'])
             rectangle(sprites['ring'])
             if 'base' in sprites:
@@ -114,10 +182,12 @@ def compile_bundles(assets, type_ids):
         check(isinstance(cab.get('accessories', []), list) and len(cab.get('accessories', [])) <= 24, key + ': accessories')
         for control in cab.get('accessories', []):
             check(isinstance(control, dict) and {'kind', 'label', 'sprite'} <= set(control)
-                  and set(control) <= {'kind', 'label', 'sprite', 'onSprite', 'profile', 'labelPad'}
+                  and set(control) <= {'kind', 'label', 'sprite', 'onSprite', 'profile', 'labelPad', 'press'}
                   and control['kind'] in ('button', 'lever')
                   and isinstance(control['label'], str) and control['label'].strip(), key + ': accessory')
             rectangle(control['sprite'])
+            if 'press' in control:
+                press(control['press'])
             if control['kind'] == 'lever':
                 check('onSprite' in control and 'leverSprites' in cab
                       and control.get('profile', 'toggle') in ('toggle', 'long'), key + ': lever fields')
@@ -129,8 +199,10 @@ def compile_bundles(assets, type_ids):
         check(isinstance(cab.get('indicators'), dict) and set(cab['indicators']) == {'open', 'closed'}, key + ': indicators')
         for pos in [*cab['buttons'].values(), *cab['indicators'].values()]:
             check(isinstance(pos, dict) and {'x', 'y'} <= set(pos)
-                  and set(pos) <= {'x', 'y', 'size', 'capWidth', 'capHeight', 'shape', 'kind', 'ink', 'labelPad'}, key + ': button/indicator position')
+                  and set(pos) <= {'x', 'y', 'size', 'capWidth', 'capHeight', 'shape', 'kind', 'ink', 'labelPad', 'press'}, key + ': button/indicator position')
             point(pos['x'], pos['y'])
+            if 'press' in pos:
+                press(pos['press'])
             for field in ('size', 'capWidth', 'capHeight'):
                 check(type(pos.get(field, 140)) in (int, float) and 20 <= pos.get(field, 140) <= 400, key + ': control size')
             check(pos.get('shape', 'round') in ('round', 'rect') and pos.get('kind', 'mushroom') in ('mushroom', 'push'), key + ': control type')
@@ -148,8 +220,11 @@ def compile_bundles(assets, type_ids):
                 if field in ('screws', 'headings'):
                     check(isinstance(entry[-1] if field == 'screws' else entry[0], str), key + ': label')
         check(len(cab['rotaries']) <= 2, key + ': at most two reserve rotaries')
-        check(set(cab.get('rotarySprites', {})) == {'mask', 'ring', 'grip'}, key + ': rotary sprites')
-        for rect in cab['rotarySprites'].values():
+        check({'mask', 'ring', 'grip'} <= set(cab.get('rotarySprites', {})) <= {'mask', 'ring', 'grip', 'image'}, key + ': rotary sprites')
+        if 'image' in cab['rotarySprites']:
+            asset(cab['rotarySprites']['image'], {'.webp', '.png'})
+        for name in ('mask', 'ring', 'grip'):
+            rect = cab['rotarySprites'][name]
             check(isinstance(rect, list) and len(rect) == 4, key + ': sprite rectangle')
             point(*rect[:2])
             check(all(type(v) in (int, float) and v > 0 for v in rect[2:])

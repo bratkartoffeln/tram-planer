@@ -1,22 +1,28 @@
 'use strict';
 let vehicleBundlePreview=null,vehiclePreviewTicket=0,vehiclePreviewTimer=null,vehiclePreviewDoorsOpen=false;
+let vehiclePreviewVehicleId=null;
 const vehiclePreviewAccessoryStates=new Map();
 const vehiclePreviewRotaryTurns=[0,0];
 const vehiclePreviewLooseScrews=new Set(),vehiclePreviewScrewTouches=new Map();
 const VEHICLE_PREVIEW_SOUNDS={door_open:'Türen öffnen',door_close:'Türen schließen',emergency:'Notfall',traffic:'Stau',passenger:'Fahrgastanzeige',finish:'Fahrtende',back:'Zurück'};
 const VEHICLE_PREVIEW_MECHANICS={down:'Taster drücken',up:'Taster loslassen',latch:'Not-Aus einrasten',rotary:'Drehschalter',screw:'Schraube lösen',ratchet:'Schraube eindrehen'};
-function vehicleCabThumbnail(type){
+function vehicleCabThumbnail(type,vehicle=null){
  const bundle=getVehicleBundle({vehicleTypeId:type.id}),info=vehicleBundleInfo(bundle);
- return `<div class="vehicle-cab-preview"><img src="${esc(bundle.cab.image)}" alt="Frontales Schalterpanel für ${esc(type.name)}" width="${bundle.cab.width}" height="${bundle.cab.height}" loading="lazy"><p><strong>${esc(info.title)}</strong><br><small>${esc(info.variant)}</small></p><button type="button" class="small" data-cab-preview="${esc(type.id)}" onclick="openVehicleBundlePreview('${type.id}')">Fahrpult & Sounds ausprobieren</button></div>`;
+ return `<div class="vehicle-cab-preview"><img src="${esc(bundle.cab.image)}" alt="Frontales Schalterpanel für ${esc(type.name)}" width="${bundle.cab.width}" height="${bundle.cab.height}" loading="lazy"><p><strong>${esc(info.title)}</strong><br><small>${esc(info.variant)}</small></p><button type="button" class="small" data-cab-preview="${esc(type.id)}" onclick="openVehicleBundlePreview('${type.id}'${vehicle?",'"+vehicle.id+"'":''})">Fahrpult & Sounds${vehicle?' · '+esc(vehicle.code):' ausprobieren'}</button></div>`;
 }
-function openVehicleBundlePreview(typeId){
+function openVehicleBundlePreview(typeId,vehicleId=null){
  const type=vehicleType(typeId);if(!type)return;
  closeModal();
+ vehiclePreviewVehicleId=state.vehicles.find(vehicle=>vehicle.id===vehicleId&&vehicle.typeId===typeId)?.id||null;
+ const previewVehicle=state.vehicles.find(vehicle=>vehicle.id===vehiclePreviewVehicleId);
+ const previewTitle=previewVehicle?previewVehicle.code+' · '+type.name:type.name;
  const bundle=getVehicleBundle({vehicleTypeId:typeId}),info=vehicleBundleInfo(bundle);
  vehicleBundlePreview=bundle;vehiclePreviewDoorsOpen=false;vehiclePreviewLooseScrews.clear();vehiclePreviewScrewTouches.clear();vehiclePreviewAccessoryStates.clear();vehiclePreviewRotaryTurns.fill(0);
- const example={id:'preview-'+typeId,plan:{line:'–',tram:type.name,stops:[{},{},{}]},position:1,doorsOpen:false,status:'running'};
- showModal(`${esc(type.name)} · Fahrpult & Sounds`,`${renderCabControls(example,0,bundle)}<p class="vehicle-preview-instructions">Pulttasten drücken, um die Sounds vorzuhören. Der Türtaster wechselt zwischen Öffnen und Schließen. „Nächster Halt“ spielt eine Beispielansage; „Vollbild“ gibt den Tastenklick wieder. Zusatzschalter und Hebel sind als Reserve ohne Fahrfunktion schaltbar. Die Schrauben lassen sich per Doppelklick oder Doppeltippen ausprobieren.</p><p id="vehicleSoundStatus" role="status" aria-live="polite">Pulttaste für eine Hörprobe drücken.</p><p class="muted">${esc(info.soundNote)}</p>${state.settings.cockpit_muted?'<p class="notice">Tastentöne sind in den Einstellungen stummgeschaltet. Aktiviere sie dort für die Hörprobe.</p>':''}<details><summary>Nachbildung, Varianten & Quellen</summary>${vehicleBundleSources(bundle)}</details>`, '<button type="button" onclick="stopVehiclePreviewSound()">■ Wiedergabe stoppen</button><button type="button" class="primary" onclick="closeModal()">Schließen</button>');
+ cabModeStates.clear();cabModeContext='';
+ const example={id:'preview-'+typeId,plan:{line:'–',tram:previewVehicle?.code||type.name,stops:[{},{},{}]},position:1,doorsOpen:false,status:'running'};
+ showModal(`${esc(previewTitle)} · Fahrpult & Sounds`,`${renderCabControls(example,0,bundle)}<p class="vehicle-preview-instructions">Pulttasten drücken, um die Sounds vorzuhören. Der Türtaster wechselt zwischen Öffnen und Schließen. „Nächster Halt“ spielt eine Beispielansage; „Vollbild“ gibt den Tastenklick wieder. Zusatzschalter und Hebel sind als Reserve ohne Fahrfunktion schaltbar. Die Schrauben lassen sich per Doppelklick oder Doppeltippen ausprobieren.</p><p id="vehicleSoundStatus" role="status" aria-live="polite">Pulttaste für eine Hörprobe drücken.</p><p class="muted">${esc(info.soundNote)}</p>${state.settings.cockpit_muted?'<p class="notice">Tastentöne sind in den Einstellungen stummgeschaltet. Aktiviere sie dort für die Hörprobe.</p>':''}<details><summary>Nachbildung, Varianten & Quellen</summary>${vehicleBundleSources(bundle)}</details>`, '<button type="button" onclick="stopVehiclePreviewSound()">■ Wiedergabe stoppen</button><button type="button" class="primary" onclick="closeModal()">Schließen</button>');
  const modal=document.querySelector('#modalRoot .modal');modal.classList.add('vehicle-bundle-modal');
+ mountCabLayoutEditor(bundle);
  if(state.settings.cockpit_muted)modal.querySelectorAll('.cab-button').forEach(button=>button.disabled=true);
 }
 function syncVehiclePreviewDoors(moving=false){
@@ -26,6 +32,7 @@ function syncVehiclePreviewDoors(moving=false){
  button.disabled=moving||state.settings.cockpit_muted;
  const closed=root.querySelector('[data-door-indicator="closed"]'),open=root.querySelector('[data-door-indicator="open"]');
  closed.classList.toggle('is-lit',!vehiclePreviewDoorsOpen&&!moving);open.classList.toggle('is-lit',vehiclePreviewDoorsOpen||moving);open.classList.toggle('is-blinking',moving);
+ cabLayoutRefresh();
 }
 function stopVehiclePreviewSound(){
  ++vehiclePreviewTicket;clearTimeout(vehiclePreviewTimer);vehiclePreviewTimer=null;
@@ -36,7 +43,7 @@ function stopVehiclePreviewSound(){
  syncVehiclePreviewDoors();
  const status=document.getElementById('vehicleSoundStatus');if(status)status.textContent='Wiedergabe gestoppt.';
 }
-function stopVehicleBundlePreview(){if(vehicleBundlePreview){releaseCabButton();stopVehiclePreviewSound();vehicleBundlePreview=null;vehiclePreviewScrewTouches.clear();}}
+function stopVehicleBundlePreview(){closeCabLayoutEditor();if(vehicleBundlePreview){releaseCabButton();stopVehiclePreviewSound();vehicleBundlePreview=null;vehiclePreviewScrewTouches.clear();}}
 async function previewVehicleSound(id,mechanical=false){
  const labels=mechanical?VEHICLE_PREVIEW_MECHANICS:VEHICLE_PREVIEW_SOUNDS;
  if(!vehicleBundlePreview||!Object.hasOwn(labels,id)||state.settings.cockpit_muted)return false;

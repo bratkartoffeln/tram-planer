@@ -10,7 +10,7 @@ const root=path.resolve(__dirname,'../app/src/main/assets'),output=path.resolve(
   const browser=await chromium.connectOverCDP(b.debuggingUrl),page=browser.contexts()[0].pages()[0];page.setDefaultTimeout(8000);
   await page.setViewportSize({width:1366,height:900});await page.goto(b.origin,{timeout:30000});
   await b.evaluate(`(()=>{const p={id:'plan-display-test',routeId:'W2D',routeCode:'W2D',routeName:ROUTES.W2D.name,line:'2',tram:'801',stops:allRouteStops('W2D'),createdAt:1};state.plans=[p];state.active={id:'run-display-test',plan:clone(p),position:4,departure:'10:00',startedAtEpoch:Date.now(),actualStartEpoch:Date.now(),positionReachedAt:Date.now(),doorsOpen:false,pauseEndEpoch:null,trafficDelayMin:0,status:'running'};window.AndroidAnnouncements={playSequence:()=>{},stop:()=>{}};saveState();showView('driver')})()`);
-  assert.equal(await page.locator('.cab-controls button').count(),10);assert.equal(await page.locator('.cab-placeholder').count(),10);
+  assert.equal(await page.locator('.cab-controls button').count(),20);assert.equal(await page.locator('.cab-spare').count(),10);
   const width=async()=>Math.round((await page.locator('.cab-stage').boundingBox()).width);
   const normalWidth=await width(),trip=await b.evaluate('clone(state.active)');
   await page.locator('#sidebarToggle').click();assert.equal(await page.locator('#sidebarToggle').getAttribute('aria-expanded'),'false');

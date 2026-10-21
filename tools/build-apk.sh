@@ -81,15 +81,15 @@ for activity in app.findall('activity'):
 manifest.write(out/'AndroidManifest.xml',encoding='utf-8',xml_declaration=True)
 assets=root/'app/src/main/assets'
 app_source='\n'.join(p.read_text(encoding='utf-8') for p in (assets/'index.html',assets/'app.js') if p.is_file())
-if not re.search(r"APP_VERSION\s*=\s*['\"]6\.2\.9['\"]",app_source):
-    raise SystemExit('App HTML version must be 6.2.9 before a release build.')
+if not re.search(r"APP_VERSION\s*=\s*['\"]6\.2\.10['\"]",app_source):
+    raise SystemExit('App HTML version must be 6.2.10 before a release build.')
 if not (root/'app/src/main/assets/audio/chimes/ding_dong.mp3').is_file():
     raise SystemExit('Missing embedded announcement audio/chimes/ding_dong.mp3.')
 PY
 "$BUILD_TOOLS/aapt2" compile --dir "$PROJECT/app/src/main/res" -o "$BUILD/resources.zip"
 "$BUILD_TOOLS/aapt2" link -o "$BUILD/resources.apk" \
     --manifest "$BUILD/AndroidManifest.xml" -I "$PLATFORM" \
-    --min-sdk-version 26 --target-sdk-version 35 --version-code 629 --version-name 6.2.9 \
+    --min-sdk-version 26 --target-sdk-version 35 --version-code 630 --version-name 6.2.10 \
     --java "$BUILD/generated" -A "$PROJECT/app/src/main/assets" \
     -0 wav -0 mp3 -0 ogg "$BUILD/resources.zip"
 python3 - "$BUILD" <<'PY'
@@ -124,7 +124,7 @@ PY
 fi
 [[ -f "$SIGNING/storepass.txt" ]] || { echo "Missing signing password file." >&2; exit 1; }
 chmod 600 "$SIGNING/fahrplan-manager.p12" "$SIGNING/storepass.txt"
-APK="$PROJECT/app/build/outputs/apk/release/FahrplanManager_Tablet_v6.2.9${SUFFIX}.apk"
+APK="$PROJECT/app/build/outputs/apk/release/FahrplanManager_Tablet_v6.2.10${SUFFIX}.apk"
 "$BUILD_TOOLS/apksigner" sign --ks "$SIGNING/fahrplan-manager.p12" --ks-key-alias fahrplan-manager \
     --ks-pass "file:$SIGNING/storepass.txt" \
     --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true \
