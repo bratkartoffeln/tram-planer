@@ -7,82 +7,123 @@ const CAB_ICONS={
  fullscreen:'M12 5H5v7m15-7h7v7M5 20v7h7m15-7v7h-7',
  route:'M5 5h22v22H5zM20 5v22M10 11l5 5-5 5'
 };
+const CAB_ICON_OFFSETS={back:[-.5,0],next:[.5,0],traffic:[0,-1],finish:[.5,0],passenger:[0,-.5],emergency:[0,.5]};
 let cabFullscreen=false,cabOwnsBrowserFullscreen=false,cabFullscreenRequest=null;
 let cabRouteCollapsed=false;
 let cabScrewTripId=null;
 const cabLooseScrews=new Set(),cabScrewTouches=new Map();
 const cabRotaryTurns=[0,0];
-function cabPosition(x,y,size=140){return `left:${x/cabPanel().width*100}%;top:${y/cabPanel().height*100}%;width:${size/cabPanel().width*100}%`;}
-function cabButton({id='',color,label,icon,action,disabled=false,pressed,emergency=false,x,y}){
- const size=emergency?200:140,cap=emergency?148:96;
- const crop=`--cap-inset:${(size-cap)/size*50}%;--cap-size-x:${cabPanel().width/cap*100}%;--cap-size-y:${cabPanel().height/cap*100}%;--cap-x:${(x-cap/2)/(cabPanel().width-cap)*100}%;--cap-y:${(y-cap/2)/(cabPanel().height-cap)*100}%`;
- const adjustment=icon==='traffic'?' transform="translate(0 -1)"':icon==='finish'?' transform="translate(.5 0)"':'';
- return `<button ${id?`id="${id}"`:''} ${emergency?'aria-label="Notfall"':''} ${id==='cabFullscreenBtn'?`title="${cabFullscreen?'Vollbild beenden':'Vollbild einschalten'}"`:''} class="cab-button cab-${color}${emergency?' cab-emergency':''}" style="${cabPosition(x,y,size)};${crop}" onclick="${action}" ${disabled?'disabled':''} ${pressed===undefined?'':`aria-pressed="${pressed}"`}><span class="cab-bezel"><span class="cab-face"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="${CAB_ICONS[icon]}"${adjustment}/></svg></span></span><span class="cab-label">${esc(label)}</span></button>`;
+const cabAccessoryStates=new Map();
+function cabPosition(x,y,size=140,panel=cabPanel()){return `left:${x/panel.width*100}%;top:${y/panel.height*100}%;width:${size/panel.width*100}%`;}
+function cabLabel(label,x,y,width,height=width,pad){
+ const style=pad?` style="left:${(pad.x-x+width/2)/width*100}%;top:${(pad.y-y+height/2)/height*100}%;width:${pad.width/width*100}%;color:${pad.ink}"`:'';
+ return `<span class="cab-label${pad?' cab-label-pad':''}"${style}>${esc(label)}</span>`;
 }
-function cabPlaceholder(x,y){
- return `<span class="cab-placeholder cab-reserve" style="${cabPosition(x,y)}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"></span></span></span>`;
+function cabButton({id='',color,label,icon,action,disabled=false,pressed,emergency=false,x,y,size=emergency?200:140,capWidth=emergency?148:96,capHeight=capWidth,shape='round',ink='#eef1f3',labelPad},panel=cabPanel()){
+ const crop=`--cap-inset:${(size-capWidth)/size*50}%;--cap-inset-y:${(size-capHeight)/size*50}%;--cap-size-x:${panel.width/capWidth*100}%;--cap-size-y:${panel.height/capHeight*100}%;--cap-x:${(x-capWidth/2)/(panel.width-capWidth)*100}%;--cap-y:${(y-capHeight/2)/(panel.height-capHeight)*100}%;--cap-radius:${shape==='rect'?'5%':'50%'};--cap-ink:${ink}`;
+ const emergencyCrop=emergency?';'+(panel.emergencySprites?cabEmergencyPhotoLayers(panel):cabPhotoCrop('emergency-mask',x-20,y-140,220,100,panel)+';'+cabPhotoCrop('emergency-ring',x-15,y+10,230,220,panel)):'';
+ const previewAction=action?.match(/^previewVehicleCabAction\('([a-z]+)'\)$/)?.[1];
+ const offset=CAB_ICON_OFFSETS[icon],adjustment=offset?` transform="translate(${offset.join(' ')})"`:'';
+ return `<button ${previewAction?`data-preview-action="${previewAction}"`:""} ${id?`id="${id}"`:''} ${emergency?'aria-label="Notfall"':''} ${id==='cabFullscreenBtn'?`title="${cabFullscreen?'Vollbild beenden':'Vollbild einschalten'}"`:''} class="cab-button cab-${color}${emergency?' cab-emergency':''}" style="${cabPosition(x,y,size,panel)};${crop}${emergencyCrop}" onclick="${action}" ${disabled?'disabled':''} ${pressed===undefined?'':`aria-pressed="${pressed}"`}><span class="cab-bezel">${emergency?'<span class="cab-emergency-mask"></span><span class="cab-emergency-base"></span><span class="cab-emergency-stem"></span><span class="cab-emergency-ring"></span>':''}<span class="cab-face"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="${CAB_ICONS[icon]}"${adjustment}/></svg></span></span>${cabLabel(label,x,y,size,size,labelPad)}</button>`;
 }
-function cabPhotoCrop(prefix,x,y,width,height=width){
- return `--${prefix}-size:${cabPanel().width/width*100}% ${cabPanel().height/height*100}%;--${prefix}-position:${(x-width/2)/(cabPanel().width-width)*100}% ${(y-height/2)/(cabPanel().height-height)*100}%`;
+function cabPlaceholder(x,y,panel=cabPanel()){
+ return `<span class="cab-placeholder cab-reserve" style="${cabPosition(x,y,140,panel)}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"></span></span></span>`;
+}
+function cabPhotoCrop(prefix,x,y,width,height=width,panel=cabPanel()){
+ return `--${prefix}-size:${panel.width/width*100}% ${panel.height/height*100}%;--${prefix}-position:${(x-width/2)/(panel.width-width)*100}% ${(y-height/2)/(panel.height-height)*100}%`;
+}
+function cabEmergencyPhotoLayers(panel){
+ const button=panel.buttons.emergency,{mask,ring,travel}=panel.emergencySprites;
+ const {x,y,size,capWidth,capHeight}=button;
+ const box=(prefix,cx,cy,w,h)=>`--${prefix}-left:${(cx-w/2-x+size/2)/size*100}%;--${prefix}-top:${(cy-h/2-y+size/2)/size*100}%;--${prefix}-width:${w/size*100}%;--${prefix}-height:${h/size*100}%`;
+ return [cabPhotoCrop('emergency-mask',...mask,panel),cabPhotoCrop('emergency-ring',...ring,panel),
+  box('emergency-mask',x,y,capWidth+4,capHeight+4),box('emergency-ring',...ring),box('emergency-stem',x+travel[0]*.6,y+travel[1]*.6,capWidth*.80,capHeight*.80),
+  `--emergency-cut-x:${(x-ring[0]+ring[2]/2)/ring[2]*100}%;--emergency-cut-y:${(y-ring[1]+ring[3]/2)/ring[3]*100}%;--emergency-cut-w:${capWidth/2/ring[2]*100}%;--emergency-cut-h:${capHeight/2/ring[3]*100}%;--emergency-travel-x:${travel[0]/capWidth*100}%;--emergency-travel-y:${travel[1]/capHeight*100}%`].join(';');
+}
+function renderCabAccessory(control,index,panel,preview=false){
+ const {kind,label,sprite,onSprite}=control;
+ const poses=kind==='lever'?[sprite,onSprite]:[sprite];
+ const left=Math.min(...poses.map(([x,y,w])=>x-w/2)),right=Math.max(...poses.map(([x,y,w])=>x+w/2));
+ const top=Math.min(...poses.map(([x,y,w,h])=>y-h/2)),bottom=Math.max(...poses.map(([x,y,w,h])=>y+h/2));
+ const x=(left+right)/2,y=(top+bottom)/2,w=right-left,h=bottom-top;
+ const states=preview?vehiclePreviewAccessoryStates:cabAccessoryStates,key=(preview?vehicleBundlePreview.id:getVehicleBundle().id)+':'+index;
+ const active=!!states.get(key),crop=kind==='button'?cabPhotoCrop('accessory',...sprite,panel):'';
+ const style=`left:${x/panel.width*100}%;top:${y/panel.height*100}%;width:${w/panel.width*100}%;height:${h/panel.height*100}%;${crop}`;
+ const caps=kind==='lever'?poses.map(([cx,cy,pw,ph],pose)=>{
+  const asset=panel.leverSprites[pose?'on':'off'];
+  return `<span class="cab-accessory-cap cab-lever-${pose?'on':'off'}" style="left:${(cx-pw/2-left)/w*100}%;top:${(cy-ph/2-top)/h*100}%;width:${pw/w*100}%;height:${ph/h*100}%;background-image:url('${esc(asset.image)}');${cabPhotoCrop('accessory',...asset.crop,asset)}"></span>`;
+ }).join(''):'<span class="cab-accessory-cap"></span>';
+ return `<button type="button" id="cabAccessory${index}" class="cab-accessory cab-accessory-${kind} cab-accessory-${control.profile||'toggle'}${active?' is-on':''}" data-accessory-index="${index}" style="${style}" aria-pressed="${active}" aria-label="${esc(label)} · Reserve" title="${esc(label)} · Reserve, ohne Fahrfunktion" onclick="toggleCabAccessory(${index})">${caps}${control.labelPad?cabLabel(label,x,y,w,h,control.labelPad):''}</button>`;
+}
+function toggleCabAccessory(index){
+ if(!vehicleBundlePreview&&(currentView!=='driver'||!state.active))return;
+ const bundle=vehicleBundlePreview||getVehicleBundle(),control=bundle.cab.accessories?.[index];
+ const button=document.getElementById('cabAccessory'+index);if(!control||!button)return;
+ const states=vehicleBundlePreview?vehiclePreviewAccessoryStates:cabAccessoryStates,key=bundle.id+':'+index,on=!states.get(key);
+ states.set(key,on);button.classList.toggle('is-on',on);button.setAttribute('aria-pressed',String(on));
+ playCabMechanical(control.kind==='lever'?'rotary':on?'down':'up',vehicleBundlePreview);
 }
 function cabRotaryLabel(index){return `Reserve-Drehschalter ${index===0?'Scheibe':'Betrieb'}, Stellung ${cabRotaryTurns[index]%4*90}°`;}
-function renderCabRotary(index,x,y){
- const crop=Object.entries(cabPanel().rotarySprites).map(([name,rect])=>cabPhotoCrop('rotary-'+name,...rect)).join(';');
- return `<button type="button" id="cabRotary${index}" class="cab-rotary cab-reserve" style="${cabPosition(x,y,180)};${crop};--rotary-angle:${cabRotaryTurns[index]*90}deg" aria-label="${cabRotaryLabel(index)}" title="Reserve: pro Klick 90° im Uhrzeigersinn" onclick="turnCabRotary(${index})"><span class="cab-rotary-mask"></span><span class="cab-rotary-ring"><span class="cab-rotary-disc"></span></span><span class="cab-rotary-turn"><span class="cab-rotary-grip"></span></span></button>`;
+function renderCabRotary(index,x,y,panel=cabPanel()){
+ const crop=Object.entries(panel.rotarySprites).map(([name,rect])=>cabPhotoCrop('rotary-'+name,...rect,panel)).join(';');
+ return `<button type="button" id="cabRotary${index}" class="cab-rotary cab-reserve" style="${cabPosition(x,y,180,panel)};${crop};--rotary-angle:${cabRotaryTurns[index]*90}deg" aria-label="${cabRotaryLabel(index)}" title="Reserve: pro Klick 90° im Uhrzeigersinn" onclick="turnCabRotary(${index})"><span class="cab-rotary-mask"></span><span class="cab-rotary-ring"><span class="cab-rotary-disc"></span></span><span class="cab-rotary-turn"><span class="cab-rotary-grip"></span></span></button>`;
 }
 function turnCabRotary(index){
  if(currentView!=='driver'||!state.active||!Number.isInteger(index)||index<0||index>=cabRotaryTurns.length)return;
  const knob=document.getElementById('cabRotary'+index);if(!knob)return;
  cabRotaryTurns[index]++;knob.style.setProperty('--rotary-angle',cabRotaryTurns[index]*90+'deg');knob.setAttribute('aria-label',cabRotaryLabel(index));playCabMechanical('rotary');
 }
-function cabDoorIndicator(x,y,color,label,active,icon,blinking=false){
- const size=140,cap=96;
- const crop=`--cap-inset:${(size-cap)/size*50}%;--cap-size-x:${cabPanel().width/cap*100}%;--cap-size-y:${cabPanel().height/cap*100}%;--cap-x:${(x-cap/2)/(cabPanel().width-cap)*100}%;--cap-y:${(y-cap/2)/(cabPanel().height-cap)*100}%`;
- return `<span class="cab-door-indicator cab-indicator-${color}${active?' is-lit':''}${blinking?' is-blinking':''}" data-door-indicator="${color==='green'?'closed':'open'}" style="${cabPosition(x,y,size)};${crop}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"><svg viewBox="0 0 32 32"><path d="${CAB_ICONS[icon]}"/></svg></span></span><span class="cab-label">${label}</span></span>`;
+function cabDoorIndicator(x,y,color,label,active,icon,blinking=false,panel=cabPanel(),dimensions={}){
+ const {size=140,capWidth=96,capHeight=capWidth,shape='round',labelPad}=dimensions;
+ const crop=`--cap-inset:${(size-capWidth)/size*50}%;--cap-inset-y:${(size-capHeight)/size*50}%;--cap-size-x:${panel.width/capWidth*100}%;--cap-size-y:${panel.height/capHeight*100}%;--cap-x:${(x-capWidth/2)/(panel.width-capWidth)*100}%;--cap-y:${(y-capHeight/2)/(panel.height-capHeight)*100}%;--cap-radius:${shape==='rect'?'5%':'50%'}`;
+ return `<span class="cab-door-indicator cab-indicator-${color}${active?' is-lit':''}${blinking?' is-blinking':''}" data-door-indicator="${color==='green'?'closed':'open'}" style="${cabPosition(x,y,size,panel)};${crop}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"><svg viewBox="0 0 32 32"><path d="${CAB_ICONS[icon]}"/></svg></span></span>${cabLabel(label,x,y,size,size,labelPad)}</span>`;
 }
-function renderCabScrew(index,x,y,label){
- const cap=54,missing=cabLooseScrews.has(index);
- const crop=`--screw-size-x:${cabPanel().width/cap*100}%;--screw-size-y:${cabPanel().height/cap*100}%;--screw-x:${(x-cap/2)/(cabPanel().width-cap)*100}%;--screw-y:${(y-cap/2)/(cabPanel().height-cap)*100}%`;
- return `<button type="button" id="cabScrew${index}" class="cab-screw${missing?' is-missing':''}" style="${cabPosition(x,y,72)};${crop}" data-screw-label="${label}" aria-label="${missing?'Schraubenloch':'Schraube'} ${label}" title="Doppelklick: Schraube ${missing?'eindrehen':'herausdrehen'}" ondblclick="toggleCabScrew(${index})" onpointerup="touchCabScrew(event,${index})" onkeydown="if(!event.repeat&&['Enter',' '].includes(event.key)){event.preventDefault();toggleCabScrew(${index})}"><span class="cab-screw-hole"></span><span class="cab-screw-face"></span></button>`;
+function renderCabScrew(index,x,y,label,panel=cabPanel(),preview=false){
+ const cap=panel.screwCap||54,missing=preview?vehiclePreviewLooseScrews.has(index):cabLooseScrews.has(index);
+ const crop=`--screw-size-x:${panel.width/cap*100}%;--screw-size-y:${panel.height/cap*100}%;--screw-x:${(x-cap/2)/(panel.width-cap)*100}%;--screw-y:${(y-cap/2)/(panel.height-cap)*100}%`;
+ return `<button type="button" id="cabScrew${index}" class="cab-screw${missing?' is-missing':''}" style="${cabPosition(x,y,cap/.75,panel)};${crop}" data-screw-label="${label}" aria-label="${missing?'Schraubenloch':'Schraube'} ${label}" title="Doppelklick: Schraube ${missing?'eindrehen':'herausdrehen'}" ondblclick="toggleCabScrew(${index})" onpointerup="touchCabScrew(event,${index})" onkeydown="if(!event.repeat&&['Enter',' '].includes(event.key)){event.preventDefault();toggleCabScrew(${index})}"><span class="cab-screw-hole"></span><span class="cab-screw-face"></span></button>`;
 }
 function touchCabScrew(event,index){
  if(event.pointerType==='mouse')return;
- const now=performance.now(),previous=cabScrewTouches.get(index);
- if(previous&&now-previous.at<=450&&Math.hypot(event.clientX-previous.x,event.clientY-previous.y)<24){cabScrewTouches.delete(index);toggleCabScrew(index);}
- else cabScrewTouches.set(index,{at:now,x:event.clientX,y:event.clientY});
+ const touches=vehicleBundlePreview?vehiclePreviewScrewTouches:cabScrewTouches;
+ const now=performance.now(),previous=touches.get(index);
+ if(previous&&now-previous.at<=450&&Math.hypot(event.clientX-previous.x,event.clientY-previous.y)<24){touches.delete(index);toggleCabScrew(index);}
+ else touches.set(index,{at:now,x:event.clientX,y:event.clientY});
 }
 function toggleCabScrew(index){
- if(currentView!=='driver'||!state.active)return;
+ if(!vehicleBundlePreview&&(currentView!=='driver'||!state.active))return;
+ const loose=vehicleBundlePreview?vehiclePreviewLooseScrews:cabLooseScrews;
  const screw=document.getElementById('cabScrew'+index);if(!screw)return;
  if(screw.classList.contains('is-loose')||screw.classList.contains('is-tightening'))return;
- const tightening=cabLooseScrews.has(index);
- if(tightening)cabLooseScrews.delete(index);else cabLooseScrews.add(index);
+ const tightening=loose.has(index);
+ if(tightening)loose.delete(index);else loose.add(index);
  screw.classList.remove('is-missing');screw.classList.add(tightening?'is-tightening':'is-loose');screw.setAttribute('aria-busy','true');
  screw.setAttribute('aria-label',`${tightening?'Schraube':'Schraubenloch'} ${screw.dataset.screwLabel}`);
  screw.title=`Doppelklick: Schraube ${tightening?'herausdrehen':'eindrehen'}`;
  screw.querySelector('.cab-screw-face').addEventListener('animationend',()=>{
   screw.classList.remove('is-loose','is-tightening');screw.classList.toggle('is-missing',!tightening);screw.removeAttribute('aria-busy');
  },{once:true});
- playCabMechanical(tightening?'ratchet':'screw');
+ playCabMechanical(tightening?'ratchet':'screw',vehicleBundlePreview);
 }
-function renderCabControls(a,pause){
+function renderCabControls(a,pause,previewBundle=null){
  const moving=doorMotion?.tripId===a.id;
- if(cabScrewTripId!==a.id){cabScrewTripId=a.id;cabLooseScrews.clear();cabScrewTouches.clear();cabRotaryTurns.fill(0);}
- const bundle=getVehicleBundle(a.plan),panel=bundle.cab,{spares,headings}=panel;
- return `<section class="cab-console" data-vehicle-bundle="${esc(bundle.id)}" style="--cab-image:url('${esc(panel.image)}');--cab-width:${panel.width};--cab-height:${panel.height};--cab-console:${panel.colors.console};--cab-panel:${panel.colors.panel};--cab-text:${panel.colors.text}" aria-label="Fahrpult in Frontalansicht"><div class="cab-header"><span>FAHRPULT <small>LINIE ${esc(a.plan.line)} · TRAM ${esc(a.plan.tram)}</small></span></div><p class="cab-scroll-hint">Das Pult bei Bedarf seitlich verschieben.</p><div class="cab-panel-viewport" tabindex="0" role="region" aria-label="Fahrpult, auf kleinen Bildschirmen seitlich verschiebbar"><div class="cab-stage"><img class="cab-panel-photo" src="${esc(panel.image)}" width="${panel.width}" height="${panel.height}" alt="" draggable="false">${panel.screws.map(([x,y,label],index)=>renderCabScrew(index,x,y,label)).join('')}<div class="driver-controls cab-controls">
- ${headings.map(([name,x,y])=>`<span class="cab-group-mark" style="left:${x/cabPanel().width*100}%;top:${y/cabPanel().height*100}%">${name}</span>`).join('')}
- ${cabButton({id:'nextStopBtn',...panel.buttons.next,color:'blue',label:'Nächster Halt',icon:'next',action:'nextStop()',disabled:pause>0||a.doorsOpen||a.position>=a.plan.stops.length-1})}
- ${cabButton({...panel.buttons.back,color:'white',label:'Zurück',icon:'back',action:'driverPrevious()',disabled:a.position===0||pause>0})}
- ${cabButton({id:'doorBtn',...panel.buttons.doors,color:'green',label:a.doorsOpen?'Türen schließen':'Türen öffnen',icon:a.doorsOpen?'close':'doors',action:'toggleDoors()',pressed:a.doorsOpen,disabled:moving})}
- ${cabButton({...panel.buttons.passenger,color:'white',label:'Fahrgastanzeige',icon:'passenger',action:'openPassengerDisplay()'})}
- ${cabButton({id:'cabFullscreenBtn',...panel.buttons.fullscreen,color:'fullscreen-toggle',label:'Vollbild',icon:'fullscreen',action:'toggleCabFullscreen()',pressed:cabFullscreen})}
- ${cabButton({...panel.buttons.traffic,color:'amber',label:'Stau',icon:'traffic',action:'openTrafficModal()'})}
- ${cabButton({...panel.buttons.finish,color:'red',label:'Fahrt beenden',icon:'finish',action:'finishTrip(state.active.position>=state.active.plan.stops.length-1)'})}
- ${cabButton({id:'emergencyBtn',...panel.buttons.emergency,color:'red',label:'NOT-AUS',icon:'emergency',action:'pressCabEmergency()',emergency:true,pressed:a.status==='suspended'})}
- <div class="cab-door-indicators" role="status" aria-label="${moving?(doorMotion.opening?'Türen öffnen':'Türen schließen'):a.doorsOpen?'Türen geöffnet':'Türen geschlossen'}">${cabDoorIndicator(panel.indicators.closed.x,panel.indicators.closed.y,'green','Türen zu',!a.doorsOpen,'close')}${cabDoorIndicator(panel.indicators.open.x,panel.indicators.open.y,'amber','Türen offen',a.doorsOpen,'doors',moving)}</div>
- ${spares.map(([x,y])=>cabPlaceholder(x,y)).join('')}
- ${panel.rotaries.map(([x,y],index)=>renderCabRotary(index,x,y)).join('')}
- </div></div></div><div class="cab-footer"><span>FAHRPLAN MANAGER · BEDIENPULT</span><div><button class="cab-text-button" onclick="toggleCockpitSound()" aria-pressed="${!!state.settings.cockpit_muted}">${state.settings.cockpit_muted?'Tastentöne aus':'Tastentöne an'}</button><button class="cab-text-button" onclick="showCockpitSources()">Bild- & Tonquellen</button></div></div></section>`;
+ if(!previewBundle&&cabScrewTripId!==a.id){cabScrewTripId=a.id;cabLooseScrews.clear();cabScrewTouches.clear();cabRotaryTurns.fill(0);cabAccessoryStates.clear();}
+ const bundle=previewBundle||getVehicleBundle(a.plan),panel=bundle.cab,{spares,headings}=panel;
+ return `<section class="cab-console${panel.skin==='panel'?' cab-panel-front':''}" data-vehicle-bundle="${esc(bundle.id)}" style="--cab-image:url('${esc(panel.image)}');--cab-width:${panel.width};--cab-height:${panel.height};--cab-console:${panel.colors.console};--cab-panel:${panel.colors.panel};--cab-text:${panel.colors.text};--cab-label-ink:${panel.labelColor||'#fff8df'}" aria-label="Fahrpult in Frontalansicht"><div class="cab-header"><span>${esc(vehicleBundleInfo(bundle).title)} <small>LINIE ${esc(a.plan.line)} · TRAM ${esc(a.plan.tram)}</small></span></div><p class="cab-scroll-hint">Das Pult bei Bedarf seitlich verschieben.</p><div class="cab-panel-viewport" tabindex="0" role="region" aria-label="Fahrpult, auf kleinen Bildschirmen seitlich verschiebbar"><div class="cab-stage"><img class="cab-panel-photo" src="${esc(panel.image)}" width="${panel.width}" height="${panel.height}" alt="" draggable="false">${panel.screws.map(([x,y,label],index)=>renderCabScrew(index,x,y,label,panel,!!previewBundle)).join('')}<div class="driver-controls cab-controls">
+ ${headings.map(([name,x,y])=>`<span class="cab-group-mark" style="left:${x/panel.width*100}%;top:${y/panel.height*100}%">${name}</span>`).join('')}
+ ${cabButton({id:'nextStopBtn',...panel.buttons.next,color:'blue',label:'Nächster Halt',icon:'next',action:previewBundle?"previewVehicleCabAction('next')":'nextStop()',disabled:!previewBundle&&(pause>0||a.doorsOpen||a.position>=a.plan.stops.length-1)},panel)}
+ ${cabButton({...panel.buttons.back,color:'white',label:'Zurück',icon:'back',action:previewBundle?"previewVehicleCabAction('back')":'driverPrevious()',disabled:!previewBundle&&(a.position===0||pause>0)},panel)}
+ ${cabButton({id:'doorBtn',...panel.buttons.doors,color:'green',label:a.doorsOpen?'Türen schließen':'Türen öffnen',icon:a.doorsOpen?'close':'doors',action:previewBundle?"previewVehicleCabAction('doors')":'toggleDoors()',pressed:a.doorsOpen,disabled:moving},panel)}
+ ${cabButton({...panel.buttons.passenger,color:'white',label:'Fahrgastanzeige',icon:'passenger',action:previewBundle?"previewVehicleCabAction('passenger')":'openPassengerDisplay()'},panel)}
+ ${cabButton({id:'cabFullscreenBtn',...panel.buttons.fullscreen,color:'fullscreen-toggle',label:'Vollbild',icon:'fullscreen',action:previewBundle?"previewVehicleCabAction('fullscreen')":'toggleCabFullscreen()',pressed:cabFullscreen},panel)}
+ ${cabButton({...panel.buttons.traffic,color:'amber',label:'Stau',icon:'traffic',action:previewBundle?"previewVehicleCabAction('traffic')":'openTrafficModal()'},panel)}
+ ${cabButton({...panel.buttons.finish,color:'red',label:'Fahrt beenden',icon:'finish',action:previewBundle?"previewVehicleCabAction('finish')":'finishTrip(state.active.position>=state.active.plan.stops.length-1)'},panel)}
+ ${cabButton({id:'emergencyBtn',...panel.buttons.emergency,color:'red',label:'NOT-AUS',icon:'emergency',action:previewBundle?"previewVehicleCabAction('emergency')":'pressCabEmergency()',emergency:true,pressed:a.status==='suspended'||(!previewBundle&&!!document.getElementById('emergencyLocation'))},panel)}
+ <div class="cab-door-indicators" role="status" aria-label="${moving?(doorMotion.opening?'Türen öffnen':'Türen schließen'):a.doorsOpen?'Türen geöffnet':'Türen geschlossen'}">${cabDoorIndicator(panel.indicators.closed.x,panel.indicators.closed.y,'green','Türen zu',!a.doorsOpen,'close',false,panel,panel.indicators.closed)}${cabDoorIndicator(panel.indicators.open.x,panel.indicators.open.y,'amber','Türen offen',a.doorsOpen,'doors',moving,panel,panel.indicators.open)}</div>
+ ${spares.map(([x,y])=>cabPlaceholder(x,y,panel)).join('')}
+ ${(panel.accessories||[]).map((control,index)=>renderCabAccessory(control,index,panel,!!previewBundle)).join('')}
+ ${panel.rotaries.map(([x,y],index)=>renderCabRotary(index,x,y,panel)).join('')}
+ </div></div></div><div class="cab-footer"><span>${esc(vehicleBundleInfo(bundle).variant)}</span>${previewBundle?'':`<div><button class="cab-text-button" onclick="toggleCockpitSound()" aria-pressed="${!!state.settings.cockpit_muted}">${state.settings.cockpit_muted?'Tastentöne aus':'Tastentöne an'}</button><button class="cab-text-button" onclick="showCockpitSources()">Bild- & Tonquellen</button></div>`}</div></section>`;
 }
 function updateCabRoutePanel(){
  document.body.classList.toggle('cab-route-collapsed',cabFullscreen&&cabRouteCollapsed);
@@ -153,8 +194,8 @@ function pressCabEmergency(){
 function resetCabEmergency(){if(state.active?.status==='running')document.getElementById('emergencyBtn')?.setAttribute('aria-pressed','false');}
 function toggleCockpitSound(){state.settings.cockpit_muted=!state.settings.cockpit_muted;stopCabMechanics();stopDriverSound();saveState();showView('driver');}
 function showCockpitSources(){
- const credits=getVehicleBundle().credits||[];
- showModal('Fahrpult · Bild- und Tonquellen',`${credits.map(text=>`<p>${esc(text)}</p>`).join('')}<p>Fotorealistische Pultgrafik mit dem integrierten Imagegen-Tool nach der vom Nutzer bereitgestellten Vorlage erzeugt. Weiße Gruppenumrandungen, elfenbeinfarbene Tasterringe und vier Schrauben sind Teil der Grafik. Acht Funktionstaster sind interaktiv, darunter Vollbild. Zwei separate Kontrollleuchten zeigen den Türzustand; zwei Reserve-Drehschalter lassen sich ohne Fahrfunktion drehen; zehn graue Reserveelemente bleiben rein grafisch. Quelle, Arbeitsdatei und Prompt sind in IMAGE_SOURCES.md dokumentiert.</p><p>Mechanischer Tasterdruck, Loslassen und Einrasten des Not-Aus: eigene digitale Synthese, getrennt von Ansagen und Funktionssounds. Notfallbuzzer: eigene Synthese.</p><p>Türen: „Tram doors open and close hiss and beeping“, stephan, Public Domain. <a href="https://commons.wikimedia.org/wiki/File:Tram_doors_open_and_close_hiss_and_beeping.ogg" target="_blank" rel="noopener">Quelle</a>. Ausschnitte, Pegel angepasst, synthetischer Vorwarnton ergänzt.</p><p>Stau: „Audio sound of a busy traffic in Porthacourt“, ElemePodcast, CC BY 4.0, und „Car Horn“, 15HPanska_Ruttner_Jan, CC0. Ausschnitte mit Hupe gemischt. Fahrtende: Windows XP Shutdown, Microsoft, aus dem Winhistory-Archiv, leiser abgemischt. Zurück: bereitgestellter Jingle aus „Back to the Future“, Alan Silvestri. Details und Quellenlinks: AUDIO_SOURCES.md.</p>`, '<button class="primary" onclick="closeModal()">Schließen</button>');
+ const bundle=getVehicleBundle();
+ showModal('Fahrpult · Bild- und Tonquellen',`${vehicleBundleSources(bundle)}${bundle.id==='default'?'<p>Fotorealistische Pultgrafik mit dem integrierten Imagegen-Tool nach der vom Nutzer bereitgestellten Vorlage erzeugt. Weiße Gruppenumrandungen, elfenbeinfarbene Tasterringe und vier Schrauben sind Teil der Grafik. Acht Funktionstaster sind interaktiv, darunter Vollbild. Zwei separate Kontrollleuchten zeigen den Türzustand; zwei Reserve-Drehschalter lassen sich ohne Fahrfunktion drehen; zehn graue Reserveelemente bleiben rein grafisch. Quelle, Arbeitsdatei und Prompt sind in IMAGE_SOURCES.md dokumentiert.</p>':''}<p>Mechanischer Tasterdruck, Loslassen und Einrasten des Not-Aus: eigene digitale Synthese, getrennt von Ansagen und Funktionssounds. Notfallbuzzer: eigene Synthese.</p><p>Türen: „Tram doors open and close hiss and beeping“, stephan, Public Domain. <a href="https://commons.wikimedia.org/wiki/File:Tram_doors_open_and_close_hiss_and_beeping.ogg" target="_blank" rel="noopener">Quelle</a>. Ausschnitte, Pegel angepasst, synthetischer Vorwarnton ergänzt.</p><p>Stau: „Audio sound of a busy traffic in Porthacourt“, ElemePodcast, CC BY 4.0, und „Car Horn“, 15HPanska_Ruttner_Jan, CC0. Ausschnitte mit Hupe gemischt. Fahrtende: Windows XP Shutdown, Microsoft, aus dem Winhistory-Archiv, leiser abgemischt. Zurück: bereitgestellter Jingle aus „Back to the Future“, Alan Silvestri. Details und Quellenlinks: AUDIO_SOURCES.md.</p>`, '<button class="primary" onclick="closeModal()">Schließen</button>');
 }
 // A separate Web Audio channel keeps short mechanical transients independent of
 // stop announcements and the Android MediaPlayer sequence. No runtime downloads.
@@ -233,11 +274,11 @@ function playCabScrewSound(tightening=false){
   source.onended=()=>cabMechanicalSources.delete(source);source.start();
  }catch{/* The visual Easter egg also works without an audio device. */}
 }
-function releaseCabButton(){if(!cabHeld)return;cabHeld.classList.remove('is-down');if(!cabHeld.classList.contains('cab-emergency'))playCabMechanical('up');cabHeld=null;}
-document.addEventListener('pointerdown',e=>{const b=e.target.closest('.cab-button');if(!b||b.disabled||e.button!==0)return;releaseCabButton();cabHeld=b;b.classList.add('is-down');playCabMechanical(b.classList.contains('cab-emergency')?'latch':'down');},true);
+function releaseCabButton(){if(!cabHeld)return;cabHeld.classList.remove('is-down');if(!cabHeld.classList.contains('cab-emergency'))playCabMechanical('up',vehicleBundlePreview);cabHeld=null;}
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('.cab-button');if(!b||b.disabled||e.button!==0)return;releaseCabButton();cabHeld=b;b.classList.add('is-down');playCabMechanical(b.classList.contains('cab-emergency')?'latch':'down',vehicleBundlePreview);},true);
 document.addEventListener('pointerup',releaseCabButton,true);
 document.addEventListener('pointercancel',releaseCabButton,true);
-document.addEventListener('keydown',e=>{const b=e.target.closest('.cab-button');if(!b||b.disabled||e.repeat||!['Enter',' '].includes(e.key))return;releaseCabButton();cabHeld=b;b.classList.add('is-down');playCabMechanical(b.classList.contains('cab-emergency')?'latch':'down');},true);
+document.addEventListener('keydown',e=>{const b=e.target.closest('.cab-button');if(!b||b.disabled||e.repeat||!['Enter',' '].includes(e.key))return;releaseCabButton();cabHeld=b;b.classList.add('is-down');playCabMechanical(b.classList.contains('cab-emergency')?'latch':'down',vehicleBundlePreview);},true);
 document.addEventListener('keyup',e=>{if(['Enter',' '].includes(e.key))releaseCabButton();},true);
 window.addEventListener('blur',()=>{releaseCabButton();stopCabMechanics();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){releaseCabButton();stopCabMechanics();}});

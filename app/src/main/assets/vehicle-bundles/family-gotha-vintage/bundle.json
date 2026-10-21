@@ -1,0 +1,173 @@
+{
+  "id": "family-gotha-vintage",
+  "extends": "default",
+  "cab": {
+    "image": "vehicle-bundles/family-gotha-vintage/panel-front.webp",
+    "skin": "panel",
+    "width": 1536,
+    "height": 1024,
+    "buttons": {
+      "next": {
+        "x": 275,
+        "y": 430,
+        "size": 200,
+        "capWidth": 135,
+        "capHeight": 135,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "back": {
+        "x": 593.5,
+        "y": 426,
+        "size": 200,
+        "capWidth": 135,
+        "capHeight": 135,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "doors": {
+        "x": 930,
+        "y": 430,
+        "size": 200,
+        "capWidth": 135,
+        "capHeight": 135,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "passenger": {
+        "x": 275,
+        "y": 740,
+        "size": 200,
+        "capWidth": 135,
+        "capHeight": 135,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "fullscreen": {
+        "x": 594.5,
+        "y": 740,
+        "size": 200,
+        "capWidth": 135,
+        "capHeight": 135,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "traffic": {
+        "x": 932,
+        "y": 741.5,
+        "size": 200,
+        "capWidth": 135,
+        "capHeight": 135,
+        "shape": "round",
+        "ink": "#3c280c"
+      },
+      "finish": {
+        "x": 1271.5,
+        "y": 737.5,
+        "size": 200,
+        "capWidth": 135,
+        "capHeight": 135,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "emergency": {
+        "x": 1269,
+        "y": 423.5,
+        "size": 200,
+        "capWidth": 150,
+        "capHeight": 140,
+        "shape": "round",
+        "ink": "#fff3df",
+        "kind": "push"
+      }
+    },
+    "indicators": {
+      "closed": {
+        "x": 620,
+        "y": 170,
+        "size": 150,
+        "capWidth": 105,
+        "capHeight": 105,
+        "shape": "round"
+      },
+      "open": {
+        "x": 920,
+        "y": 170,
+        "size": 150,
+        "capWidth": 105,
+        "capHeight": 105,
+        "shape": "round"
+      }
+    },
+    "headings": [],
+    "spares": [],
+    "screws": [
+      [
+        100,
+        104,
+        "oben links"
+      ],
+      [
+        1435,
+        104,
+        "oben rechts"
+      ],
+      [
+        100,
+        900,
+        "unten links"
+      ],
+      [
+        1435,
+        900,
+        "unten rechts"
+      ]
+    ],
+    "rotaries": [],
+    "colors": {
+      "console": "#49261b",
+      "panel": "#49261b",
+      "text": "#eef1f3"
+    },
+    "screwCap": 60,
+    "emergencySprites": {
+      "mask": [
+        1100,
+        570,
+        40,
+        40
+      ],
+      "ring": [
+        1267,
+        430,
+        230,
+        230
+      ],
+      "travel": [
+        0,
+        7
+      ]
+    },
+    "accessories": [],
+    "labelColor": "#fff8df"
+  },
+  "presentation": {
+    "title": "TW 92 · historische Schaltplatte",
+    "variant": "Simulationsnachbildung · historischer Stilvergleich",
+    "description": "Stilgerechte frontale Schaltplatte mit schwarzen, hellen und dunkelroten Bakelittastern, Messingringen und Holzrahmen nach den Materialien des TW-92-Führerstands. Die acht Taster sind eine ergänzte Simulationsbedienung; eine solche Originalplatte von TW 92 ist nicht belegt.",
+    "references": [
+      {
+        "title": "TW 92 Erfurt · Führerstand, Erhard Beyer",
+        "url": "https://altebahnen.startbilder.de/bild/Deutschland~Strassenbahnen+vor+1945~Erfurt+-+Tw+92/142268/fuehrerstand-tw-92.html"
+      },
+      {
+        "title": "EVAG · Traditionswagen 92",
+        "url": "https://www.evag-erfurt.de/evag/home/service/strassenbahn-mieten-erfurt"
+      }
+    ],
+    "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe."
+  },
+  "credits": [
+    "KI-Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026. Nachbildung · Erfurt TW 92. Frontales Schalterpanel aus der Referenz abgeleitet; Tastenanzahl und Anordnung an die Simulation angepasst. Bildkappen und vier fotografierte Schrauben werden animiert. Instrumente sind Bildkulisse."
+  ]
+}

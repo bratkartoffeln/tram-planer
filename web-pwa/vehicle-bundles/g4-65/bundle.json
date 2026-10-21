@@ -1,4 +1,7 @@
 {
   "id": "g4-65",
-  "extends": "default"
+  "extends": "family-gotha-wheel",
+  "presentation": {
+    "variant": "Nachbildung · G4-65 · Vergleich Naumburg 202"
+  }
 }

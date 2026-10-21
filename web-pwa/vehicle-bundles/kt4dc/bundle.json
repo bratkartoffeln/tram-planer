@@ -1,4 +1,7 @@
 {
   "id": "kt4dc",
-  "extends": "default"
+  "extends": "family-kt4dc",
+  "presentation": {
+    "variant": "Nachbildung · KT4D-C · Referenz Erfurt 522"
+  }
 }

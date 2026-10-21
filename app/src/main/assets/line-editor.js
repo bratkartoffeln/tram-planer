@@ -90,6 +90,19 @@ function renderLineInspector(){
 function refreshLineDraft(){lineDraft.dirty=true;if(lineDraft.stops[0])lineDraft.stops[0].travel=0;renderLineInspector();renderNetworkMap();renderNetworkEditorTools();}
 function moveLineStop(i,delta){const j=i+delta;if(j<0||j>=lineDraft.stops.length)return;checkpointLine();[lineDraft.stops[i],lineDraft.stops[j]]=[lineDraft.stops[j],lineDraft.stops[i]];refreshLineDraft();}
 function reverseLineDraft(){checkpointLine();const times=lineDraft.stops.slice(1).map(s=>s.travel).reverse();lineDraft.stops.reverse().forEach((s,i)=>s.travel=i?times[i-1]:0);refreshLineDraft();}
+// At each stop point towards the next distinct position. The terminus keeps
+// the incoming direction, so selecting the return service also reverses it.
+function networkStopDirections(route,positions){
+ const directions=new Map();if(!route)return directions;
+ route.stops.forEach((name,i)=>{
+  const p=positions[name];if(!p)return;
+  let target,backwards=false;
+  for(let j=i+1;j<route.stops.length;j++){const q=positions[route.stops[j]];if(q&&Math.hypot(q.x-p.x,q.y-p.y)>.01){target=q;break;}}
+  if(!target){backwards=true;for(let j=i-1;j>=0;j--){const q=positions[route.stops[j]];if(q&&Math.hypot(q.x-p.x,q.y-p.y)>.01){target=q;break;}}}
+  directions.set(name,{angle:target?Math.atan2(backwards?p.y-target.y:target.y-p.y,backwards?p.x-target.x:target.x-p.x)*180/Math.PI:null,next:route.stops[i+1]||null});
+ });
+ return directions;
+}
 function renderNetworkMap(){
  const host=document.getElementById('networkMap');if(!host)return;
  host.classList.toggle('is-line-editing',!!lineDraft);
@@ -102,6 +115,9 @@ function renderNetworkMap(){
  const selectedPairs=new Set();if(selected)for(let i=1;i<selected.stops.length;i++)selectedPairs.add(networkPair(selected.stops[i-1],selected.stops[i]));
  const mutedEdge=edge=>!networkEditing&&(lineDraft?true:!!selected&&(edge.line!==selected.line||!selectedPairs.has(networkPair(edge.from,edge.to))));
  const pts=networkPositions();
+ const stopDirections=networkStopDirections(!lineDraft&&!networkEditing?selected:null,pts);
+ const selectedColor=selected&&(state.networkEdits.lineColors[selected.line]||selected.color);
+ const arrowColor=selectedColor&&[1,3,5].map(i=>parseInt(selectedColor.slice(i,i+2),16)/255).reduce((sum,c,i)=>sum+(c<=.04045?c/12.92:((c+.055)/1.055)**2.4)*[.2126,.7152,.0722][i],0)>.179?'#111827':'#ffffff';
  const path=stops=>stops.map(s=>`${s.x},${s.y}`).join(' ');
  const connections=networkConnections().sort((a,b)=>Number(b.inactive)-Number(a.inactive));
  const geometry=networkLinkGeometry(connections,pts);
@@ -110,7 +126,10 @@ function renderNetworkMap(){
   const lane=geometry.get(networkEdgeKey(edge));
   return `<path class="network-link${edge.inactive?' inactive':''}${mutedEdge(edge)?' is-muted':''}" data-from="${esc(edge.from)}" data-to="${esc(edge.to)}" data-line="${esc(edge.line)}" data-edge="${esc(networkEdgeKey(edge))}" data-lane-offset="${lane.offset}" data-service-status="${edge.serviceStatus}" d="${lane.d}" fill="none" stroke="${edge.color}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" opacity="${edge.inactive?'.6':'.95'}" ${edge.dashed?'stroke-dasharray="7 7"':''}><title>Linie ${esc(edge.line)} · ${edge.serviceStatus==='construction'?'Baustelle':edge.serviceStatus==='not-served'?'Nicht bedient':'Regulär'}</title></path>`;
  }).join('')}</g>
- ${Object.entries(pts).map(([n,p],i)=>`<g class="network-node" data-name="${esc(n)}" data-stop="${i}" tabindex="0" role="button" aria-label="${esc(n)} anhängen"><circle cx="${p.x}" cy="${p.y}" r="9" fill="var(--panel)" stroke="var(--muted)" stroke-width="2"/><text class="network-stop-label" x="${p.x+12+(p.dx||0)}" y="${p.y+4+(p.dy||0)}">${esc(p.name||n)}</text><title>${esc(n)}</title></g>`).join('')}
+ ${Object.entries(pts).map(([n,p],i)=>{
+  const direction=stopDirections.get(n),description=direction?`${n} · Linie ${selected.line} · ${direction.next?'weiter nach '+direction.next:'Endhaltestelle'}`:n;
+  return `<g class="network-node${direction?' is-route-stop':''}" data-name="${esc(n)}" data-stop="${i}" tabindex="0" role="button" aria-label="${esc(lineDraft?n+' anhängen':description)}"><circle cx="${p.x}" cy="${p.y}" r="9" fill="${direction?selectedColor:'var(--panel)'}" stroke="${direction?selectedColor:'var(--muted)'}" stroke-width="2"/>${direction?.angle!=null?`<path class="network-stop-direction" d="M -3.5 -5 L 5 0 L -3.5 5 Z" transform="translate(${p.x} ${p.y}) rotate(${direction.angle})" fill="${arrowColor}" pointer-events="none" aria-hidden="true"/>`:''}<text class="network-stop-label" x="${p.x+12+(p.dx||0)}" y="${p.y+4+(p.dy||0)}">${esc(p.name||n)}</text><title>${esc(description)}</title></g>`;
+ }).join('')}
  ${lineDraft&&!networkEditing?`<polyline pointer-events="none" id="draftPolyline" points="${path(lineDraft.stops)}" fill="none" stroke="${lineDraft.color}" stroke-width="6"/>${lineDraft.stops.map((s,i)=>`<g class="draft-node" data-index="${i}"><circle cx="${s.x}" cy="${s.y}" r="13" fill="${lineDraft.color}"/><text x="${s.x}" y="${s.y+4}" text-anchor="middle" fill="white">${i+1}</text><title>${esc(s.name)} · ziehen zum Verschieben</title></g>`).join('')}`:''}</svg>`;
  const svg=host.querySelector('svg');
  const point=e=>{const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());};

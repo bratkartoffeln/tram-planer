@@ -1,4 +1,7 @@
 {
   "id": "combino-classic",
-  "extends": "default"
+  "extends": "family-combino",
+  "presentation": {
+    "variant": "Nachbildung · Combino Classic · Familienvergleich"
+  }
 }

@@ -1,4 +1,7 @@
 {
   "id": "t2-61",
-  "extends": "default"
+  "extends": "family-gotha-crank",
+  "presentation": {
+    "variant": "Nachbildung · T2-61 · Kurbel-Familienvergleich"
+  }
 }

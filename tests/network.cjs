@@ -98,11 +98,27 @@ async function run(){
    assert.equal(await evaluate("document.querySelectorAll('.network-route-button[aria-pressed=true]').length"),1);
    assert.ok(await evaluate("document.querySelectorAll('.network-link.is-muted').length")>0);
    assert.ok(await evaluate("document.querySelectorAll('.network-link:not(.is-muted)').length")>0);
+   const stopMarkers=await evaluate(`(()=>{const service=networkServiceMode==='regular'?ERFURT_NETWORK.routes:ERFURT_NETWORK.serviceRoutes,r=service[networkSelectedRoute],color=state.networkEdits.lineColors[r.line]||r.color,stops=[...document.querySelectorAll('.network-node')];return {expected:new Set(r.stops).size,selected:stops.filter(g=>g.classList.contains('is-route-stop')).length,arrows:document.querySelectorAll('.network-stop-direction').length,correct:stops.every(g=>{const chosen=r.stops.includes(g.dataset.name),c=g.querySelector('circle');return chosen?c.getAttribute('fill')===color&&c.getAttribute('stroke')===color:!g.querySelector('.network-stop-direction')&&c.getAttribute('fill')==='var(--panel)'})}})()`);
+   assert.equal(stopMarkers.selected,stopMarkers.expected);assert.equal(stopMarkers.arrows,stopMarkers.expected);assert.equal(stopMarkers.correct,true);
    await evaluate('document.querySelector(\'[data-route="'+route+'"]\').click()');
    assert.equal(await evaluate('networkSelectedRoute'),null);
    assert.equal(await evaluate("document.querySelectorAll('.network-link.is-muted').length"),0);
+   assert.equal(await evaluate("document.querySelectorAll('.network-stop-direction,.network-node.is-route-stop').length"),0);
   }
  }
+ // A shared straight section points in opposite directions on the return trip.
+ await evaluate("setNetworkServiceMode('regular');toggleNetworkRoute('EF2H')");
+ const outbound=await evaluate("[...document.querySelectorAll('.network-node')].find(g=>g.dataset.name==='Anger').querySelector('.network-stop-direction').getAttribute('transform')");
+ await evaluate("toggleNetworkRoute('EF2R')");
+ const inbound=await evaluate("[...document.querySelectorAll('.network-node')].find(g=>g.dataset.name==='Anger').querySelector('.network-stop-direction').getAttribute('transform')");
+ assert.notEqual(outbound,inbound);
+ await evaluate("state.networkEdits.lineColors['2']='#ffff00';renderNetworkMap()");
+ assert.equal(await evaluate("[...document.querySelectorAll('.network-node.is-route-stop circle')].every(c=>c.getAttribute('fill')==='#ffff00'&&c.getAttribute('stroke')==='#ffff00')"),true);
+ assert.equal(await evaluate("document.querySelector('.network-stop-direction').getAttribute('fill')"),'#111827');
+ await cdp('Page.captureScreenshot',{format:'png',captureBeyondViewport:true}).then(r=>fs.writeFileSync(path.join(output,'selected-direction.png'),Buffer.from(r.data,'base64')));
+ await evaluate("openLineEditor('EF2R')");
+ assert.equal(await evaluate("document.querySelectorAll('.network-stop-direction,.network-node.is-route-stop').length"),0);
+ await evaluate("lineDraft=null;networkSelectedRoute=null;delete state.networkEdits.lineColors['2'];showView('network')");
 
  await evaluate("zoomNetwork('fit')");assert.equal(await evaluate("Math.abs(document.getElementById('lineMapSvg').getBoundingClientRect().width-document.getElementById('networkMap').clientWidth)<1"),true);
  await evaluate("window.AndroidBackup={save:json=>window.testBackup=json};exportData();state.customRoutes={};syncCustomRoutes();importData({target:{files:[new File([window.testBackup],'backup.json',{type:'application/json'})]}})");await delay(150);
@@ -118,7 +134,7 @@ async function run(){
  // Confirm service worker caches the new modules for an offline restart.
  await evaluate("navigator.serviceWorker.ready.then(()=>true)");
  await delay(1200);
- assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.7-cab-bundles').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
+ assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.8-lever-poses').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
  await cdp('Network.enable');await cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
  await cdp('Page.reload');await delay(600);assert.equal(await evaluate('Object.keys(ROUTES).length'),26);
  await evaluate("showView('network')");assert.equal(await evaluate('!!document.getElementById("lineMapSvg")'),true);

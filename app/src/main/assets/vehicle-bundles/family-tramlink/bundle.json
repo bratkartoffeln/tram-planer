@@ -1,0 +1,181 @@
+{
+  "id": "family-tramlink",
+  "extends": "default",
+  "cab": {
+    "image": "vehicle-bundles/family-tramlink/panel-front.webp",
+    "skin": "panel",
+    "width": 1536,
+    "height": 1024,
+    "buttons": {
+      "next": {
+        "x": 241.5,
+        "y": 309,
+        "size": 250,
+        "capWidth": 174,
+        "capHeight": 174,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "back": {
+        "x": 588,
+        "y": 309.5,
+        "size": 250,
+        "capWidth": 174,
+        "capHeight": 174,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "doors": {
+        "x": 935,
+        "y": 311,
+        "size": 250,
+        "capWidth": 174,
+        "capHeight": 174,
+        "shape": "round",
+        "ink": "#10251d"
+      },
+      "passenger": {
+        "x": 241,
+        "y": 720.5,
+        "size": 250,
+        "capWidth": 174,
+        "capHeight": 174,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "fullscreen": {
+        "x": 587,
+        "y": 721,
+        "size": 250,
+        "capWidth": 174,
+        "capHeight": 174,
+        "shape": "round",
+        "ink": "#18212a"
+      },
+      "traffic": {
+        "x": 934.5,
+        "y": 722.5,
+        "size": 250,
+        "capWidth": 174,
+        "capHeight": 174,
+        "shape": "round",
+        "ink": "#3c280c"
+      },
+      "finish": {
+        "x": 1286.5,
+        "y": 721.5,
+        "size": 250,
+        "capWidth": 174,
+        "capHeight": 174,
+        "shape": "round",
+        "ink": "#fff3df"
+      },
+      "emergency": {
+        "x": 1325,
+        "y": 290,
+        "size": 320,
+        "capWidth": 258,
+        "capHeight": 256,
+        "shape": "round",
+        "ink": "#fff3df"
+      }
+    },
+    "indicators": {
+      "closed": {
+        "x": 690,
+        "y": 515,
+        "size": 110,
+        "capWidth": 70,
+        "capHeight": 70,
+        "shape": "round"
+      },
+      "open": {
+        "x": 843,
+        "y": 515,
+        "size": 110,
+        "capWidth": 70,
+        "capHeight": 70,
+        "shape": "round"
+      }
+    },
+    "headings": [],
+    "spares": [],
+    "screws": [
+      [
+        70,
+        70,
+        "oben links"
+      ],
+      [
+        1470,
+        70,
+        "oben rechts"
+      ],
+      [
+        70,
+        946,
+        "unten links"
+      ],
+      [
+        1470,
+        946,
+        "unten rechts"
+      ]
+    ],
+    "rotaries": [],
+    "colors": {
+      "console": "#222a30",
+      "panel": "#222a30",
+      "text": "#eef1f3"
+    },
+    "screwCap": 62,
+    "emergencySprites": {
+      "mask": [
+        1100,
+        540,
+        50,
+        50
+      ],
+      "ring": [
+        1302,
+        307,
+        340,
+        340
+      ],
+      "travel": [
+        -20,
+        15
+      ]
+    },
+    "accessories": [],
+    "labelColor": "#fff8df"
+  },
+  "presentation": {
+    "title": "Tramlink · physisches Tastenpanel",
+    "variant": "Nachbildung · Erfurt / Vergleich Traunsee",
+    "description": "Frontale Nachbildung der burgunderroten physischen Tastenleiste eines Tramlink der Traunseetram mit metallischen Rundtasterringen. Auswahl und Anordnung sind für die Simulation angepasst. Baureihenvergleich, keine exakte Erfurter Kabine.",
+    "references": [
+      {
+        "title": "EVAG · Erfurter Tramlink",
+        "url": "https://www.evag-erfurt.de/evag/tramlink"
+      },
+      {
+        "title": "Erfurt · Fahrschalter-Detail",
+        "url": "https://www.rynek-kolejowy.pl/wiadomosci/erfurt-nowy-tramlink-zaprezentowany-146884.html"
+      },
+      {
+        "title": "Tramlink Traunseetram · Simon Legner, CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Vossloh_Tramlink_F%C3%BChrerstand.jpg"
+      },
+      {
+        "title": "CC BY-SA 4.0 · Lizenz der bearbeiteten Vergleichsvorlage",
+        "url": "https://creativecommons.org/licenses/by-sa/4.0/"
+      }
+    ],
+    "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe."
+  },
+  "credits": [
+    "KI-Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026. Nachbildung · Erfurt / Vergleich Traunsee. Frontales Schalterpanel aus der Referenz abgeleitet; Tastenanzahl und Anordnung an die Simulation angepasst. Bildkappen und vier fotografierte Schrauben werden animiert. Instrumente sind Bildkulisse.",
+    "Grafik panel-front.webp: Bearbeitung nach Simon Legner, CC BY-SA 4.0. Originalfoto, Lizenz und Änderungen siehe Referenzlinks."
+  ]
+}
