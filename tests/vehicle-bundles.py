@@ -71,4 +71,30 @@ with tempfile.TemporaryDirectory(prefix='bundle-validation-', dir=project / 'bui
     rejected({'id': 'tramlink', 'extends': 'family-tramlink', 'presentation': {'references': [{'title': 'Unsafe', 'url': 'javascript:alert(1)'}]}})
     rejected({'id': 'tramlink', 'extends': 'family-tramlink', 'presentation': {'unknown': True}})
     rejected({'id': 'wrong-id', 'extends': 'default'})
+    rejected({'id': 'tramlink', 'cab': {'layout': {'icon-next': {'iconSize': 201}}}})
+    rejected({'id': 'tramlink', 'cab': {'layout': {'label-next': {'iconSize': 40}}}})
+    rejected({'id': 'tramlink', 'cab': {'layout': {'label-next': {'background': 'url(evil)'}}}})
+    rejected({'id': 'tramlink', 'cab': {'layout': {'control-rotary-0': {'action': 'eval'}}}})
+    rejected({'id': 'tramlink', 'cab': {'layout': {'control-spare-99': {'action': 'next'}}}})
+    rejected({'id': 'tramlink', 'extends': 'family-gotha-crank', 'cab': {'layout': {'control-reserve-0': {'actions': {'2': 'next'}}}}})
+    rejected({'id': 'tramlink', 'extends': 'family-gotha-crank', 'cab': {'leverSprites': {'on': {'flipX': 'yes'}}}})
+    rejected({'id': 'tramlink', 'extends': 'family-tramlink', 'cab': {'rotarySprites': {'image': '../outside.webp'}}})
+    rejected({'id': 'tramlink', 'cab': {'buttons': {'doors': {'press': [0, 20, 1]}}}})
+    rejected({'id': 'tramlink', 'extends': 'family-gotha-crank', 'cab': {'layout': {'control-reserve-0': {'sound': 'https://example.org/audio.mp3'}}}})
+    rejected({'id': 'tramlink', 'extends': 'family-gotha-crank', 'cab': {'layout': {'control-reserve-0': {'sounds': {'2': 'effect:traffic'}}}}})
+    rejected({'id': 'tramlink', 'cab': {'layout': {'actuation-next': {'press': 'effect:traffic'}}}})
+    rejected({'id': 'tramlink', 'cab': {'layout': {'actuation-next': {'mode': 'invalid'}}}})
+    rejected({'id': 'tramlink', 'cab': {'layout': {'actuation-spare-999': {'press': 'mechanical:down'}}}})
+    rejected({'id': 'tramlink', 'cab': {'layout': {'label-next': {'hidden': True}}}})
+    layout = {'control-reserve-0': {'text': 'Fahrtrichtung', 'icon': 'next', 'actions': {'0': 'back', '1': 'next'}, 'sounds': {'0': 'none', '1': 'effect:traffic'}},
+              'icon-reserve-0': {'x': 790, 'y': 540, 'iconSize': 80, 'color': '#ffffff'},
+              'label-reserve-0': {'text': 'Anzeige', 'background': 'transparent', 'fontFamily': 'Georgia', 'fontSize': 18, 'bold': True, 'italic': True, 'underline': True},
+              'actuation-emergency': {'press': 'mechanical:latch', 'release': 'none', 'mode': 'latching'},
+              'heading-free-1': {'text': 'Pulttext', 'x': 300, 'y': 150, 'hidden': False},
+              'heading-0': {'hidden': True}}
+    write({'id': 'tramlink', 'extends': 'family-gotha-crank', 'cab': {'layout': layout}})
+    compile_bundles(assets, type_ids)
+    compiled = json.loads((assets / 'vehicle-bundles-data.js').read_text(encoding='utf-8').split('Object.freeze(', 1)[1].rsplit(');', 1)[0])
+    assert compiled['tramlink']['cab']['layout'] == layout
+    assert compiled['tramlink']['cab']['leverSprites']['on']['flipX'] is True
 print('Bundle validation checks passed.')

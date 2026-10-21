@@ -61,3 +61,11 @@ Das fotorealistische Pult ersetzt die vorherige vollständig in CSS gezeichnete 
 - Originaldatei: 3008 × 1880 Pixel, SHA-1 `c273a0903b09d5ea2c52de4f36d0c75aaf4d7456`.
 
 Die unveränderte JPEG-Datei steht unter CC BY-SA 3.0. In älteren Fassungen wurde sie per CSS zugeschnitten und abgedunkelt mit Bedienelementen überlagert. Quellen und Lizenz stehen außerdem in `images/credits.json`. Das Foto zeigt eine Dresdner Straßenbahn.
+## Tramlink: mittleres Instrumentenpanel in Version 6.2.10
+
+Die aktuelle Tramlink-Grafik ersetzt die Nachbildung aus 6.2.8. Vorlage ist das vom Nutzer bereitgestellte Foto; nur das mittlere schwarze Instrumentenpult wurde mit dem integrierten Imagegen-Tool frontal nachgebildet. Sitz, Fenster, linke Fahrsteuerung und rechtes seitliches Terminal sind nicht Teil dieses Panels. Die Darstellung ist eine an die Simulation angepasste Nachbildung und keine belegte genaue Erfurter Werksausführung.
+
+- Frontplatte: `app/src/main/assets/vehicle-bundles/family-tramlink/panel-front.webp`, 1672 × 941 Pixel.
+- Fotografische Drehgriffquelle: `app/src/main/assets/vehicle-bundles/family-tramlink/rotary-source.webp`; die Frontplatte enthält nur deren feste Einfassungen, damit beim Drehen kein zweiter Griff stehen bleibt.
+- Vollständige Generierungs- und Bearbeitungsprompts: [artwork/cab-tramlink-6.2.10-prompts.json](artwork/cab-tramlink-6.2.10-prompts.json).
+- Alle physischen Taster und Drehschalter sowie vier Eckschrauben sind bedienbar. Tachometer und Display bleiben Bildkulisse. Beschriftungen und Symbole liegen separat auf dem Panel; Sounds verwenden weiterhin den gekennzeichneten Standard-Fallback.

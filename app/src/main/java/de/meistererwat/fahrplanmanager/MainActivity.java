@@ -471,15 +471,25 @@ public class MainActivity extends Activity {
     public final class BackupBridge {
         @JavascriptInterface
         public void save(String json) {
-            saveDocument(json, false);
+            saveDocument(json, "backup");
         }
 
         @JavascriptInterface
         public void saveNetworkPlan(String json) {
-            saveDocument(json, true);
+            saveDocument(json, "network");
         }
 
-        private void saveDocument(String json, boolean networkPlan) {
+        @JavascriptInterface
+        public void saveCabLayout(String json) {
+            saveDocument(json, "cab");
+        }
+
+        @JavascriptInterface
+        public void saveCabLayouts(String json) {
+            saveDocument(json, "cabs");
+        }
+
+        private void saveDocument(String json, String documentType) {
             mainHandler.post(() -> {
                 if (!resumed || !isTrustedPage()) return;
                 if (pendingBackup != null || fileCallback != null) {
@@ -491,18 +501,41 @@ public class MainActivity extends Activity {
                     byte[] data = json.getBytes(StandardCharsets.UTF_8);
                     if (data.length > MAX_BACKUP_BYTES) throw new IllegalArgumentException();
                     JSONObject backup = new JSONObject(json);
+                    boolean networkPlan = "network".equals(documentType);
+                    boolean cabLayout = "cab".equals(documentType);
+                    boolean cabLayouts = "cabs".equals(documentType);
                     if (networkPlan) {
                         if (!"fahrplan-manager-network-plan".equals(backup.optString("format"))
                                 || backup.optInt("schemaVersion") != 1
                                 || !"erfurt".equals(backup.optString("network"))
                                 || backup.optJSONObject("edits") == null) throw new IllegalArgumentException();
+                    } else if (cabLayouts) {
+                        org.json.JSONArray layouts = backup.optJSONArray("layouts");
+                        if (!"fahrplan-manager-cab-layouts".equals(backup.optString("format"))
+                                || backup.optInt("schemaVersion") != 1 || layouts == null
+                                || layouts.length() < 1 || layouts.length() > 2100) throw new IllegalArgumentException();
+                        for (int i = 0; i < layouts.length(); i++) {
+                            JSONObject layout = layouts.getJSONObject(i);
+                            JSONObject cab = layout.optJSONObject("cab");
+                            if (!"fahrplan-manager-cab-layout".equals(layout.optString("format"))
+                                    || layout.optInt("schemaVersion") != 1 || cab == null
+                                    || cab.optJSONObject("layout") == null
+                                    || !layout.optString("targetBundle").matches("[a-z0-9-]{1,80}")) throw new IllegalArgumentException();
+                        }
+                    } else if (cabLayout) {
+                        JSONObject cab = backup.optJSONObject("cab");
+                        if (!"fahrplan-manager-cab-layout".equals(backup.optString("format"))
+                                || backup.optInt("schemaVersion") != 1 || cab == null
+                                || cab.optJSONObject("layout") == null
+                                || !backup.optString("targetBundle").matches("[a-z0-9-]{1,80}")) throw new IllegalArgumentException();
                     } else if (backup.optJSONArray("plans") == null || backup.optJSONArray("history") == null
                             || backup.optJSONObject("settings") == null) throw new IllegalArgumentException();
                     pendingBackup = data;
+                    String cabName = backup.optString("vehicleId", backup.optString("vehicleType", backup.optString("targetBundle"))).replaceAll("[^a-zA-Z0-9-]", "");
                     Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT)
                             .addCategory(Intent.CATEGORY_OPENABLE)
                             .setType("application/json")
-                            .putExtra(Intent.EXTRA_TITLE, networkPlan ? "network-plan.json" : "FahrplanManager-Backup-"
+                            .putExtra(Intent.EXTRA_TITLE, cabLayouts ? "cab-layouts-alle.json" : cabLayout ? "cab-layout-" + cabName + ".json" : networkPlan ? "network-plan.json" : "FahrplanManager-Backup-"
                                     + new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).format(new Date()) + ".json");
                     startActivityForResult(intent, CREATE_BACKUP);
                 } catch (ActivityNotFoundException exception) {

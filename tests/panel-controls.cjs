@@ -36,7 +36,8 @@ const root=path.resolve(__dirname,process.env.FAHRPLAN_ASSET_ROOT||'../app/src/m
    if(count){await b.delay(200);await b.screenshot(type+'-switches-on.png');await b.evaluate('showView("driver")');assert.equal(await b.evaluate('[...document.querySelectorAll(".cab-accessory")].every(b=>b.getAttribute("aria-pressed")==="true")'),true);}
    if(['g4-65','t57e'].includes(type)){
     const levers=await b.evaluate(`([...document.querySelectorAll('.cab-accessory-lever')].map(button=>{const off=button.querySelector('.cab-lever-off'),on=button.querySelector('.cab-lever-on'),a=off.getBoundingClientRect(),b=on.getBoundingClientRect();return {off:getComputedStyle(off).opacity,on:getComputedStyle(on).opacity,transforms:[getComputedStyle(off).transform,getComputedStyle(on).transform],distance:Math.hypot(b.x-a.x,b.y-a.y)}}))`);
-    assert(levers.every(lever=>lever.off==='0'&&lever.on==='1'&&lever.transforms.every(value=>value==='none')&&lever.distance>10),type+' levers change position without rotating');
+    assert(levers.every(lever=>lever.off==='0'&&lever.on==='1'&&lever.transforms.every(value=>value==='none'||value==='matrix(-1, 0, 0, 1, 0, 0)')&&lever.distance>10),type+' levers change position without rotating');
+    if(type==='t57e')assert.equal(await b.evaluate('getVehicleBundle().cab.accessories[0].onSprite[0]'),791,'shared Gotha crank lever points northeast');
    }
    assert.equal(await b.evaluate('JSON.stringify(state.active)'),snapshot);
   }

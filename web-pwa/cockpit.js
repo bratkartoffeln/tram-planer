@@ -19,27 +19,66 @@ function cabLabel(label,x,y,width,height=width,pad){
  const style=pad?` style="left:${(pad.x-x+width/2)/width*100}%;top:${(pad.y-y+height/2)/height*100}%;width:${pad.width/width*100}%;color:${pad.ink}"`:'';
  return `<span class="cab-label${pad?' cab-label-pad':''}"${style}>${esc(label)}</span>`;
 }
-function cabButton({id='',color,label,icon,action,disabled=false,pressed,emergency=false,x,y,size=emergency?200:140,capWidth=emergency?148:96,capHeight=capWidth,shape='round',ink='#eef1f3',labelPad},panel=cabPanel()){
+function cabButton({id='',color,label,icon,action,disabled=false,pressed,emergency=false,x,y,size=emergency?200:140,capWidth=emergency?148:96,capHeight=capWidth,shape='round',ink='#eef1f3',labelPad,press},panel=cabPanel()){
  const crop=`--cap-inset:${(size-capWidth)/size*50}%;--cap-inset-y:${(size-capHeight)/size*50}%;--cap-size-x:${panel.width/capWidth*100}%;--cap-size-y:${panel.height/capHeight*100}%;--cap-x:${(x-capWidth/2)/(panel.width-capWidth)*100}%;--cap-y:${(y-capHeight/2)/(panel.height-capHeight)*100}%;--cap-radius:${shape==='rect'?'5%':'50%'};--cap-ink:${ink}`;
+ const precision=press?`;${cabPressStyle(press,capWidth,capHeight)}`:'';
  const emergencyCrop=emergency?';'+(panel.emergencySprites?cabEmergencyPhotoLayers(panel):cabPhotoCrop('emergency-mask',x-20,y-140,220,100,panel)+';'+cabPhotoCrop('emergency-ring',x-15,y+10,230,220,panel)):'';
  const previewAction=action?.match(/^previewVehicleCabAction\('([a-z]+)'\)$/)?.[1];
  const offset=CAB_ICON_OFFSETS[icon],adjustment=offset?` transform="translate(${offset.join(' ')})"`:'';
- return `<button ${previewAction?`data-preview-action="${previewAction}"`:""} ${id?`id="${id}"`:''} ${emergency?'aria-label="Notfall"':''} ${id==='cabFullscreenBtn'?`title="${cabFullscreen?'Vollbild beenden':'Vollbild einschalten'}"`:''} class="cab-button cab-${color}${emergency?' cab-emergency':''}" style="${cabPosition(x,y,size,panel)};${crop}${emergencyCrop}" onclick="${action}" ${disabled?'disabled':''} ${pressed===undefined?'':`aria-pressed="${pressed}"`}><span class="cab-bezel">${emergency?'<span class="cab-emergency-mask"></span><span class="cab-emergency-base"></span><span class="cab-emergency-stem"></span><span class="cab-emergency-ring"></span>':'<span class="cab-cap-socket"></span>'}<span class="cab-face"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="${CAB_ICONS[icon]}"${adjustment}/></svg></span></span>${cabLabel(label,x,y,size,size,labelPad)}</button>`;
+ return `<button ${previewAction?`data-preview-action="${previewAction}"`:""} ${id?`id="${id}"`:''} ${emergency?'aria-label="Notfall"':''} ${id==='cabFullscreenBtn'?`title="${cabFullscreen?'Vollbild beenden':'Vollbild einschalten'}"`:''} data-cab-control="${emergency?'emergency':id==='doorBtn'?'doors':icon}" class="cab-button cab-${color}${press?' cab-precision-press':''}${emergency?' cab-emergency':''}" style="${cabPosition(x,y,size,panel)};${crop}${precision}${emergencyCrop}" onclick="${action}" ${disabled?'disabled':''} ${pressed===undefined?'':`aria-pressed="${pressed}"`}><span class="cab-bezel">${emergency?'<span class="cab-emergency-mask"></span><span class="cab-emergency-base"></span><span class="cab-emergency-stem"></span><span class="cab-emergency-ring"></span>':'<span class="cab-cap-socket"></span>'}<span class="cab-face"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="${CAB_ICONS[icon]}"${adjustment}/></svg></span></span>${cabLabel(label,x,y,size,size,labelPad)}</button>`;
 }
-function cabPlaceholder(x,y,panel=cabPanel()){
- return `<span class="cab-placeholder cab-reserve" style="${cabPosition(x,y,140,panel)}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"></span></span></span>`;
+function cabPressStyle(press,w,h){return `--press-x:${press[0]/w*100}%;--press-y:${press[1]/h*100}%;--press-scale:${press[2]}`;}
+function cabPlaceholder(x,y,panel=cabPanel(),index=0){
+ const key='spare-'+index;
+ return `<button type="button" class="cab-spare cab-reserve" data-cab-reserve="${key}" style="${cabPosition(x,y,140,panel)};${cabPhotoCrop('spare',x,y,96,96,panel)}" aria-label="Reserve-Taster ${index+1}" onclick="pressCabSpare(this)"><span class="cab-spare-socket"></span><span class="cab-spare-cap">${cabReserveIcon(key,panel)}</span>${cabReserveOverlay(key,panel,'',false)}</button>`;
+}
+function cabReserveIcon(key,panel){const binding=panel.layout?.['control-'+key]||{};return `<svg class="cab-reserve-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="${CAB_ICONS[binding.icon]||''}"/></svg>`;}
+function cabReserveOverlay(key,panel,label='',icon=true){
+ const binding=panel.layout?.['control-'+key]||{};
+ return `${icon?cabReserveIcon(key,panel):''}${label||`<span class="cab-label">${esc(binding.text||'')}</span>`}`;
+}
+function pressCabSpare(button){
+ if(cabLayoutAllowed())return;
+ activateCabReserve(button.dataset.cabReserve,button.closest('.cab-stage'));
+}
+function cabReserveBinding(key,stage){
+ const panel=(vehicleBundlePreview||getVehicleBundle()).cab;
+ const layout=cabLayoutMerge(panel.layout,cabLayoutEditor?.stage===stage?cabLayoutEditor.draft:cabLayoutSaved(panel));
+ return layout?.['control-'+key]||{};
+}
+function cabReserveSoundSelection(key,stage,position=0){const binding=cabReserveBinding(key,stage);return binding.sounds?.[position]??binding.sound??'';}
+function playCabReserveSound(sound,bundle){
+ if(!sound||sound==='none'||!Object.hasOwn(CAB_LAYOUT_SOUNDS,sound))return;
+ const [category,id]=sound.split(':');
+ if(category==='effect')void playCabMechanicalAsset(bundle.sounds.effects[id],'down');
+ else playCabMechanical(id,bundle);
+}
+function playCabActuation(button,phase,standard,allowDefault=true){
+ if(cabLayoutAllowed())return;const bundle=vehicleBundlePreview||getVehicleBundle(),key=cabControlKey(button),stage=button.closest('.cab-stage');
+ const layout=cabLayoutMerge(bundle.cab.layout,cabLayoutEditor?.stage===stage?cabLayoutEditor.draft:cabLayoutSaved(bundle.cab));
+ const tone=layout['actuation-'+key]?.[phase]||'';
+ if(tone)playCabReserveSound(tone,bundle);else if(allowDefault)playCabMechanical(standard,bundle);
+}
+function activateCabReserve(key,stage,position=0){
+ if(cabLayoutAllowed()||!stage||(!vehicleBundlePreview&&(currentView!=='driver'||!state.active)))return;
+ const bundle=vehicleBundlePreview||getVehicleBundle(),binding=cabReserveBinding(key,stage),action=binding.actions?.[position]??binding.action;
+ const target=action&&Object.hasOwn(CAB_LAYOUT_ACTIONS,action)?stage.querySelector('.cab-button[data-cab-control="'+action+'"]'):null;
+ if(target?.disabled)return;
+ target?.click();
+ playCabReserveSound(binding.sounds?.[position]??binding.sound,bundle);
 }
 function cabPhotoCrop(prefix,x,y,width,height=width,panel=cabPanel()){
  return `--${prefix}-size:${panel.width/width*100}% ${panel.height/height*100}%;--${prefix}-position:${(x-width/2)/(panel.width-width)*100}% ${(y-height/2)/(panel.height-height)*100}%`;
 }
 function cabEmergencyPhotoLayers(panel){
- const button=panel.buttons.emergency,{mask,ring,travel,base=ring}=panel.emergencySprites;
+ const button=panel.buttons.emergency,{mask,ring,travel,base=ring,color}=panel.emergencySprites;
  const {x,y,size,capWidth,capHeight}=button;
  const box=(prefix,cx,cy,w,h)=>`--${prefix}-left:${(cx-w/2-x+size/2)/size*100}%;--${prefix}-top:${(cy-h/2-y+size/2)/size*100}%;--${prefix}-width:${w/size*100}%;--${prefix}-height:${h/size*100}%`;
  return [cabPhotoCrop('emergency-mask',...mask,panel),cabPhotoCrop('emergency-ring',...ring,panel),
   box('emergency-mask',x,y,capWidth+16,capHeight+16),box('emergency-ring',...ring),box('emergency-base',...base),box('emergency-stem',x+travel[0]*.6,y+travel[1]*.6,capWidth*.80,capHeight*.80),
   `--emergency-base-display:block;--emergency-mask-image:${button.kind==='push'?'none':'var(--cab-image)'};--emergency-mask-fill:${button.kind==='push'?'#27221c':'transparent'}`,
-  `--emergency-socket:${button.kind==='push'?'radial-gradient(circle at 40% 30%,#383029,#211c18 75%,#100e0c)':'linear-gradient(125deg,#ffe354,#efcb11 48%,#c69e06)'}`,
+  `--emergency-socket:${color?`radial-gradient(circle at 40% 30%,#282c2e,${color} 75%,#050607)`:button.kind==='push'?'radial-gradient(circle at 40% 30%,#383029,#211c18 75%,#100e0c)':'linear-gradient(125deg,#ffe354,#efcb11 48%,#c69e06)'}`,
+  ...(color?[`--emergency-mask-fill:${color}`]:[]),
   `--emergency-cut-x:${(x-ring[0]+ring[2]/2)/ring[2]*100}%;--emergency-cut-y:${(y-ring[1]+ring[3]/2)/ring[3]*100}%;--emergency-cut-w:${capWidth/2/ring[2]*100}%;--emergency-cut-h:${capHeight/2/ring[3]*100}%;--emergency-travel-x:${travel[0]/capWidth*100}%;--emergency-travel-y:${travel[1]/capHeight*100}%`].join(';');
 }
 function renderCabAccessory(control,index,panel,preview=false){
@@ -50,32 +89,38 @@ function renderCabAccessory(control,index,panel,preview=false){
  const x=(left+right)/2,y=(top+bottom)/2,w=right-left,h=bottom-top;
  const states=preview?vehiclePreviewAccessoryStates:cabAccessoryStates,key=(preview?vehicleBundlePreview.id:getVehicleBundle().id)+':'+index;
  const active=!!states.get(key),crop=kind==='button'?cabPhotoCrop('accessory',...sprite,panel):'';
- const style=`left:${x/panel.width*100}%;top:${y/panel.height*100}%;width:${w/panel.width*100}%;height:${h/panel.height*100}%;${crop}`;
+ const style=`left:${x/panel.width*100}%;top:${y/panel.height*100}%;width:${w/panel.width*100}%;height:${h/panel.height*100}%;${crop};${control.press?cabPressStyle(control.press,w,h):''}`;
  const caps=kind==='lever'?poses.map(([cx,cy,pw,ph],pose)=>{
   const asset=panel.leverSprites[pose?'on':'off'];
-  return `<span class="cab-accessory-cap cab-lever-${pose?'on':'off'}" style="left:${(cx-pw/2-left)/w*100}%;top:${(cy-ph/2-top)/h*100}%;width:${pw/w*100}%;height:${ph/h*100}%;background-image:url('${esc(asset.image)}');${cabPhotoCrop('accessory',...asset.crop,asset)}"></span>`;
+  return `<span class="cab-accessory-cap cab-lever-${pose?'on':'off'}" style="left:${(cx-pw/2-left)/w*100}%;top:${(cy-ph/2-top)/h*100}%;width:${pw/w*100}%;height:${ph/h*100}%;${asset.flipX?'transform:scaleX(-1);':''}background-image:url('${esc(asset.image)}');${cabPhotoCrop('accessory',...asset.crop,asset)}"></span>`;
  }).join(''):'<span class="cab-accessory-cap"></span>';
- return `<button type="button" id="cabAccessory${index}" class="cab-accessory cab-accessory-${kind} cab-accessory-${control.profile||'toggle'}${active?' is-on':''}" data-accessory-index="${index}" style="${style}" aria-pressed="${active}" aria-label="${esc(label)} · Reserve" title="${esc(label)} · Reserve, ohne Fahrfunktion" onclick="toggleCabAccessory(${index})">${caps}${control.labelPad?cabLabel(label,x,y,w,h,control.labelPad):''}</button>`;
+ return `<button type="button" id="cabAccessory${index}" class="cab-accessory cab-accessory-${kind} cab-accessory-${control.profile||'toggle'}${active?' is-on':''}" data-accessory-index="${index}" data-cab-reserve="reserve-${index}" style="${style}" aria-pressed="${active}" aria-label="${esc(label)} · Reserve" title="${esc(label)} · Reserve" onclick="toggleCabAccessory(${index})">${caps}${cabReserveOverlay('reserve-'+index,panel,control.labelPad?cabLabel(label,x,y,w,h,control.labelPad):'')}</button>`;
 }
 function toggleCabAccessory(index){
+ if(cabLayoutAllowed())return;
  if(!vehicleBundlePreview&&(currentView!=='driver'||!state.active))return;
  const bundle=vehicleBundlePreview||getVehicleBundle(),control=bundle.cab.accessories?.[index];
  const button=document.getElementById('cabAccessory'+index);if(!control||!button)return;
- const states=vehicleBundlePreview?vehiclePreviewAccessoryStates:cabAccessoryStates,key=bundle.id+':'+index,on=!states.get(key);
+ const states=vehicleBundlePreview?vehiclePreviewAccessoryStates:cabAccessoryStates,key=bundle.id+':'+index,on=button.dataset.cabMode?cabModeIsOn(button):!states.get(key);
  states.set(key,on);button.classList.toggle('is-on',on);button.setAttribute('aria-pressed',String(on));
- playCabMechanical(control.kind==='lever'?'rotary':on?'down':'up',vehicleBundlePreview);
+ const position=control.kind==='lever'&&on?1:0;
+ playCabActuation(button,on?'press':'release',control.kind==='lever'?'rotary':on?'down':'up',!cabReserveSoundSelection('reserve-'+index,button.closest('.cab-stage'),position));
+ activateCabReserve('reserve-'+index,button.closest('.cab-stage'),position);
 }
 function cabRotaryLabel(index,turns=cabRotaryTurns){return `Reserve-Drehschalter ${index===0?'Scheibe':'Betrieb'}, Stellung ${turns[index]%4*90}°`;}
 function renderCabRotary(index,x,y,panel=cabPanel(),preview=false){
  const turns=preview?vehiclePreviewRotaryTurns:cabRotaryTurns;
- const crop=Object.entries(panel.rotarySprites).map(([name,rect])=>cabPhotoCrop('rotary-'+name,...rect,panel)).join(';');
- return `<button type="button" id="cabRotary${index}" class="cab-rotary cab-reserve" style="${cabPosition(x,y,180,panel)};${crop};--rotary-angle:${turns[index]*90}deg" aria-label="${cabRotaryLabel(index,turns)}" title="Reserve: pro Klick 90° im Uhrzeigersinn" onclick="turnCabRotary(${index})"><span class="cab-rotary-mask"></span><span class="cab-rotary-ring"><span class="cab-rotary-disc"></span></span><span class="cab-rotary-turn"><span class="cab-rotary-grip"></span></span></button>`;
+ const isolated=!!panel.rotarySprites.image,size=isolated?140:180,grip=panel.rotarySprites.grip,ring=panel.rotarySprites.ring;
+ const crop=['mask','ring','grip'].map(name=>cabPhotoCrop('rotary-'+name,...panel.rotarySprites[name],panel)).join(';')+(isolated?`;--rotary-grip-image:url('${esc(panel.rotarySprites.image)}');--grip-left:${(grip[0]-grip[2]/2-ring[0]+size/2)/size*100}%;--grip-top:${(grip[1]-grip[3]/2-ring[1]+size/2)/size*100}%;--grip-width:${grip[2]/size*100}%;--grip-height:${grip[3]/size*100}%`:'');
+ return `<button type="button" id="cabRotary${index}" class="cab-rotary cab-reserve${isolated?' cab-rotary-isolated':''}" data-cab-reserve="rotary-${index}" style="${cabPosition(x,y,size,panel)};${crop};--rotary-angle:${turns[index]*90}deg" aria-label="${cabRotaryLabel(index,turns)}" title="Reserve: pro Klick 90° im Uhrzeigersinn" onclick="turnCabRotary(${index})"><span class="cab-rotary-mask"></span><span class="cab-rotary-ring"><span class="cab-rotary-disc"></span></span><span class="cab-rotary-turn"><span class="cab-rotary-grip"></span></span>${cabReserveOverlay('rotary-'+index,panel)}</button>`;
 }
 function turnCabRotary(index){
+ if(cabLayoutAllowed())return;
  if((!vehicleBundlePreview&&(currentView!=='driver'||!state.active))||!Number.isInteger(index)||index<0||index>=cabRotaryTurns.length)return;
  const knob=document.getElementById('cabRotary'+index);if(!knob)return;
  const turns=vehicleBundlePreview?vehiclePreviewRotaryTurns:cabRotaryTurns;
- turns[index]++;knob.style.setProperty('--rotary-angle',turns[index]*90+'deg');knob.setAttribute('aria-label',cabRotaryLabel(index,turns));playCabMechanical('rotary',vehicleBundlePreview);
+ turns[index]=knob.dataset.cabMode==='latching'?(cabModeIsOn(knob)?1:0):turns[index]+1;knob.style.setProperty('--rotary-angle',turns[index]*90+'deg');knob.setAttribute('aria-label',cabRotaryLabel(index,turns));playCabActuation(knob,'press','rotary',!cabReserveSoundSelection('rotary-'+index,knob.closest('.cab-stage'),turns[index]%4));
+ activateCabReserve('rotary-'+index,knob.closest('.cab-stage'),turns[index]%4);
 }
 function cabDoorIndicator(x,y,color,label,active,icon,blinking=false,panel=cabPanel(),dimensions={}){
  const {size=140,capWidth=96,capHeight=capWidth,shape='round',labelPad}=dimensions;
@@ -88,6 +133,7 @@ function renderCabScrew(index,x,y,label,panel=cabPanel(),preview=false){
  return `<button type="button" id="cabScrew${index}" class="cab-screw${missing?' is-missing':''}" style="${cabPosition(x,y,cap/.75,panel)};${crop}" data-screw-label="${label}" aria-label="${missing?'Schraubenloch':'Schraube'} ${label}" title="Doppelklick: Schraube ${missing?'eindrehen':'herausdrehen'}" ondblclick="toggleCabScrew(${index})" onpointerup="touchCabScrew(event,${index})" onkeydown="if(!event.repeat&&['Enter',' '].includes(event.key)){event.preventDefault();toggleCabScrew(${index})}"><span class="cab-screw-hole"></span><span class="cab-screw-face"></span></button>`;
 }
 function touchCabScrew(event,index){
+ if(cabLayoutAllowed())return;
  if(event.pointerType==='mouse')return;
  const touches=vehicleBundlePreview?vehiclePreviewScrewTouches:cabScrewTouches;
  const now=performance.now(),previous=touches.get(index);
@@ -95,6 +141,7 @@ function touchCabScrew(event,index){
  else touches.set(index,{at:now,x:event.clientX,y:event.clientY});
 }
 function toggleCabScrew(index){
+ if(cabLayoutAllowed())return;
  if(!vehicleBundlePreview&&(currentView!=='driver'||!state.active))return;
  const loose=vehicleBundlePreview?vehiclePreviewLooseScrews:cabLooseScrews;
  const screw=document.getElementById('cabScrew'+index);if(!screw)return;
@@ -107,7 +154,7 @@ function toggleCabScrew(index){
  screw.querySelector('.cab-screw-face').addEventListener('animationend',()=>{
   screw.classList.remove('is-loose','is-tightening');screw.classList.toggle('is-missing',!tightening);screw.removeAttribute('aria-busy');
  },{once:true});
- playCabMechanical(tightening?'ratchet':'screw',vehicleBundlePreview);
+ playCabActuation(screw,tightening?'release':'press',tightening?'ratchet':'screw');
 }
 function renderCabControls(a,pause,previewBundle=null){
  const moving=doorMotion?.tripId===a.id;
@@ -124,7 +171,7 @@ function renderCabControls(a,pause,previewBundle=null){
  ${cabButton({...panel.buttons.finish,color:'red',label:'Fahrt beenden',icon:'finish',action:previewBundle?"previewVehicleCabAction('finish')":'finishTrip(state.active.position>=state.active.plan.stops.length-1)'},panel)}
  ${cabButton({id:'emergencyBtn',...panel.buttons.emergency,color:'red',label:'NOT-AUS',icon:'emergency',action:previewBundle?"previewVehicleCabAction('emergency')":'pressCabEmergency()',emergency:true,pressed:a.status==='suspended'||(!previewBundle&&!!document.getElementById('emergencyLocation'))},panel)}
  <div class="cab-door-indicators" role="status" aria-label="${moving?(doorMotion.opening?'Türen öffnen':'Türen schließen'):a.doorsOpen?'Türen geöffnet':'Türen geschlossen'}">${cabDoorIndicator(panel.indicators.closed.x,panel.indicators.closed.y,'green','Türen zu',!a.doorsOpen,'close',false,panel,panel.indicators.closed)}${cabDoorIndicator(panel.indicators.open.x,panel.indicators.open.y,'amber','Türen offen',a.doorsOpen,'doors',moving,panel,panel.indicators.open)}</div>
- ${spares.map(([x,y])=>cabPlaceholder(x,y,panel)).join('')}
+ ${spares.map(([x,y],index)=>cabPlaceholder(x,y,panel,index)).join('')}
  ${(panel.accessories||[]).map((control,index)=>renderCabAccessory(control,index,panel,!!previewBundle)).join('')}
  ${panel.rotaries.map(([x,y],index)=>renderCabRotary(index,x,y,panel,!!previewBundle)).join('')}
  </div></div></div><div class="cab-footer"><span>${esc(vehicleBundleInfo(bundle).variant)}</span>${previewBundle?'':`<div><button class="cab-text-button" onclick="toggleCockpitSound()" aria-pressed="${!!state.settings.cockpit_muted}">${state.settings.cockpit_muted?'Tastentöne aus':'Tastentöne an'}</button><button class="cab-text-button" onclick="showCockpitSources()">Bild- & Tonquellen</button></div>`}</div></section>`;
@@ -206,8 +253,8 @@ function showCockpitSources(){
 let cabAudioContext=null;
 const cabMechanicalSources=new Set();
 function stopCabMechanics(){cabMechanicalGeneration++;if(window.AndroidAnnouncements?.stopMechanical)AndroidAnnouncements.stopMechanical();for(const s of cabMechanicalSources){try{s.stop();}catch{}}cabMechanicalSources.clear();}
-function playCabMechanical(kind){
- const sound=cabMechanicalSound(kind);
+function playCabMechanical(kind,bundle=vehicleBundlePreview){
+ const sound=bundle?.sounds.mechanical[kind]||cabMechanicalSound(kind);
  if(sound&&!sound.startsWith('synth:')){void playCabMechanicalAsset(sound,kind);return;}
  playCabMechanicalSynth(kind);
 }
@@ -244,7 +291,7 @@ async function playCabMechanicalAsset(path,kind){
   const source=cabAudioContext.createBufferSource();source.buffer=buffer;source.connect(cabAudioContext.destination);cabMechanicalSources.add(source);source.onended=()=>cabMechanicalSources.delete(source);source.start();
  }catch{if(generation===cabMechanicalGeneration)playCabMechanicalSynth(kind);}
 }
-let cabHeld=null;
+let cabHeld=null,cabHeldCustomSound=false;
 function playCabScrewSound(tightening=false){
  if(state.settings.cockpit_muted||document.hidden)return;
  try{
@@ -278,11 +325,95 @@ function playCabScrewSound(tightening=false){
   source.onended=()=>cabMechanicalSources.delete(source);source.start();
  }catch{/* The visual Easter egg also works without an audio device. */}
 }
-function releaseCabButton(){if(!cabHeld)return;cabHeld.classList.remove('is-down');if(!cabHeld.classList.contains('cab-emergency'))playCabMechanical('up',vehicleBundlePreview);cabHeld=null;}
-document.addEventListener('pointerdown',e=>{const b=e.target.closest('.cab-button');if(!b||b.disabled||e.button!==0)return;releaseCabButton();cabHeld=b;b.classList.add('is-down');playCabMechanical(b.classList.contains('cab-emergency')?'latch':'down',vehicleBundlePreview);},true);
+function releaseCabButton(){if(!cabHeld)return;cabHeld.classList.remove('is-down');playCabActuation(cabHeld,'release','up',!cabHeldCustomSound&&!cabHeld.classList.contains('cab-emergency'));if(cabHeld.dataset.cabMode==='latching')syncCabModeVisual(cabHeld);cabHeld=null;cabHeldCustomSound=false;}
+function holdCabButton(button){
+ if(cabLayoutAllowed())return;
+ releaseCabButton();cabHeld=button;button.classList.add('is-down');
+ cabHeldCustomSound=button.classList.contains('cab-spare')&&!!cabReserveSoundSelection(button.dataset.cabReserve,button.closest('.cab-stage'));
+ playCabActuation(button,'press',button.classList.contains('cab-emergency')?'latch':'down',!cabHeldCustomSound);
+}
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('.cab-button,.cab-spare');if(!b||b.disabled||e.button!==0)return;holdCabButton(b);},true);
 document.addEventListener('pointerup',releaseCabButton,true);
 document.addEventListener('pointercancel',releaseCabButton,true);
-document.addEventListener('keydown',e=>{const b=e.target.closest('.cab-button');if(!b||b.disabled||e.repeat||!['Enter',' '].includes(e.key))return;releaseCabButton();cabHeld=b;b.classList.add('is-down');playCabMechanical(b.classList.contains('cab-emergency')?'latch':'down',vehicleBundlePreview);},true);
+document.addEventListener('keydown',e=>{const b=e.target.closest('.cab-button,.cab-spare');if(!b||b.disabled||e.repeat||!['Enter',' '].includes(e.key))return;holdCabButton(b);},true);
 document.addEventListener('keyup',e=>{if(['Enter',' '].includes(e.key))releaseCabButton();},true);
 window.addEventListener('blur',()=>{releaseCabButton();stopCabMechanics();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){releaseCabButton();stopCabMechanics();}});
+
+// Physical switch states are scoped to the current trip or preview, independent
+// of a function's semantic state (doors, fullscreen, emergency dialog, ...).
+const cabModeStates=new Map(),cabModeClickSuppression=new WeakMap();
+let cabModeHeld=null,cabModeDispatching=false,cabModeContext='';
+const CAB_MODE_SELECTOR='.cab-button,.cab-spare,.cab-accessory,.cab-rotary,.cab-screw';
+function cabModeStateKey(button){return button.closest('.cab-stage').dataset.cabModeContext+':'+cabControlKey(button);}
+function cabModeIsOn(button){return !!cabModeStates.get(cabModeStateKey(button));}
+function syncCabModeVisual(button){
+ const on=!cabLayoutAllowed()&&cabModeIsOn(button);
+ button.classList.toggle('cab-mode-on',on);
+ if(button.matches('.cab-button,.cab-spare'))button.classList.toggle('is-down',on);
+ if(button.matches('.cab-accessory'))button.classList.toggle('is-on',on);
+ if(button.matches('.cab-rotary'))button.style.setProperty('--rotary-angle',on?'90deg':'0deg');
+}
+function applyCabControlModes(stage,panel,layout){
+ const context=(vehicleBundlePreview?'preview:'+vehicleBundlePreview.id+':'+(vehiclePreviewVehicleId||'type'):'trip:'+state.active?.id)+':'+cabLayoutStorageKey(panel,cabLayoutScope(panel));
+ if(cabModeContext!==context){cabModeStates.clear();cabModeContext=context;}
+ stage.dataset.cabModeContext=context;
+ stage.querySelectorAll(CAB_MODE_SELECTOR).forEach(button=>{
+  const mode=layout['actuation-'+cabControlKey(button)]?.mode||'';
+  if(mode){button.dataset.cabMode=mode;syncCabModeVisual(button);}
+  else {delete button.dataset.cabMode;button.classList.remove('cab-mode-on');}
+ });
+}
+function cabModeSet(button,on){cabModeStates.set(cabModeStateKey(button),on);syncCabModeVisual(button);}
+function releaseCabMode(cancelled=false){
+ if(!cabModeHeld)return;const button=cabModeHeld;cabModeHeld=null;
+ cabModeSet(button,false);
+ const key=cabControlKey(button),bundle=vehicleBundlePreview||getVehicleBundle();
+ if(key.startsWith('reserve-')){
+  const states=vehicleBundlePreview?vehiclePreviewAccessoryStates:cabAccessoryStates;
+  states.set(bundle.id+':'+key.slice(8),false);
+  if(!cancelled&&cabReservePositions(bundle.cab,key)>1)activateCabReserve(key,button.closest('.cab-stage'),0);
+ }else if(key.startsWith('rotary-')){
+  (vehicleBundlePreview?vehiclePreviewRotaryTurns:cabRotaryTurns)[Number(key.slice(7))]=0;
+  if(!cancelled)activateCabReserve(key,button.closest('.cab-stage'),0);
+ }
+ if(!button.matches('.cab-button,.cab-spare'))playCabActuation(button,'release','up');
+ cabModeClickSuppression.set(button,performance.now()+700);
+}
+function holdCabMode(button){
+ if(cabLayoutAllowed()||button.disabled||button.dataset.cabMode!=='momentary')return;
+ releaseCabMode(true);cabModeHeld=button;cabModeSet(button,true);
+ if(button.matches('.cab-accessory,.cab-rotary')){
+  cabModeDispatching=true;try{button.click();}finally{cabModeDispatching=false;}
+  syncCabModeVisual(button);
+ }
+}
+document.addEventListener('pointerdown',event=>{
+ const button=event.target.closest(CAB_MODE_SELECTOR);if(event.button===0&&button)holdCabMode(button);
+},true);
+document.addEventListener('pointerup',()=>releaseCabMode(),true);
+document.addEventListener('pointercancel',()=>releaseCabMode(true),true);
+document.addEventListener('keydown',event=>{
+ const button=event.target.closest(CAB_MODE_SELECTOR);
+ if(button&&!event.repeat&&['Enter',' '].includes(event.key)&&button.dataset.cabMode==='momentary'){
+  holdCabMode(button);if(button.matches('.cab-accessory,.cab-rotary'))event.preventDefault();
+ }
+},true);
+document.addEventListener('keyup',event=>{if(['Enter',' '].includes(event.key))releaseCabMode();},true);
+document.addEventListener('click',event=>{
+ const button=event.target.closest(CAB_MODE_SELECTOR);
+ if(!button||!button.dataset.cabMode||cabLayoutAllowed()||cabModeDispatching||button.disabled)return;
+ if(event.detail>0&&(cabModeClickSuppression.get(button)||0)>performance.now()&&button.matches('.cab-accessory,.cab-rotary')){
+  event.preventDefault();event.stopImmediatePropagation();return;
+ }
+ if(button.dataset.cabMode==='latching')cabModeSet(button,!cabModeIsOn(button));
+ else if(!cabModeHeld)cabModeSet(button,true);
+ // The normal click still invokes the existing function and its safety guards.
+ queueMicrotask(()=>{
+  if(button.dataset.cabMode==='momentary'&&!cabModeHeld){
+   cabModeHeld=button;releaseCabMode();
+  }else syncCabModeVisual(button);
+ });
+},true);
+window.addEventListener('blur',()=>releaseCabMode(true));
+document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseCabMode(true);});

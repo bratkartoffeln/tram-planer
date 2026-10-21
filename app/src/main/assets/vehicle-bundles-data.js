@@ -80,44 +80,44 @@ window.VEHICLE_BUNDLES = Object.freeze({
       ],
       "spares": [
         [
+          509.5,
+          246.5
+        ],
+        [
+          687,
+          245.5
+        ],
+        [
+          334.5,
+          472.5
+        ],
+        [
           510,
-          247
+          472.5
         ],
         [
-          686,
-          247
+          685,
+          472.5
         ],
         [
-          334,
-          475
+          1263.5,
+          234.5
         ],
         [
-          510,
-          475
+          1096.5,
+          485.5
         ],
         [
-          686,
-          475
+          1499.5,
+          485.5
         ],
         [
-          1262,
-          234
-        ],
-        [
-          1093,
-          485
-        ],
-        [
-          1493,
-          485
-        ],
-        [
-          194,
-          752
-        ],
-        [
-          1270,
+          193,
           750
+        ],
+        [
+          1284,
+          749
         ]
       ],
       "screws": [
@@ -385,7 +385,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "profile": "long",
           "onSprite": [
-            737,
+            791,
             504,
             94,
             138
@@ -414,7 +414,8 @@ window.VEHICLE_BUNDLES = Object.freeze({
             627.5,
             1014,
             1129
-          ]
+          ],
+          "flipX": true
         }
       }
     },
@@ -648,7 +649,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "profile": "long",
           "onSprite": [
-            737,
+            791,
             504,
             94,
             138
@@ -677,7 +678,8 @@ window.VEHICLE_BUNDLES = Object.freeze({
             627.5,
             1014,
             1129
-          ]
+          ],
+          "flipX": true
         }
       }
     },
@@ -911,7 +913,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "profile": "long",
           "onSprite": [
-            737,
+            791,
             504,
             94,
             138
@@ -940,7 +942,8 @@ window.VEHICLE_BUNDLES = Object.freeze({
             627.5,
             1014,
             1129
-          ]
+          ],
+          "flipX": true
         }
       }
     },
@@ -995,11 +998,11 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "height": 1024,
       "buttons": {
         "next": {
-          "x": 265,
-          "y": 583.5,
+          "x": 262,
+          "y": 580.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 138,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#fff3df",
           "labelPad": {
@@ -1007,14 +1010,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 592,
+          "x": 593,
           "y": 580,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 134,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -1022,14 +1030,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 933,
-          "y": 582,
+          "x": 935,
+          "y": 579,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 138,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -1037,14 +1050,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 259,
-          "y": 813.5,
+          "x": 261,
+          "y": 815.5,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -1052,14 +1070,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 592.5,
-          "y": 814,
+          "x": 593.5,
+          "y": 815,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -1067,14 +1090,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 935.5,
           "y": 815,
           "size": 180,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#3c280c",
           "labelPad": {
@@ -1082,14 +1110,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1270,
+          "x": 1269,
           "y": 815.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 132,
+          "capWidth": 126,
+          "capHeight": 126,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -1097,7 +1130,12 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1271.5,
@@ -1278,17 +1316,22 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reservetaster",
           "sprite": [
-            765,
-            372,
-            64,
-            64
+            761,
+            370,
+            62,
+            62
           ],
           "labelPad": {
             "x": 758,
             "y": 308,
             "width": 130,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         {
           "kind": "lever",
@@ -1419,11 +1462,11 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "height": 1024,
       "buttons": {
         "next": {
-          "x": 265,
-          "y": 583.5,
+          "x": 262,
+          "y": 580.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 138,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#fff3df",
           "labelPad": {
@@ -1431,14 +1474,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 592,
+          "x": 593,
           "y": 580,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 134,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -1446,14 +1494,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 933,
-          "y": 582,
+          "x": 935,
+          "y": 579,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 138,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -1461,14 +1514,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 259,
-          "y": 813.5,
+          "x": 261,
+          "y": 815.5,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -1476,14 +1534,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 592.5,
-          "y": 814,
+          "x": 593.5,
+          "y": 815,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -1491,14 +1554,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 935.5,
           "y": 815,
           "size": 180,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#3c280c",
           "labelPad": {
@@ -1506,14 +1574,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1270,
+          "x": 1269,
           "y": 815.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 132,
+          "capWidth": 126,
+          "capHeight": 126,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -1521,7 +1594,12 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1271.5,
@@ -1702,17 +1780,22 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reservetaster",
           "sprite": [
-            765,
-            372,
-            64,
-            64
+            761,
+            370,
+            62,
+            62
           ],
           "labelPad": {
             "x": 758,
             "y": 308,
             "width": 130,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         {
           "kind": "lever",
@@ -1843,11 +1926,11 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "height": 1024,
       "buttons": {
         "next": {
-          "x": 265,
-          "y": 583.5,
+          "x": 262,
+          "y": 580.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 138,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#fff3df",
           "labelPad": {
@@ -1855,14 +1938,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 592,
+          "x": 593,
           "y": 580,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 134,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -1870,14 +1958,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 933,
-          "y": 582,
+          "x": 935,
+          "y": 579,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 138,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -1885,14 +1978,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 259,
-          "y": 813.5,
+          "x": 261,
+          "y": 815.5,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -1900,14 +1998,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 592.5,
-          "y": 814,
+          "x": 593.5,
+          "y": 815,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -1915,14 +2018,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 935.5,
           "y": 815,
           "size": 180,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#3c280c",
           "labelPad": {
@@ -1930,14 +2038,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1270,
+          "x": 1269,
           "y": 815.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 132,
+          "capWidth": 126,
+          "capHeight": 126,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -1945,7 +2058,12 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1271.5,
@@ -2126,17 +2244,22 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reservetaster",
           "sprite": [
-            765,
-            372,
-            64,
-            64
+            761,
+            370,
+            62,
+            62
           ],
           "labelPad": {
             "x": 758,
             "y": 308,
             "width": 130,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         {
           "kind": "lever",
@@ -2338,44 +2461,44 @@ window.VEHICLE_BUNDLES = Object.freeze({
       ],
       "spares": [
         [
+          509.5,
+          246.5
+        ],
+        [
+          687,
+          245.5
+        ],
+        [
+          334.5,
+          472.5
+        ],
+        [
           510,
-          247
+          472.5
         ],
         [
-          686,
-          247
+          685,
+          472.5
         ],
         [
-          334,
-          475
+          1263.5,
+          234.5
         ],
         [
-          510,
-          475
+          1096.5,
+          485.5
         ],
         [
-          686,
-          475
+          1499.5,
+          485.5
         ],
         [
-          1262,
-          234
-        ],
-        [
-          1093,
-          485
-        ],
-        [
-          1493,
-          485
-        ],
-        [
-          194,
-          752
-        ],
-        [
-          1270,
+          193,
           750
+        ],
+        [
+          1284,
+          749
         ]
       ],
       "screws": [
@@ -2547,44 +2670,44 @@ window.VEHICLE_BUNDLES = Object.freeze({
       ],
       "spares": [
         [
+          509.5,
+          246.5
+        ],
+        [
+          687,
+          245.5
+        ],
+        [
+          334.5,
+          472.5
+        ],
+        [
           510,
-          247
+          472.5
         ],
         [
-          686,
-          247
+          685,
+          472.5
         ],
         [
-          334,
-          475
+          1263.5,
+          234.5
         ],
         [
-          510,
-          475
+          1096.5,
+          485.5
         ],
         [
-          686,
-          475
+          1499.5,
+          485.5
         ],
         [
-          1262,
-          234
-        ],
-        [
-          1093,
-          485
-        ],
-        [
-          1493,
-          485
-        ],
-        [
-          194,
-          752
-        ],
-        [
-          1270,
+          193,
           750
+        ],
+        [
+          1284,
+          749
         ]
       ],
       "screws": [
@@ -2756,44 +2879,44 @@ window.VEHICLE_BUNDLES = Object.freeze({
       ],
       "spares": [
         [
+          509.5,
+          246.5
+        ],
+        [
+          687,
+          245.5
+        ],
+        [
+          334.5,
+          472.5
+        ],
+        [
           510,
-          247
+          472.5
         ],
         [
-          686,
-          247
+          685,
+          472.5
         ],
         [
-          334,
-          475
+          1263.5,
+          234.5
         ],
         [
-          510,
-          475
+          1096.5,
+          485.5
         ],
         [
-          686,
-          475
+          1499.5,
+          485.5
         ],
         [
-          1262,
-          234
-        ],
-        [
-          1093,
-          485
-        ],
-        [
-          1493,
-          485
-        ],
-        [
-          194,
-          752
-        ],
-        [
-          1270,
+          193,
           750
+        ],
+        [
+          1284,
+          749
         ]
       ],
       "screws": [
@@ -2965,44 +3088,44 @@ window.VEHICLE_BUNDLES = Object.freeze({
       ],
       "spares": [
         [
+          509.5,
+          246.5
+        ],
+        [
+          687,
+          245.5
+        ],
+        [
+          334.5,
+          472.5
+        ],
+        [
           510,
-          247
+          472.5
         ],
         [
-          686,
-          247
+          685,
+          472.5
         ],
         [
-          334,
-          475
+          1263.5,
+          234.5
         ],
         [
-          510,
-          475
+          1096.5,
+          485.5
         ],
         [
-          686,
-          475
+          1499.5,
+          485.5
         ],
         [
-          1262,
-          234
-        ],
-        [
-          1093,
-          485
-        ],
-        [
-          1493,
-          485
-        ],
-        [
-          194,
-          752
-        ],
-        [
-          1270,
+          193,
           750
+        ],
+        [
+          1284,
+          749
         ]
       ],
       "screws": [
@@ -3174,44 +3297,44 @@ window.VEHICLE_BUNDLES = Object.freeze({
       ],
       "spares": [
         [
+          509.5,
+          246.5
+        ],
+        [
+          687,
+          245.5
+        ],
+        [
+          334.5,
+          472.5
+        ],
+        [
           510,
-          247
+          472.5
         ],
         [
-          686,
-          247
+          685,
+          472.5
         ],
         [
-          334,
-          475
+          1263.5,
+          234.5
         ],
         [
-          510,
-          475
+          1096.5,
+          485.5
         ],
         [
-          686,
-          475
+          1499.5,
+          485.5
         ],
         [
-          1262,
-          234
-        ],
-        [
-          1093,
-          485
-        ],
-        [
-          1493,
-          485
-        ],
-        [
-          194,
-          752
-        ],
-        [
-          1270,
+          193,
           750
+        ],
+        [
+          1284,
+          749
         ]
       ],
       "screws": [
@@ -3532,64 +3655,99 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "x": 197,
           "y": 410,
           "size": 170,
-          "capWidth": 128,
-          "capHeight": 132,
+          "capWidth": 120,
+          "capHeight": 120,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
           "x": 197.5,
-          "y": 613,
+          "y": 614,
           "size": 170,
-          "capWidth": 124,
-          "capHeight": 126,
+          "capWidth": 118,
+          "capHeight": 118,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
           "x": 197.5,
           "y": 817,
           "size": 170,
-          "capWidth": 128,
-          "capHeight": 132,
+          "capWidth": 120,
+          "capHeight": 120,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
           "x": 1331,
-          "y": 200,
+          "y": 201,
           "size": 170,
-          "capWidth": 126,
-          "capHeight": 128,
+          "capWidth": 118,
+          "capHeight": 118,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
           "x": 1330,
-          "y": 408.5,
+          "y": 410.5,
           "size": 170,
-          "capWidth": 124,
-          "capHeight": 126,
+          "capWidth": 116,
+          "capHeight": 116,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
-          "x": 1329,
-          "y": 615.5,
+          "x": 1328,
+          "y": 616.5,
           "size": 170,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 118,
+          "capHeight": 118,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1330,
-          "y": 815,
+          "x": 1328,
+          "y": 818,
           "size": 170,
-          "capWidth": 126,
-          "capHeight": 132,
+          "capWidth": 118,
+          "capHeight": 118,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 186,
@@ -3742,66 +3900,101 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "buttons": {
         "next": {
           "x": 166,
-          "y": 253,
+          "y": 251,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 140,
+          "capWidth": 132,
+          "capHeight": 132,
           "shape": "round",
-          "ink": "#f7f1df"
+          "ink": "#f7f1df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 405,
+          "x": 406,
           "y": 251.5,
           "size": 180,
-          "capWidth": 138,
-          "capHeight": 142,
+          "capWidth": 130,
+          "capHeight": 130,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 163.5,
+          "x": 164.5,
           "y": 531,
           "size": 180,
-          "capWidth": 144,
-          "capHeight": 144,
+          "capWidth": 132,
+          "capHeight": 132,
           "shape": "round",
-          "ink": "#f7f1df"
+          "ink": "#f7f1df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
           "x": 240,
           "y": 795,
           "size": 180,
-          "capWidth": 142,
-          "capHeight": 144,
+          "capWidth": 134,
+          "capHeight": 134,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
           "x": 578,
           "y": 796,
           "size": 180,
-          "capWidth": 142,
-          "capHeight": 144,
+          "capWidth": 136,
+          "capHeight": 136,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 954.5,
           "y": 795.5,
           "size": 180,
-          "capWidth": 138,
-          "capHeight": 144,
+          "capWidth": 130,
+          "capHeight": 142,
           "shape": "round",
-          "ink": "#3c280c"
+          "ink": "#3c280c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
           "x": 1279,
           "y": 794.5,
           "size": 180,
-          "capWidth": 144,
-          "capHeight": 146,
+          "capWidth": 138,
+          "capHeight": 138,
           "shape": "round",
-          "ink": "#f7f1df"
+          "ink": "#f7f1df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1376,
@@ -3912,30 +4105,45 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reserve 1",
           "sprite": [
-            1117,
-            251,
-            134,
-            138
+            1114,
+            252,
+            130,
+            130
+          ],
+          "press": [
+            0,
+            1,
+            0.95
           ]
         },
         {
           "kind": "button",
           "label": "Reserve 2",
           "sprite": [
-            410,
+            405,
             531,
-            134,
-            138
+            130,
+            130
+          ],
+          "press": [
+            0,
+            1,
+            0.95
           ]
         },
         {
           "kind": "button",
           "label": "Reserve 3",
           "sprite": [
-            1115,
-            531,
-            134,
-            138
+            1113,
+            532,
+            130,
+            130
+          ],
+          "press": [
+            0,
+            1,
+            0.95
           ]
         }
       ],
@@ -4192,97 +4400,138 @@ window.VEHICLE_BUNDLES = Object.freeze({
     "id": "family-tramlink",
     "cab": {
       "image": "vehicle-bundles/family-tramlink/panel-front.webp",
-      "width": 1536,
-      "height": 1024,
+      "width": 1672,
+      "height": 941,
       "buttons": {
         "next": {
-          "x": 241.5,
-          "y": 309,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 617,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#f4f5ef",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 588,
-          "y": 309.5,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 114,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#15242c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 935,
-          "y": 311,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 488,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#10251d"
+          "ink": "#15242c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 241,
-          "y": 720.5,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 243,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#15242c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 587,
-          "y": 721,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 743,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#f4f5ef",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
-          "x": 934.5,
-          "y": 722.5,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 180,
+          "x": 367,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#3c280c"
+          "ink": "#15242c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1286.5,
-          "y": 721.5,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 1264,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#f4f5ef",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
-          "x": 1325,
-          "y": 290,
-          "size": 320,
-          "capWidth": 258,
-          "capHeight": 256,
+          "x": 1522,
+          "y": 125,
+          "size": 180,
+          "capWidth": 134,
+          "capHeight": 134,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff2df",
+          "press": [
+            0,
+            1,
+            0.95
+          ],
+          "kind": "push"
         }
       },
       "indicators": {
         "closed": {
-          "x": 690,
-          "y": 515,
-          "size": 110,
-          "capWidth": 70,
-          "capHeight": 70,
+          "x": 506,
+          "y": 124,
+          "size": 100,
+          "capWidth": 60,
+          "capHeight": 60,
           "shape": "round"
         },
         "open": {
-          "x": 843,
-          "y": 515,
-          "size": 110,
-          "capWidth": 70,
-          "capHeight": 70,
+          "x": 398,
+          "y": 124,
+          "size": 100,
+          "capWidth": 60,
+          "capHeight": 60,
           "shape": "round"
         }
       },
@@ -4290,80 +4539,287 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "spares": [],
       "screws": [
         [
-          70,
-          70,
+          43,
+          39,
           "oben links"
         ],
         [
-          1470,
-          70,
+          1630,
+          39,
           "oben rechts"
         ],
         [
-          70,
-          946,
+          45,
+          872,
           "unten links"
         ],
         [
-          1470,
-          946,
+          1628,
+          872,
           "unten rechts"
         ]
       ],
-      "rotaries": [],
+      "rotaries": [
+        [
+          995,
+          778
+        ],
+        [
+          1403,
+          778
+        ]
+      ],
       "rotarySprites": {
         "mask": [
-          1172,
-          292,
-          32,
-          32
-        ],
-        "ring": [
-          1262,
-          234,
-          146,
-          146
-        ],
-        "grip": [
-          1088,
-          251,
-          34,
-          124
-        ]
-      },
-      "colors": {
-        "console": "#222a30",
-        "panel": "#222a30",
-        "text": "#eef1f3"
-      },
-      "skin": "panel",
-      "screwCap": 62,
-      "emergencySprites": {
-        "mask": [
-          1100,
-          540,
+          580,
+          650,
           50,
           50
         ],
         "ring": [
-          1302,
-          307,
-          340,
-          340
+          995,
+          778,
+          114,
+          114
         ],
-        "travel": [
-          -20,
-          15
+        "grip": [
+          995,
+          785,
+          34,
+          130
+        ],
+        "image": "vehicle-bundles/family-tramlink/rotary-source.webp"
+      },
+      "colors": {
+        "console": "#252a2d",
+        "panel": "#141719",
+        "text": "#eef1f3"
+      },
+      "skin": "panel",
+      "screwCap": 30,
+      "emergencySprites": {
+        "color": "#101315",
+        "mask": [
+          1430,
+          225,
+          35,
+          35
+        ],
+        "ring": [
+          1510,
+          134,
+          190,
+          190
         ],
         "base": [
-          1282,
-          307,
-          298,
-          298
+          1505,
+          134,
+          168,
+          168
+        ],
+        "travel": [
+          -8,
+          6
         ]
       },
-      "accessories": [],
-      "labelColor": "#fff8df"
+      "accessories": [
+        {
+          "kind": "button",
+          "label": "Reservetaster oben links",
+          "sprite": [
+            115,
+            120,
+            60,
+            60
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reservetaster links",
+          "sprite": [
+            92,
+            380,
+            84,
+            84
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reservetaster rechts am Tacho",
+          "sprite": [
+            518,
+            381,
+            84,
+            84
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve weiß 1",
+          "sprite": [
+            130,
+            581,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve weiß 2",
+          "sprite": [
+            246,
+            582,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve blau 1",
+          "sprite": [
+            385,
+            581,
+            72,
+            72
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve blau 2",
+          "sprite": [
+            497,
+            581,
+            72,
+            72
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve rot 1",
+          "sprite": [
+            1511,
+            300,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve rot 2",
+          "sprite": [
+            1511,
+            442,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve gelb",
+          "sprite": [
+            1511,
+            584,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve weiß unten",
+          "sprite": [
+            865,
+            777,
+            82,
+            82
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve blau unten",
+          "sprite": [
+            1122,
+            778,
+            84,
+            84
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve grün unten",
+          "sprite": [
+            1548,
+            778,
+            84,
+            84
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        }
+      ],
+      "labelColor": "#f6f2de"
     },
     "sounds": {
       "effects": {
@@ -4385,32 +4841,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
       }
     },
     "presentation": {
-      "title": "Tramlink · physisches Tastenpanel",
-      "variant": "Nachbildung · Erfurt / Vergleich Traunsee",
-      "description": "Frontale Nachbildung der burgunderroten physischen Tastenleiste eines Tramlink der Traunseetram mit metallischen Rundtasterringen. Auswahl und Anordnung sind für die Simulation angepasst. Baureihenvergleich, keine exakte Erfurter Kabine.",
+      "title": "Tramlink · mittleres Instrumentenpult",
+      "variant": "Nachbildung · mittleres Pult nach bereitgestelltem Foto",
+      "description": "Frontale fotorealistische Nachbildung des mittleren schwarzen Instrumentenpults nach dem bereitgestellten Tramlink-Foto: Analogtacho links, Diagnoseanzeige mittig, Not-Aus rechts und eine untere Bedienleiste. Die Fahrfunktionen sind für die Simulation zugeordnet. Anzeige und Tacho sind Bildkulisse; zusätzliche Taster und die beiden Drehschalter sind als Reserve bedienbar.",
+      "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe.",
       "references": [
         {
-          "title": "EVAG · Erfurter Tramlink",
-          "url": "https://www.evag-erfurt.de/evag/tramlink"
-        },
-        {
-          "title": "Erfurt · Fahrschalter-Detail",
-          "url": "https://www.rynek-kolejowy.pl/wiadomosci/erfurt-nowy-tramlink-zaprezentowany-146884.html"
-        },
-        {
-          "title": "Tramlink Traunseetram · Simon Legner, CC BY-SA 4.0",
-          "url": "https://commons.wikimedia.org/wiki/File:Vossloh_Tramlink_F%C3%BChrerstand.jpg"
-        },
-        {
-          "title": "CC BY-SA 4.0 · Lizenz der bearbeiteten Vergleichsvorlage",
-          "url": "https://creativecommons.org/licenses/by-sa/4.0/"
+          "title": "Gestaltung, bereitgestellte Vorlage und Änderungen",
+          "url": "https://github.com/bratkartoffeln/tram-planer/blob/main/IMAGE_SOURCES.md#tramlink-mittleres-instrumentenpanel-in-version-6210"
         }
-      ],
-      "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe."
+      ]
     },
     "credits": [
-      "KI-Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026. Nachbildung · Erfurt / Vergleich Traunsee. Frontales Schalterpanel aus der Referenz abgeleitet; Tastenanzahl und Anordnung an die Simulation angepasst. Bildkappen und vier fotografierte Schrauben werden animiert. Instrumente sind Bildkulisse.",
-      "Grafik panel-front.webp: Bearbeitung nach Simon Legner, CC BY-SA 4.0. Originalfoto, Lizenz und Änderungen siehe Referenzlinks."
+      "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt."
     ]
   },
   "g4-61": {
@@ -4421,11 +4864,11 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "height": 1024,
       "buttons": {
         "next": {
-          "x": 265,
-          "y": 583.5,
+          "x": 262,
+          "y": 580.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 138,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#fff3df",
           "labelPad": {
@@ -4433,14 +4876,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 592,
+          "x": 593,
           "y": 580,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 134,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -4448,14 +4896,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 933,
-          "y": 582,
+          "x": 935,
+          "y": 579,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 138,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -4463,14 +4916,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 259,
-          "y": 813.5,
+          "x": 261,
+          "y": 815.5,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -4478,14 +4936,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 592.5,
-          "y": 814,
+          "x": 593.5,
+          "y": 815,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -4493,14 +4956,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 935.5,
           "y": 815,
           "size": 180,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#3c280c",
           "labelPad": {
@@ -4508,14 +4976,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1270,
+          "x": 1269,
           "y": 815.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 132,
+          "capWidth": 126,
+          "capHeight": 126,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -4523,7 +4996,12 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1271.5,
@@ -4704,17 +5182,22 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reservetaster",
           "sprite": [
-            765,
-            372,
-            64,
-            64
+            761,
+            370,
+            62,
+            62
           ],
           "labelPad": {
             "x": 758,
             "y": 308,
             "width": 130,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         {
           "kind": "lever",
@@ -4845,11 +5328,11 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "height": 1024,
       "buttons": {
         "next": {
-          "x": 265,
-          "y": 583.5,
+          "x": 262,
+          "y": 580.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 138,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#fff3df",
           "labelPad": {
@@ -4857,14 +5340,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 592,
+          "x": 593,
           "y": 580,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 134,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -4872,14 +5360,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 933,
-          "y": 582,
+          "x": 935,
+          "y": 579,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 138,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -4887,14 +5380,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 259,
-          "y": 813.5,
+          "x": 261,
+          "y": 815.5,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -4902,14 +5400,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 592.5,
-          "y": 814,
+          "x": 593.5,
+          "y": 815,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -4917,14 +5420,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 935.5,
           "y": 815,
           "size": 180,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#3c280c",
           "labelPad": {
@@ -4932,14 +5440,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1270,
+          "x": 1269,
           "y": 815.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 132,
+          "capWidth": 126,
+          "capHeight": 126,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -4947,7 +5460,12 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1271.5,
@@ -5128,17 +5646,22 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reservetaster",
           "sprite": [
-            765,
-            372,
-            64,
-            64
+            761,
+            370,
+            62,
+            62
           ],
           "labelPad": {
             "x": 758,
             "y": 308,
             "width": 130,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         {
           "kind": "lever",
@@ -5486,11 +6009,11 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "height": 1024,
       "buttons": {
         "next": {
-          "x": 265,
-          "y": 583.5,
+          "x": 262,
+          "y": 580.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 138,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#fff3df",
           "labelPad": {
@@ -5498,14 +6021,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 592,
+          "x": 593,
           "y": 580,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 134,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -5513,14 +6041,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 933,
-          "y": 582,
+          "x": 935,
+          "y": 579,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 138,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -5528,14 +6061,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 259,
-          "y": 813.5,
+          "x": 261,
+          "y": 815.5,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -5543,14 +6081,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 592.5,
-          "y": 814,
+          "x": 593.5,
+          "y": 815,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -5558,14 +6101,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 935.5,
           "y": 815,
           "size": 180,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#3c280c",
           "labelPad": {
@@ -5573,14 +6121,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1270,
+          "x": 1269,
           "y": 815.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 132,
+          "capWidth": 126,
+          "capHeight": 126,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -5588,7 +6141,12 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1271.5,
@@ -5769,17 +6327,22 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reservetaster",
           "sprite": [
-            765,
-            372,
-            64,
-            64
+            761,
+            370,
+            62,
+            62
           ],
           "labelPad": {
             "x": 758,
             "y": 308,
             "width": 130,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         {
           "kind": "lever",
@@ -5913,64 +6476,99 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "x": 197,
           "y": 410,
           "size": 170,
-          "capWidth": 128,
-          "capHeight": 132,
+          "capWidth": 120,
+          "capHeight": 120,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
           "x": 197.5,
-          "y": 613,
+          "y": 614,
           "size": 170,
-          "capWidth": 124,
-          "capHeight": 126,
+          "capWidth": 118,
+          "capHeight": 118,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
           "x": 197.5,
           "y": 817,
           "size": 170,
-          "capWidth": 128,
-          "capHeight": 132,
+          "capWidth": 120,
+          "capHeight": 120,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
           "x": 1331,
-          "y": 200,
+          "y": 201,
           "size": 170,
-          "capWidth": 126,
-          "capHeight": 128,
+          "capWidth": 118,
+          "capHeight": 118,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
           "x": 1330,
-          "y": 408.5,
+          "y": 410.5,
           "size": 170,
-          "capWidth": 124,
-          "capHeight": 126,
+          "capWidth": 116,
+          "capHeight": 116,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
-          "x": 1329,
-          "y": 615.5,
+          "x": 1328,
+          "y": 616.5,
           "size": 170,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 118,
+          "capHeight": 118,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1330,
-          "y": 815,
+          "x": 1328,
+          "y": 818,
           "size": 170,
-          "capWidth": 126,
-          "capHeight": 132,
+          "capWidth": 118,
+          "capHeight": 118,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff3df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 186,
@@ -6123,66 +6721,101 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "buttons": {
         "next": {
           "x": 166,
-          "y": 253,
+          "y": 251,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 140,
+          "capWidth": 132,
+          "capHeight": 132,
           "shape": "round",
-          "ink": "#f7f1df"
+          "ink": "#f7f1df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 405,
+          "x": 406,
           "y": 251.5,
           "size": 180,
-          "capWidth": 138,
-          "capHeight": 142,
+          "capWidth": 130,
+          "capHeight": 130,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 163.5,
+          "x": 164.5,
           "y": 531,
           "size": 180,
-          "capWidth": 144,
-          "capHeight": 144,
+          "capWidth": 132,
+          "capHeight": 132,
           "shape": "round",
-          "ink": "#f7f1df"
+          "ink": "#f7f1df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
           "x": 240,
           "y": 795,
           "size": 180,
-          "capWidth": 142,
-          "capHeight": 144,
+          "capWidth": 134,
+          "capHeight": 134,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
           "x": 578,
           "y": 796,
           "size": 180,
-          "capWidth": 142,
-          "capHeight": 144,
+          "capWidth": 136,
+          "capHeight": 136,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#18212a",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 954.5,
           "y": 795.5,
           "size": 180,
-          "capWidth": 138,
-          "capHeight": 144,
+          "capWidth": 130,
+          "capHeight": 142,
           "shape": "round",
-          "ink": "#3c280c"
+          "ink": "#3c280c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
           "x": 1279,
           "y": 794.5,
           "size": 180,
-          "capWidth": 144,
-          "capHeight": 146,
+          "capWidth": 138,
+          "capHeight": 138,
           "shape": "round",
-          "ink": "#f7f1df"
+          "ink": "#f7f1df",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1376,
@@ -6293,30 +6926,45 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reserve 1",
           "sprite": [
-            1117,
-            251,
-            134,
-            138
+            1114,
+            252,
+            130,
+            130
+          ],
+          "press": [
+            0,
+            1,
+            0.95
           ]
         },
         {
           "kind": "button",
           "label": "Reserve 2",
           "sprite": [
-            410,
+            405,
             531,
-            134,
-            138
+            130,
+            130
+          ],
+          "press": [
+            0,
+            1,
+            0.95
           ]
         },
         {
           "kind": "button",
           "label": "Reserve 3",
           "sprite": [
-            1115,
-            531,
-            134,
-            138
+            1113,
+            532,
+            130,
+            130
+          ],
+          "press": [
+            0,
+            1,
+            0.95
           ]
         }
       ],
@@ -6789,11 +7437,11 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "height": 1024,
       "buttons": {
         "next": {
-          "x": 265,
-          "y": 583.5,
+          "x": 262,
+          "y": 580.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 138,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#fff3df",
           "labelPad": {
@@ -6801,14 +7449,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 592,
+          "x": 593,
           "y": 580,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 134,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -6816,14 +7469,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 933,
-          "y": 582,
+          "x": 935,
+          "y": 579,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 138,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -6831,14 +7489,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 259,
-          "y": 813.5,
+          "x": 261,
+          "y": 815.5,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -6846,14 +7509,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 592.5,
-          "y": 814,
+          "x": 593.5,
+          "y": 815,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -6861,14 +7529,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 935.5,
           "y": 815,
           "size": 180,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#3c280c",
           "labelPad": {
@@ -6876,14 +7549,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1270,
+          "x": 1269,
           "y": 815.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 132,
+          "capWidth": 126,
+          "capHeight": 126,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -6891,7 +7569,12 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1271.5,
@@ -7072,17 +7755,22 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reservetaster",
           "sprite": [
-            765,
-            372,
-            64,
-            64
+            761,
+            370,
+            62,
+            62
           ],
           "labelPad": {
             "x": 758,
             "y": 308,
             "width": 130,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         {
           "kind": "lever",
@@ -7213,11 +7901,11 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "height": 1024,
       "buttons": {
         "next": {
-          "x": 265,
-          "y": 583.5,
+          "x": 262,
+          "y": 580.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 138,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#fff3df",
           "labelPad": {
@@ -7225,14 +7913,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 592,
+          "x": 593,
           "y": 580,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 134,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -7240,14 +7933,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 933,
-          "y": 582,
+          "x": 935,
+          "y": 579,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 138,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -7255,14 +7953,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 259,
-          "y": 813.5,
+          "x": 261,
+          "y": 815.5,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -7270,14 +7973,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 592.5,
-          "y": 814,
+          "x": 593.5,
+          "y": 815,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -7285,14 +7993,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 935.5,
           "y": 815,
           "size": 180,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#3c280c",
           "labelPad": {
@@ -7300,14 +8013,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1270,
+          "x": 1269,
           "y": 815.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 132,
+          "capWidth": 126,
+          "capHeight": 126,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -7315,7 +8033,12 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1271.5,
@@ -7496,17 +8219,22 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reservetaster",
           "sprite": [
-            765,
-            372,
-            64,
-            64
+            761,
+            370,
+            62,
+            62
           ],
           "labelPad": {
             "x": 758,
             "y": 308,
             "width": 130,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         {
           "kind": "lever",
@@ -7816,7 +8544,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "profile": "long",
           "onSprite": [
-            737,
+            791,
             504,
             94,
             138
@@ -7845,7 +8573,8 @@ window.VEHICLE_BUNDLES = Object.freeze({
             627.5,
             1014,
             1129
-          ]
+          ],
+          "flipX": true
         }
       }
     },
@@ -8079,7 +8808,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "profile": "long",
           "onSprite": [
-            737,
+            791,
             504,
             94,
             138
@@ -8108,7 +8837,8 @@ window.VEHICLE_BUNDLES = Object.freeze({
             627.5,
             1014,
             1129
-          ]
+          ],
+          "flipX": true
         }
       }
     },
@@ -8163,11 +8893,11 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "height": 1024,
       "buttons": {
         "next": {
-          "x": 265,
-          "y": 583.5,
+          "x": 262,
+          "y": 580.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 138,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#fff3df",
           "labelPad": {
@@ -8175,14 +8905,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 592,
+          "x": 593,
           "y": 580,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 134,
+          "capWidth": 122,
+          "capHeight": 122,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -8190,14 +8925,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 933,
-          "y": 582,
+          "x": 935,
+          "y": 579,
           "size": 180,
-          "capWidth": 136,
-          "capHeight": 138,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -8205,14 +8945,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 475,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 259,
-          "y": 813.5,
+          "x": 261,
+          "y": 815.5,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -8220,14 +8965,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 164,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 592.5,
-          "y": 814,
+          "x": 593.5,
+          "y": 815,
           "size": 180,
-          "capWidth": 128,
-          "capHeight": 130,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#18212a",
           "labelPad": {
@@ -8235,14 +8985,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
           "x": 935.5,
           "y": 815,
           "size": 180,
-          "capWidth": 130,
-          "capHeight": 132,
+          "capWidth": 124,
+          "capHeight": 124,
           "shape": "round",
           "ink": "#3c280c",
           "labelPad": {
@@ -8250,14 +9005,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1270,
+          "x": 1269,
           "y": 815.5,
           "size": 180,
-          "capWidth": 134,
-          "capHeight": 132,
+          "capWidth": 126,
+          "capHeight": 126,
           "shape": "round",
           "ink": "#f7f1df",
           "labelPad": {
@@ -8265,7 +9025,12 @@ window.VEHICLE_BUNDLES = Object.freeze({
             "y": 706,
             "width": 170,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
           "x": 1271.5,
@@ -8446,17 +9211,22 @@ window.VEHICLE_BUNDLES = Object.freeze({
           "kind": "button",
           "label": "Reservetaster",
           "sprite": [
-            765,
-            372,
-            64,
-            64
+            761,
+            370,
+            62,
+            62
           ],
           "labelPad": {
             "x": 758,
             "y": 308,
             "width": 130,
             "ink": "#1d2328"
-          }
+          },
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         {
           "kind": "lever",
@@ -8766,7 +9536,7 @@ window.VEHICLE_BUNDLES = Object.freeze({
           ],
           "profile": "long",
           "onSprite": [
-            737,
+            791,
             504,
             94,
             138
@@ -8795,7 +9565,8 @@ window.VEHICLE_BUNDLES = Object.freeze({
             627.5,
             1014,
             1129
-          ]
+          ],
+          "flipX": true
         }
       }
     },
@@ -8846,97 +9617,138 @@ window.VEHICLE_BUNDLES = Object.freeze({
     "id": "tramlink",
     "cab": {
       "image": "vehicle-bundles/family-tramlink/panel-front.webp",
-      "width": 1536,
-      "height": 1024,
+      "width": 1672,
+      "height": 941,
       "buttons": {
         "next": {
-          "x": 241.5,
-          "y": 309,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 617,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#f4f5ef",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "back": {
-          "x": 588,
-          "y": 309.5,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 114,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#15242c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "doors": {
-          "x": 935,
-          "y": 311,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 488,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#10251d"
+          "ink": "#15242c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "passenger": {
-          "x": 241,
-          "y": 720.5,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 243,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#15242c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "fullscreen": {
-          "x": 587,
-          "y": 721,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 743,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#18212a"
+          "ink": "#f4f5ef",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "traffic": {
-          "x": 934.5,
-          "y": 722.5,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 180,
+          "x": 367,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#3c280c"
+          "ink": "#15242c",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "finish": {
-          "x": 1286.5,
-          "y": 721.5,
-          "size": 250,
-          "capWidth": 178,
-          "capHeight": 178,
+          "x": 1264,
+          "y": 778,
+          "size": 120,
+          "capWidth": 84,
+          "capHeight": 84,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#f4f5ef",
+          "press": [
+            0,
+            1,
+            0.95
+          ]
         },
         "emergency": {
-          "x": 1325,
-          "y": 290,
-          "size": 320,
-          "capWidth": 258,
-          "capHeight": 256,
+          "x": 1522,
+          "y": 125,
+          "size": 180,
+          "capWidth": 134,
+          "capHeight": 134,
           "shape": "round",
-          "ink": "#fff3df"
+          "ink": "#fff2df",
+          "press": [
+            0,
+            1,
+            0.95
+          ],
+          "kind": "push"
         }
       },
       "indicators": {
         "closed": {
-          "x": 690,
-          "y": 515,
-          "size": 110,
-          "capWidth": 70,
-          "capHeight": 70,
+          "x": 506,
+          "y": 124,
+          "size": 100,
+          "capWidth": 60,
+          "capHeight": 60,
           "shape": "round"
         },
         "open": {
-          "x": 843,
-          "y": 515,
-          "size": 110,
-          "capWidth": 70,
-          "capHeight": 70,
+          "x": 398,
+          "y": 124,
+          "size": 100,
+          "capWidth": 60,
+          "capHeight": 60,
           "shape": "round"
         }
       },
@@ -8944,80 +9756,287 @@ window.VEHICLE_BUNDLES = Object.freeze({
       "spares": [],
       "screws": [
         [
-          70,
-          70,
+          43,
+          39,
           "oben links"
         ],
         [
-          1470,
-          70,
+          1630,
+          39,
           "oben rechts"
         ],
         [
-          70,
-          946,
+          45,
+          872,
           "unten links"
         ],
         [
-          1470,
-          946,
+          1628,
+          872,
           "unten rechts"
         ]
       ],
-      "rotaries": [],
+      "rotaries": [
+        [
+          995,
+          778
+        ],
+        [
+          1403,
+          778
+        ]
+      ],
       "rotarySprites": {
         "mask": [
-          1172,
-          292,
-          32,
-          32
-        ],
-        "ring": [
-          1262,
-          234,
-          146,
-          146
-        ],
-        "grip": [
-          1088,
-          251,
-          34,
-          124
-        ]
-      },
-      "colors": {
-        "console": "#222a30",
-        "panel": "#222a30",
-        "text": "#eef1f3"
-      },
-      "skin": "panel",
-      "screwCap": 62,
-      "emergencySprites": {
-        "mask": [
-          1100,
-          540,
+          580,
+          650,
           50,
           50
         ],
         "ring": [
-          1302,
-          307,
-          340,
-          340
+          995,
+          778,
+          114,
+          114
         ],
-        "travel": [
-          -20,
-          15
+        "grip": [
+          995,
+          785,
+          34,
+          130
+        ],
+        "image": "vehicle-bundles/family-tramlink/rotary-source.webp"
+      },
+      "colors": {
+        "console": "#252a2d",
+        "panel": "#141719",
+        "text": "#eef1f3"
+      },
+      "skin": "panel",
+      "screwCap": 30,
+      "emergencySprites": {
+        "color": "#101315",
+        "mask": [
+          1430,
+          225,
+          35,
+          35
+        ],
+        "ring": [
+          1510,
+          134,
+          190,
+          190
         ],
         "base": [
-          1282,
-          307,
-          298,
-          298
+          1505,
+          134,
+          168,
+          168
+        ],
+        "travel": [
+          -8,
+          6
         ]
       },
-      "accessories": [],
-      "labelColor": "#fff8df"
+      "accessories": [
+        {
+          "kind": "button",
+          "label": "Reservetaster oben links",
+          "sprite": [
+            115,
+            120,
+            60,
+            60
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reservetaster links",
+          "sprite": [
+            92,
+            380,
+            84,
+            84
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reservetaster rechts am Tacho",
+          "sprite": [
+            518,
+            381,
+            84,
+            84
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve weiß 1",
+          "sprite": [
+            130,
+            581,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve weiß 2",
+          "sprite": [
+            246,
+            582,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve blau 1",
+          "sprite": [
+            385,
+            581,
+            72,
+            72
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve blau 2",
+          "sprite": [
+            497,
+            581,
+            72,
+            72
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve rot 1",
+          "sprite": [
+            1511,
+            300,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve rot 2",
+          "sprite": [
+            1511,
+            442,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve gelb",
+          "sprite": [
+            1511,
+            584,
+            74,
+            74
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve weiß unten",
+          "sprite": [
+            865,
+            777,
+            82,
+            82
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve blau unten",
+          "sprite": [
+            1122,
+            778,
+            84,
+            84
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "Reserve grün unten",
+          "sprite": [
+            1548,
+            778,
+            84,
+            84
+          ],
+          "press": [
+            0,
+            1,
+            0.95
+          ]
+        }
+      ],
+      "labelColor": "#f6f2de"
     },
     "sounds": {
       "effects": {
@@ -9039,32 +10058,19 @@ window.VEHICLE_BUNDLES = Object.freeze({
       }
     },
     "presentation": {
-      "title": "Tramlink · physisches Tastenpanel",
-      "variant": "Nachbildung · Erfurt / Vergleich Traunsee",
-      "description": "Frontale Nachbildung der burgunderroten physischen Tastenleiste eines Tramlink der Traunseetram mit metallischen Rundtasterringen. Auswahl und Anordnung sind für die Simulation angepasst. Baureihenvergleich, keine exakte Erfurter Kabine.",
+      "title": "Tramlink · mittleres Instrumentenpult",
+      "variant": "Nachbildung · mittleres Pult nach bereitgestelltem Foto",
+      "description": "Frontale fotorealistische Nachbildung des mittleren schwarzen Instrumentenpults nach dem bereitgestellten Tramlink-Foto: Analogtacho links, Diagnoseanzeige mittig, Not-Aus rechts und eine untere Bedienleiste. Die Fahrfunktionen sind für die Simulation zugeordnet. Anzeige und Tacho sind Bildkulisse; zusätzliche Taster und die beiden Drehschalter sind als Reserve bedienbar.",
+      "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe.",
       "references": [
         {
-          "title": "EVAG · Erfurter Tramlink",
-          "url": "https://www.evag-erfurt.de/evag/tramlink"
-        },
-        {
-          "title": "Erfurt · Fahrschalter-Detail",
-          "url": "https://www.rynek-kolejowy.pl/wiadomosci/erfurt-nowy-tramlink-zaprezentowany-146884.html"
-        },
-        {
-          "title": "Tramlink Traunseetram · Simon Legner, CC BY-SA 4.0",
-          "url": "https://commons.wikimedia.org/wiki/File:Vossloh_Tramlink_F%C3%BChrerstand.jpg"
-        },
-        {
-          "title": "CC BY-SA 4.0 · Lizenz der bearbeiteten Vergleichsvorlage",
-          "url": "https://creativecommons.org/licenses/by-sa/4.0/"
+          "title": "Gestaltung, bereitgestellte Vorlage und Änderungen",
+          "url": "https://github.com/bratkartoffeln/tram-planer/blob/main/IMAGE_SOURCES.md#tramlink-mittleres-instrumentenpanel-in-version-6210"
         }
-      ],
-      "soundNote": "Standardklänge (Fallback) · vorhandene Aufnahmen und synthetische Mechanik; keine Originalaufnahmen dieser Baureihe."
+      ]
     },
     "credits": [
-      "KI-Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026. Nachbildung · Erfurt / Vergleich Traunsee. Frontales Schalterpanel aus der Referenz abgeleitet; Tastenanzahl und Anordnung an die Simulation angepasst. Bildkappen und vier fotografierte Schrauben werden animiert. Instrumente sind Bildkulisse.",
-      "Grafik panel-front.webp: Bearbeitung nach Simon Legner, CC BY-SA 4.0. Originalfoto, Lizenz und Änderungen siehe Referenzlinks."
+      "Fotorealistische frontale Nachbildung mit dem integrierten Imagegen-Tool, 21.10.2026, nach dem im Chat bereitgestellten Foto des mittleren Tramlink-Instrumentenpults. Hardware und Anordnung für die Simulation angepasst; keine exakte Werkszeichnung. Keine rechte Seitenkonsole und kein linkes Fahrhebelpult. Schrift und Funktionensymbole werden in HTML ergänzt."
     ]
   }
 });

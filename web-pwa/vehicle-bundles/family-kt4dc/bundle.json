@@ -9,66 +9,101 @@
     "buttons": {
       "next": {
         "x": 166,
-        "y": 253,
+        "y": 251,
         "size": 180,
-        "capWidth": 136,
-        "capHeight": 140,
+        "capWidth": 132,
+        "capHeight": 132,
         "shape": "round",
-        "ink": "#f7f1df"
+        "ink": "#f7f1df",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "back": {
-        "x": 405,
+        "x": 406,
         "y": 251.5,
         "size": 180,
-        "capWidth": 138,
-        "capHeight": 142,
+        "capWidth": 130,
+        "capHeight": 130,
         "shape": "round",
-        "ink": "#18212a"
+        "ink": "#18212a",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "doors": {
-        "x": 163.5,
+        "x": 164.5,
         "y": 531,
         "size": 180,
-        "capWidth": 144,
-        "capHeight": 144,
+        "capWidth": 132,
+        "capHeight": 132,
         "shape": "round",
-        "ink": "#f7f1df"
+        "ink": "#f7f1df",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "passenger": {
         "x": 240,
         "y": 795,
         "size": 180,
-        "capWidth": 142,
-        "capHeight": 144,
+        "capWidth": 134,
+        "capHeight": 134,
         "shape": "round",
-        "ink": "#18212a"
+        "ink": "#18212a",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "fullscreen": {
         "x": 578,
         "y": 796,
         "size": 180,
-        "capWidth": 142,
-        "capHeight": 144,
+        "capWidth": 136,
+        "capHeight": 136,
         "shape": "round",
-        "ink": "#18212a"
+        "ink": "#18212a",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "traffic": {
         "x": 954.5,
         "y": 795.5,
         "size": 180,
-        "capWidth": 138,
-        "capHeight": 144,
+        "capWidth": 130,
+        "capHeight": 142,
         "shape": "round",
-        "ink": "#3c280c"
+        "ink": "#3c280c",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "finish": {
         "x": 1279,
         "y": 794.5,
         "size": 180,
-        "capWidth": 144,
-        "capHeight": 146,
+        "capWidth": 138,
+        "capHeight": 138,
         "shape": "round",
-        "ink": "#f7f1df"
+        "ink": "#f7f1df",
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "emergency": {
         "x": 1376,
@@ -158,30 +193,45 @@
         "kind": "button",
         "label": "Reserve 1",
         "sprite": [
-          1117,
-          251,
-          134,
-          138
+          1114,
+          252,
+          130,
+          130
+        ],
+        "press": [
+          0,
+          1,
+          0.95
         ]
       },
       {
         "kind": "button",
         "label": "Reserve 2",
         "sprite": [
-          410,
+          405,
           531,
-          134,
-          138
+          130,
+          130
+        ],
+        "press": [
+          0,
+          1,
+          0.95
         ]
       },
       {
         "kind": "button",
         "label": "Reserve 3",
         "sprite": [
-          1115,
-          531,
-          134,
-          138
+          1113,
+          532,
+          130,
+          130
+        ],
+        "press": [
+          0,
+          1,
+          0.95
         ]
       }
     ],

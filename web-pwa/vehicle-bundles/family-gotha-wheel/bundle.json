@@ -8,11 +8,11 @@
     "height": 1024,
     "buttons": {
       "next": {
-        "x": 265,
-        "y": 583.5,
+        "x": 262,
+        "y": 580.5,
         "size": 180,
-        "capWidth": 134,
-        "capHeight": 138,
+        "capWidth": 122,
+        "capHeight": 122,
         "shape": "round",
         "ink": "#fff3df",
         "labelPad": {
@@ -20,14 +20,19 @@
           "y": 475,
           "width": 164,
           "ink": "#1d2328"
-        }
+        },
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "back": {
-        "x": 592,
+        "x": 593,
         "y": 580,
         "size": 180,
-        "capWidth": 128,
-        "capHeight": 134,
+        "capWidth": 122,
+        "capHeight": 122,
         "shape": "round",
         "ink": "#18212a",
         "labelPad": {
@@ -35,14 +40,19 @@
           "y": 475,
           "width": 170,
           "ink": "#1d2328"
-        }
+        },
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "doors": {
-        "x": 933,
-        "y": 582,
+        "x": 935,
+        "y": 579,
         "size": 180,
-        "capWidth": 136,
-        "capHeight": 138,
+        "capWidth": 124,
+        "capHeight": 124,
         "shape": "round",
         "ink": "#f7f1df",
         "labelPad": {
@@ -50,14 +60,19 @@
           "y": 475,
           "width": 170,
           "ink": "#1d2328"
-        }
+        },
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "passenger": {
-        "x": 259,
-        "y": 813.5,
+        "x": 261,
+        "y": 815.5,
         "size": 180,
-        "capWidth": 128,
-        "capHeight": 130,
+        "capWidth": 124,
+        "capHeight": 124,
         "shape": "round",
         "ink": "#18212a",
         "labelPad": {
@@ -65,14 +80,19 @@
           "y": 706,
           "width": 164,
           "ink": "#1d2328"
-        }
+        },
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "fullscreen": {
-        "x": 592.5,
-        "y": 814,
+        "x": 593.5,
+        "y": 815,
         "size": 180,
-        "capWidth": 128,
-        "capHeight": 130,
+        "capWidth": 124,
+        "capHeight": 124,
         "shape": "round",
         "ink": "#18212a",
         "labelPad": {
@@ -80,14 +100,19 @@
           "y": 706,
           "width": 170,
           "ink": "#1d2328"
-        }
+        },
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "traffic": {
         "x": 935.5,
         "y": 815,
         "size": 180,
-        "capWidth": 130,
-        "capHeight": 132,
+        "capWidth": 124,
+        "capHeight": 124,
         "shape": "round",
         "ink": "#3c280c",
         "labelPad": {
@@ -95,14 +120,19 @@
           "y": 706,
           "width": 170,
           "ink": "#1d2328"
-        }
+        },
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "finish": {
-        "x": 1270,
+        "x": 1269,
         "y": 815.5,
         "size": 180,
-        "capWidth": 134,
-        "capHeight": 132,
+        "capWidth": 126,
+        "capHeight": 126,
         "shape": "round",
         "ink": "#f7f1df",
         "labelPad": {
@@ -110,7 +140,12 @@
           "y": 706,
           "width": 170,
           "ink": "#1d2328"
-        }
+        },
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       "emergency": {
         "x": 1271.5,
@@ -270,17 +305,22 @@
         "kind": "button",
         "label": "Reservetaster",
         "sprite": [
-          765,
-          372,
-          64,
-          64
+          761,
+          370,
+          62,
+          62
         ],
         "labelPad": {
           "x": 758,
           "y": 308,
           "width": 130,
           "ink": "#1d2328"
-        }
+        },
+        "press": [
+          0,
+          1,
+          0.95
+        ]
       },
       {
         "kind": "lever",
