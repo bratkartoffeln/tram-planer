@@ -13,7 +13,9 @@ const output=path.resolve(__dirname,'../build/qa-cab-layout-export');
   // Catalog filters and never opening a preview must not limit the export.
   await b.evaluate('document.getElementById("vehicleTypeSearch").value="Tramlink";filterVehicleCatalog();document.getElementById("exportAllCabLayoutsButton").click()');
   assert.equal(await b.evaluate('exportCalls.length'),1);
-  const data=await b.evaluate('exportCalls[0]');assert.equal(data.format,'fahrplan-manager-cab-layouts');assert.equal(data.schemaVersion,1);assert.equal(data.layouts.length,8);
+  const data=await b.evaluate('exportCalls[0]');assert.equal(data.format,'fahrplan-manager-cab-layouts');assert.equal(data.schemaVersion,1);
+  assert.equal(new Set(data.layouts.map(item=>item.image)).size,8);
+  assert.equal(new Set(data.layouts.map(item=>JSON.stringify([item.image,item.width,item.height,item.cab.layout]))).size,data.layouts.length);
   const ids=data.layouts.flatMap(item=>item.vehicleTypes);
   assert.equal(ids.length,24);assert.equal(new Set(ids).size,24);
   assert.deepEqual(new Set(ids),new Set(['default',...await b.evaluate('ERFURT_VEHICLE_CATALOG.types.map(type=>type.id)')]));
@@ -23,7 +25,8 @@ const output=path.resolve(__dirname,'../build/qa-cab-layout-export');
   assert.equal(kt4dc.cab.layout['icon-next'].iconSize,80);assert.equal(kt4dc.cab.layout['control-reserve-0'].action,'passenger');
   // Existing compiled overlays and local sparse edits are both retained.
   await b.evaluate(`window.VEHICLE_BUNDLES={...VEHICLE_BUNDLES,kt4dc:{...VEHICLE_BUNDLES.kt4dc,cab:{...VEHICLE_BUNDLES.kt4dc.cab,layout:{'icon-next':{color:'#112233'}}}},'combino-basic':{...VEHICLE_BUNDLES['combino-basic'],cab:{...VEHICLE_BUNDLES['combino-basic'].cab,layout:{'icon-next':{color:'#445566'}}}}}`);
-  const variant=await b.evaluate('cabLayoutAllExportData()');assert.equal(variant.layouts.length,9);
+  const variant=await b.evaluate('cabLayoutAllExportData()');
+  assert.equal(variant.layouts.find(item=>item.vehicleTypes.includes('combino-basic')).cab.layout['icon-next'].color,'#445566');
   assert.deepEqual(variant.layouts.find(item=>item.vehicleTypes.includes('kt4dc')).cab.layout['icon-next'],{color:'#112233',x:222,iconSize:80});
   // Actual browser download follows the same JSON format as the native bridge.
   await b.cdp('Browser.setDownloadBehavior',{behavior:'allow',downloadPath:output});
@@ -33,6 +36,6 @@ const output=path.resolve(__dirname,'../build/qa-cab-layout-export');
   assert.deepEqual(JSON.parse(fs.readFileSync(file,'utf8')),variant);
   assert.equal(await b.evaluate('JSON.stringify(state)'),original);
   await b.evaluate('state.settings.dev_mode=false;showView("vehicles")');assert.equal(await b.evaluate('document.getElementById("exportAllCabLayoutsButton")'),null);
-  assert.equal(b.errors.length,0);console.log('All-layout export: Dev gate, 8 shared panels/24 type mappings, saved drafts, compiled variants, one native call and actual JSON download passed.');
+  assert.equal(b.errors.length,0);console.log('All-layout export: Dev gate, 8 panel images/24 type mappings, distinct layouts, saved drafts, compiled variants, one native call and actual JSON download passed.');
  }finally{await b.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});
