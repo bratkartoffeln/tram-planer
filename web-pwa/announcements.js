@@ -46,16 +46,24 @@
     if (state.settings.cockpit_muted) return true;
     driverEffect = true;
     const expectedTicket = ticket;
-    const path = `audio/effects/${id}.mp3`;
+    const fallback = `audio/effects/${id}.mp3`;
+    const path = driverSoundPath(id) || fallback;
     try {
       if (nativeAvailable() && typeof window.AndroidAnnouncements.playEffect === 'function') {
         return await new Promise(resolve => {
           nativeEffect = {ticket:expectedTicket, resolve};
-          window.AndroidAnnouncements.playEffect(id, expectedTicket);
+          if (path !== fallback && typeof window.AndroidAnnouncements.playEffectAsset === 'function') {
+            window.AndroidAnnouncements.playEffectAsset(path, id, expectedTicket);
+          } else window.AndroidAnnouncements.playEffect(id, expectedTicket);
         });
       }
       await audioContext().resume();
-      const buffer = await loadBuffer(path);
+      let buffer;
+      try { buffer = await loadBuffer(path); }
+      catch (error) {
+        if (path === fallback || expectedTicket !== ticket) throw error;
+        buffer = await loadBuffer(fallback);
+      }
       const completed = expectedTicket === ticket && await playBuffer(buffer, expectedTicket);
       if (expectedTicket === ticket) driverEffect = false;
       return completed;

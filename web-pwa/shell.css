@@ -29,3 +29,5 @@
 @media(prefers-reduced-motion:reduce){.shell,.sidebar,.sidebar .brand,.sidebar .side-bottom,.sidebar .nav,.sidebar .nav button,.sidebar .nav-label,.sidebar-toggle-label{transition:none!important}}
 
 .version-trigger{border:0;background:transparent;padding:8px 0;font-weight:800}.version-trigger:focus-visible{outline:2px solid var(--teal);outline-offset:4px}.version-trigger,.version{touch-action:manipulation;user-select:none}
+
+.cab-fullscreen #appUpdateNotice{display:none}

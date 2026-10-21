@@ -30,7 +30,7 @@ const root=path.resolve(__dirname,'../app/src/main/assets'),output=path.resolve(
   await b.evaluate("state.active.position=state.active.plan.stops.length-2;showView('driver')");await page.locator('#nextStopBtn').click();
   assert.equal(await page.locator('#nextStopBtn').innerText(),'Nächster Halt');assert(await page.locator('#nextStopBtn').isDisabled());
   const terminal=await b.evaluate('clone(state.active)');await b.evaluate('nextStop();nextStop();updateDriverLive()');assert.deepEqual(await b.evaluate('clone(state.active)'),terminal);assert(await page.locator('#nextStopBtn').isDisabled());assert.equal(await b.evaluate('state.history.length'),0);
-  await b.evaluate('toggleDoors();toggleDoors();updateDriverLive()');assert(await page.locator('#nextStopBtn').isDisabled());
+  await b.evaluate('(async()=>{await toggleDoors();await toggleDoors();updateDriverLive()})()');assert(await page.locator('#nextStopBtn').isDisabled());
   await b.evaluate('saveState()');await page.reload();await b.evaluate("showView('driver')");assert(await page.locator('#nextStopBtn').isDisabled());
   await page.getByRole('button',{name:'Zurück',exact:true}).click();assert(!(await page.locator('#nextStopBtn').isDisabled()));await page.locator('#nextStopBtn').click();
   await page.getByRole('button',{name:'Fahrt beenden',exact:true}).click();assert.equal(await b.evaluate('state.active'),null);assert.equal(await b.evaluate('state.history[0].status'),'Ziel erreicht');await b.evaluate('closeModal()');

@@ -1,0 +1,37 @@
+{
+  "id": "default",
+  "cab": {
+    "image": "images/cab-panel-photoreal.webp",
+    "width": 1681,
+    "height": 936,
+    "buttons": {
+      "next": {"x": 166, "y": 247},
+      "back": {"x": 334, "y": 247},
+      "doors": {"x": 166, "y": 475},
+      "passenger": {"x": 406, "y": 749},
+      "fullscreen": {"x": 626, "y": 749},
+      "traffic": {"x": 871, "y": 748},
+      "finish": {"x": 1493, "y": 748},
+      "emergency": {"x": 1510, "y": 220}
+    },
+    "indicators": {"closed": {"x": 884, "y": 248}, "open": {"x": 884, "y": 481}},
+    "headings": [["FAHRT & TÜREN",432,106],["SCHEIBE",1170,106],["SPIEGEL",1295,373],["FAHRGASTINFO",415,616],["BETRIEB",1295,616]],
+    "spares": [[510,247],[686,247],[334,475],[510,475],[686,475],[1262,234],[1093,485],[1493,485],[194,752],[1270,750]],
+    "screws": [[60,50,"oben links"],[1620,50,"oben rechts"],[60,880,"unten links"],[1620,880,"unten rechts"]],
+    "rotaries": [[1088,236],[1088,750]],
+    "rotarySprites": {"mask": [1172,292,32,32], "ring": [1262,234,146,146], "grip": [1088,251,34,124]},
+    "colors": {"console": "#242932", "panel": "#65636f", "text": "#eef1f3"}
+  },
+  "sounds": {
+    "effects": {
+      "door_open": "audio/effects/door_open.mp3",
+      "door_close": "audio/effects/door_close.mp3",
+      "emergency": "audio/effects/emergency.mp3",
+      "traffic": "audio/effects/traffic.mp3",
+      "passenger": "audio/effects/passenger.mp3",
+      "finish": "audio/effects/finish.mp3",
+      "back": "audio/effects/back.mp3"
+    },
+    "mechanical": {"down": "synth:down", "up": "synth:up", "latch": "synth:latch", "rotary": "synth:rotary", "screw": "synth:screw", "ratchet": "synth:ratchet"}
+  }
+}
