@@ -67,6 +67,8 @@ public class MainActivity extends Activity {
     private int driverEffectRequest = -1;
     private byte[] pendingBackup;
     private ValueCallback<Uri[]> fileCallback;
+    private AppUpdateBridge appUpdates;
+    private final java.util.Set<MediaPlayer> mechanicalPlayers = new java.util.HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +114,8 @@ public class MainActivity extends Activity {
         webView.addJavascriptInterface(new AnnouncementBridge(), "AndroidAnnouncements");
         webView.addJavascriptInterface(new BackupBridge(), "AndroidBackup");
         webView.addJavascriptInterface(new DisplayBridge(), "AndroidDisplay");
+        appUpdates = new AppUpdateBridge(this, webView, this::isTrustedPage);
+        webView.addJavascriptInterface(appUpdates, "AndroidUpdates");
         webView.loadUrl(APP_URL);
 
         if (Build.VERSION.SDK_INT >= 33) {
@@ -192,6 +196,65 @@ public class MainActivity extends Activity {
 
     public final class AnnouncementBridge {
         @JavascriptInterface
+        public void playEffectAsset(String path, String fallbackId, int requestId) {
+            mainHandler.post(() -> {
+                if (!resumed || !isTrustedPage()) return;
+                if (fallbackId == null || !fallbackId.matches("door_open|door_close|emergency|traffic|passenger|finish|back")) return;
+                stopAnnouncement();
+                driverEffectRequest = requestId;
+                final long generation = announcementGeneration;
+                final String fallback = "audio/effects/" + fallbackId + ".mp3";
+                if (!requestAnnouncementFocus()) {
+                    failAnnouncement("Der Fahrpult-Sound konnte keinen Audiozugriff erhalten.", generation);
+                    return;
+                }
+                Runnable failure = () -> playAsset(fallback, generation,
+                        () -> finishAnnouncement(generation),
+                        () -> failAnnouncement("Der Fahrpult-Sound konnte nicht abgespielt werden.", generation));
+                if (!validCabAudioPath(path)) { failure.run(); return; }
+                playAsset(path, generation, () -> finishAnnouncement(generation), failure);
+            });
+        }
+
+        @JavascriptInterface
+        public void playMechanical(String path, String kind) {
+            mainHandler.post(() -> {
+                if (!resumed || !isTrustedPage() || !validCabAudioPath(path)
+                        || kind == null || !kind.matches("down|up|latch|rotary|screw|ratchet")) return;
+                // Independent of announcements and door-completion callbacks.
+                if (mechanicalPlayers.size() >= 12) stopMechanicalPlayers();
+                MediaPlayer sound = new MediaPlayer();
+                mechanicalPlayers.add(sound);
+                Runnable release = () -> {
+                    if (!mechanicalPlayers.remove(sound)) return;
+                    sound.setOnPreparedListener(null);
+                    sound.setOnCompletionListener(null);
+                    sound.setOnErrorListener(null);
+                    sound.release();
+                };
+                Runnable failure = () -> {
+                    if (!mechanicalPlayers.contains(sound)) return;
+                    release.run();
+                    if (resumed && isTrustedPage()) webView.evaluateJavascript(
+                            "playCabMechanicalSynth(" + JSONObject.quote(kind) + ")", null);
+                };
+                try (AssetFileDescriptor descriptor = getAssets().openFd(path)) {
+                    sound.setAudioAttributes(ANNOUNCEMENT_ATTRIBUTES);
+                    sound.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+                    sound.setOnPreparedListener(player -> {
+                        try { player.start(); } catch (IllegalStateException error) { failure.run(); }
+                    });
+                    sound.setOnCompletionListener(player -> release.run());
+                    sound.setOnErrorListener((player, what, extra) -> { failure.run(); return true; });
+                    sound.prepareAsync();
+                } catch (IOException | RuntimeException error) { failure.run(); }
+            });
+        }
+
+        @JavascriptInterface
+        public void stopMechanical() { mainHandler.post(MainActivity.this::stopMechanicalPlayers); }
+
+        @JavascriptInterface
         public void playEffect(String effectId, int requestId) {
             mainHandler.post(() -> {
                 if (!isTrustedPage() || destroyed) return;
@@ -261,6 +324,20 @@ public class MainActivity extends Activity {
         playAsset(paths.optString(index), generation,
                 () -> playSequenceItem(paths, index + 1, generation),
                 () -> failAnnouncement("Eine Audiodatei der Ansage konnte nicht abgespielt werden.", generation));
+    }
+
+    private static boolean validCabAudioPath(String path) {
+        return path != null && path.matches("(audio/effects|vehicle-bundles/[a-z0-9-]+/audio)/[a-z0-9_-]+\\.mp3");
+    }
+
+    private void stopMechanicalPlayers() {
+        for (MediaPlayer sound : mechanicalPlayers) {
+            sound.setOnPreparedListener(null);
+            sound.setOnCompletionListener(null);
+            sound.setOnErrorListener(null);
+            sound.release();
+        }
+        mechanicalPlayers.clear();
     }
 
     private void playAnnouncement(String rawStopName, String assetPath) {
@@ -532,6 +609,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         resumed = false;
+        stopMechanicalPlayers();
         stopAnnouncement();
         if (webView != null) {
             webView.evaluateJavascript("if(window.onNativeAnnouncementPause){window.onNativeAnnouncementPause();}", null);
@@ -543,6 +621,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         destroyed = true;
+        stopMechanicalPlayers();
+        if (appUpdates != null) appUpdates.close();
         stopAnnouncement();
         if (fileCallback != null) {
             fileCallback.onReceiveValue(null);
@@ -553,6 +633,8 @@ public class MainActivity extends Activity {
         if (webView != null) {
             webView.removeJavascriptInterface("AndroidAnnouncements");
             webView.removeJavascriptInterface("AndroidBackup");
+            webView.removeJavascriptInterface("AndroidUpdates");
+            webView.removeJavascriptInterface("AndroidDisplay");
             ((ViewGroup) webView.getParent()).removeView(webView);
             webView.destroy();
             webView = null;

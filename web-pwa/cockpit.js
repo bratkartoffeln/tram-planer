@@ -12,11 +12,10 @@ let cabRouteCollapsed=false;
 let cabScrewTripId=null;
 const cabLooseScrews=new Set(),cabScrewTouches=new Map();
 const cabRotaryTurns=[0,0];
-const CAB_PANEL={width:1681,height:936};
-function cabPosition(x,y,size=140){return `left:${x/CAB_PANEL.width*100}%;top:${y/CAB_PANEL.height*100}%;width:${size/CAB_PANEL.width*100}%`;}
+function cabPosition(x,y,size=140){return `left:${x/cabPanel().width*100}%;top:${y/cabPanel().height*100}%;width:${size/cabPanel().width*100}%`;}
 function cabButton({id='',color,label,icon,action,disabled=false,pressed,emergency=false,x,y}){
  const size=emergency?200:140,cap=emergency?148:96;
- const crop=`--cap-inset:${(size-cap)/size*50}%;--cap-size-x:${CAB_PANEL.width/cap*100}%;--cap-size-y:${CAB_PANEL.height/cap*100}%;--cap-x:${(x-cap/2)/(CAB_PANEL.width-cap)*100}%;--cap-y:${(y-cap/2)/(CAB_PANEL.height-cap)*100}%`;
+ const crop=`--cap-inset:${(size-cap)/size*50}%;--cap-size-x:${cabPanel().width/cap*100}%;--cap-size-y:${cabPanel().height/cap*100}%;--cap-x:${(x-cap/2)/(cabPanel().width-cap)*100}%;--cap-y:${(y-cap/2)/(cabPanel().height-cap)*100}%`;
  const adjustment=icon==='traffic'?' transform="translate(0 -1)"':icon==='finish'?' transform="translate(.5 0)"':'';
  return `<button ${id?`id="${id}"`:''} ${emergency?'aria-label="Notfall"':''} ${id==='cabFullscreenBtn'?`title="${cabFullscreen?'Vollbild beenden':'Vollbild einschalten'}"`:''} class="cab-button cab-${color}${emergency?' cab-emergency':''}" style="${cabPosition(x,y,size)};${crop}" onclick="${action}" ${disabled?'disabled':''} ${pressed===undefined?'':`aria-pressed="${pressed}"`}><span class="cab-bezel"><span class="cab-face"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="${CAB_ICONS[icon]}"${adjustment}/></svg></span></span><span class="cab-label">${esc(label)}</span></button>`;
 }
@@ -24,11 +23,11 @@ function cabPlaceholder(x,y){
  return `<span class="cab-placeholder cab-reserve" style="${cabPosition(x,y)}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"></span></span></span>`;
 }
 function cabPhotoCrop(prefix,x,y,width,height=width){
- return `--${prefix}-size:${CAB_PANEL.width/width*100}% ${CAB_PANEL.height/height*100}%;--${prefix}-position:${(x-width/2)/(CAB_PANEL.width-width)*100}% ${(y-height/2)/(CAB_PANEL.height-height)*100}%`;
+ return `--${prefix}-size:${cabPanel().width/width*100}% ${cabPanel().height/height*100}%;--${prefix}-position:${(x-width/2)/(cabPanel().width-width)*100}% ${(y-height/2)/(cabPanel().height-height)*100}%`;
 }
 function cabRotaryLabel(index){return `Reserve-Drehschalter ${index===0?'Scheibe':'Betrieb'}, Stellung ${cabRotaryTurns[index]%4*90}°`;}
 function renderCabRotary(index,x,y){
- const crop=[cabPhotoCrop('rotary-mask',1172,292,32),cabPhotoCrop('rotary-ring',1262,234,146),cabPhotoCrop('rotary-grip',1088,251,34,124)].join(';');
+ const crop=Object.entries(cabPanel().rotarySprites).map(([name,rect])=>cabPhotoCrop('rotary-'+name,...rect)).join(';');
  return `<button type="button" id="cabRotary${index}" class="cab-rotary cab-reserve" style="${cabPosition(x,y,180)};${crop};--rotary-angle:${cabRotaryTurns[index]*90}deg" aria-label="${cabRotaryLabel(index)}" title="Reserve: pro Klick 90° im Uhrzeigersinn" onclick="turnCabRotary(${index})"><span class="cab-rotary-mask"></span><span class="cab-rotary-ring"><span class="cab-rotary-disc"></span></span><span class="cab-rotary-turn"><span class="cab-rotary-grip"></span></span></button>`;
 }
 function turnCabRotary(index){
@@ -38,12 +37,12 @@ function turnCabRotary(index){
 }
 function cabDoorIndicator(x,y,color,label,active,icon,blinking=false){
  const size=140,cap=96;
- const crop=`--cap-inset:${(size-cap)/size*50}%;--cap-size-x:${CAB_PANEL.width/cap*100}%;--cap-size-y:${CAB_PANEL.height/cap*100}%;--cap-x:${(x-cap/2)/(CAB_PANEL.width-cap)*100}%;--cap-y:${(y-cap/2)/(CAB_PANEL.height-cap)*100}%`;
+ const crop=`--cap-inset:${(size-cap)/size*50}%;--cap-size-x:${cabPanel().width/cap*100}%;--cap-size-y:${cabPanel().height/cap*100}%;--cap-x:${(x-cap/2)/(cabPanel().width-cap)*100}%;--cap-y:${(y-cap/2)/(cabPanel().height-cap)*100}%`;
  return `<span class="cab-door-indicator cab-indicator-${color}${active?' is-lit':''}${blinking?' is-blinking':''}" data-door-indicator="${color==='green'?'closed':'open'}" style="${cabPosition(x,y,size)};${crop}" aria-hidden="true"><span class="cab-bezel"><span class="cab-face"><svg viewBox="0 0 32 32"><path d="${CAB_ICONS[icon]}"/></svg></span></span><span class="cab-label">${label}</span></span>`;
 }
 function renderCabScrew(index,x,y,label){
  const cap=54,missing=cabLooseScrews.has(index);
- const crop=`--screw-size-x:${CAB_PANEL.width/cap*100}%;--screw-size-y:${CAB_PANEL.height/cap*100}%;--screw-x:${(x-cap/2)/(CAB_PANEL.width-cap)*100}%;--screw-y:${(y-cap/2)/(CAB_PANEL.height-cap)*100}%`;
+ const crop=`--screw-size-x:${cabPanel().width/cap*100}%;--screw-size-y:${cabPanel().height/cap*100}%;--screw-x:${(x-cap/2)/(cabPanel().width-cap)*100}%;--screw-y:${(y-cap/2)/(cabPanel().height-cap)*100}%`;
  return `<button type="button" id="cabScrew${index}" class="cab-screw${missing?' is-missing':''}" style="${cabPosition(x,y,72)};${crop}" data-screw-label="${label}" aria-label="${missing?'Schraubenloch':'Schraube'} ${label}" title="Doppelklick: Schraube ${missing?'eindrehen':'herausdrehen'}" ondblclick="toggleCabScrew(${index})" onpointerup="touchCabScrew(event,${index})" onkeydown="if(!event.repeat&&['Enter',' '].includes(event.key)){event.preventDefault();toggleCabScrew(${index})}"><span class="cab-screw-hole"></span><span class="cab-screw-face"></span></button>`;
 }
 function touchCabScrew(event,index){
@@ -69,21 +68,20 @@ function toggleCabScrew(index){
 function renderCabControls(a,pause){
  const moving=doorMotion?.tripId===a.id;
  if(cabScrewTripId!==a.id){cabScrewTripId=a.id;cabLooseScrews.clear();cabScrewTouches.clear();cabRotaryTurns.fill(0);}
- const spares=[[510,247],[686,247],[334,475],[510,475],[686,475],[1262,234],[1093,485],[1493,485],[194,752],[1270,750]];
- const headings=[['FAHRT & TÜREN',432,106],['SCHEIBE',1170,106],['SPIEGEL',1295,373],['FAHRGASTINFO',415,616],['BETRIEB',1295,616]];
- return `<section class="cab-console" aria-label="Fahrpult in Frontalansicht"><div class="cab-header"><span>FAHRPULT <small>LINIE ${esc(a.plan.line)} · TRAM ${esc(a.plan.tram)}</small></span></div><p class="cab-scroll-hint">Das Pult bei Bedarf seitlich verschieben.</p><div class="cab-panel-viewport" tabindex="0" role="region" aria-label="Fahrpult, auf kleinen Bildschirmen seitlich verschiebbar"><div class="cab-stage"><img class="cab-panel-photo" src="images/cab-panel-photoreal.webp" width="1681" height="936" alt="" draggable="false">${[[60,50,'oben links'],[1620,50,'oben rechts'],[60,880,'unten links'],[1620,880,'unten rechts']].map(([x,y,label],index)=>renderCabScrew(index,x,y,label)).join('')}<div class="driver-controls cab-controls">
- ${headings.map(([name,x,y])=>`<span class="cab-group-mark" style="left:${x/CAB_PANEL.width*100}%;top:${y/CAB_PANEL.height*100}%">${name}</span>`).join('')}
- ${cabButton({id:'nextStopBtn',x:166,y:247,color:'blue',label:'Nächster Halt',icon:'next',action:'nextStop()',disabled:pause>0||a.doorsOpen||a.position>=a.plan.stops.length-1})}
- ${cabButton({x:334,y:247,color:'white',label:'Zurück',icon:'back',action:'driverPrevious()',disabled:a.position===0||pause>0})}
- ${cabButton({id:'doorBtn',x:166,y:475,color:'green',label:a.doorsOpen?'Türen schließen':'Türen öffnen',icon:a.doorsOpen?'close':'doors',action:'toggleDoors()',pressed:a.doorsOpen,disabled:moving})}
- ${cabButton({x:406,y:749,color:'white',label:'Fahrgastanzeige',icon:'passenger',action:'openPassengerDisplay()'})}
- ${cabButton({id:'cabFullscreenBtn',x:626,y:749,color:'fullscreen-toggle',label:'Vollbild',icon:'fullscreen',action:'toggleCabFullscreen()',pressed:cabFullscreen})}
- ${cabButton({x:871,y:748,color:'amber',label:'Stau',icon:'traffic',action:'openTrafficModal()'})}
- ${cabButton({x:1493,y:748,color:'red',label:'Fahrt beenden',icon:'finish',action:'finishTrip(state.active.position>=state.active.plan.stops.length-1)'})}
- ${cabButton({id:'emergencyBtn',x:1510,y:220,color:'red',label:'NOT-AUS',icon:'emergency',action:'pressCabEmergency()',emergency:true,pressed:a.status==='suspended'})}
- <div class="cab-door-indicators" role="status" aria-label="${moving?(doorMotion.opening?'Türen öffnen':'Türen schließen'):a.doorsOpen?'Türen geöffnet':'Türen geschlossen'}">${cabDoorIndicator(884,248,'green','Türen zu',!a.doorsOpen,'close')}${cabDoorIndicator(884,481,'amber','Türen offen',a.doorsOpen,'doors',moving)}</div>
+ const bundle=getVehicleBundle(a.plan),panel=bundle.cab,{spares,headings}=panel;
+ return `<section class="cab-console" data-vehicle-bundle="${esc(bundle.id)}" style="--cab-image:url('${esc(panel.image)}');--cab-width:${panel.width};--cab-height:${panel.height};--cab-console:${panel.colors.console};--cab-panel:${panel.colors.panel};--cab-text:${panel.colors.text}" aria-label="Fahrpult in Frontalansicht"><div class="cab-header"><span>FAHRPULT <small>LINIE ${esc(a.plan.line)} · TRAM ${esc(a.plan.tram)}</small></span></div><p class="cab-scroll-hint">Das Pult bei Bedarf seitlich verschieben.</p><div class="cab-panel-viewport" tabindex="0" role="region" aria-label="Fahrpult, auf kleinen Bildschirmen seitlich verschiebbar"><div class="cab-stage"><img class="cab-panel-photo" src="${esc(panel.image)}" width="${panel.width}" height="${panel.height}" alt="" draggable="false">${panel.screws.map(([x,y,label],index)=>renderCabScrew(index,x,y,label)).join('')}<div class="driver-controls cab-controls">
+ ${headings.map(([name,x,y])=>`<span class="cab-group-mark" style="left:${x/cabPanel().width*100}%;top:${y/cabPanel().height*100}%">${name}</span>`).join('')}
+ ${cabButton({id:'nextStopBtn',...panel.buttons.next,color:'blue',label:'Nächster Halt',icon:'next',action:'nextStop()',disabled:pause>0||a.doorsOpen||a.position>=a.plan.stops.length-1})}
+ ${cabButton({...panel.buttons.back,color:'white',label:'Zurück',icon:'back',action:'driverPrevious()',disabled:a.position===0||pause>0})}
+ ${cabButton({id:'doorBtn',...panel.buttons.doors,color:'green',label:a.doorsOpen?'Türen schließen':'Türen öffnen',icon:a.doorsOpen?'close':'doors',action:'toggleDoors()',pressed:a.doorsOpen,disabled:moving})}
+ ${cabButton({...panel.buttons.passenger,color:'white',label:'Fahrgastanzeige',icon:'passenger',action:'openPassengerDisplay()'})}
+ ${cabButton({id:'cabFullscreenBtn',...panel.buttons.fullscreen,color:'fullscreen-toggle',label:'Vollbild',icon:'fullscreen',action:'toggleCabFullscreen()',pressed:cabFullscreen})}
+ ${cabButton({...panel.buttons.traffic,color:'amber',label:'Stau',icon:'traffic',action:'openTrafficModal()'})}
+ ${cabButton({...panel.buttons.finish,color:'red',label:'Fahrt beenden',icon:'finish',action:'finishTrip(state.active.position>=state.active.plan.stops.length-1)'})}
+ ${cabButton({id:'emergencyBtn',...panel.buttons.emergency,color:'red',label:'NOT-AUS',icon:'emergency',action:'pressCabEmergency()',emergency:true,pressed:a.status==='suspended'})}
+ <div class="cab-door-indicators" role="status" aria-label="${moving?(doorMotion.opening?'Türen öffnen':'Türen schließen'):a.doorsOpen?'Türen geöffnet':'Türen geschlossen'}">${cabDoorIndicator(panel.indicators.closed.x,panel.indicators.closed.y,'green','Türen zu',!a.doorsOpen,'close')}${cabDoorIndicator(panel.indicators.open.x,panel.indicators.open.y,'amber','Türen offen',a.doorsOpen,'doors',moving)}</div>
  ${spares.map(([x,y])=>cabPlaceholder(x,y)).join('')}
- ${renderCabRotary(0,1088,236)}${renderCabRotary(1,1088,750)}
+ ${panel.rotaries.map(([x,y],index)=>renderCabRotary(index,x,y)).join('')}
  </div></div></div><div class="cab-footer"><span>FAHRPLAN MANAGER · BEDIENPULT</span><div><button class="cab-text-button" onclick="toggleCockpitSound()" aria-pressed="${!!state.settings.cockpit_muted}">${state.settings.cockpit_muted?'Tastentöne aus':'Tastentöne an'}</button><button class="cab-text-button" onclick="showCockpitSources()">Bild- & Tonquellen</button></div></div></section>`;
 }
 function updateCabRoutePanel(){
@@ -155,14 +153,20 @@ function pressCabEmergency(){
 function resetCabEmergency(){if(state.active?.status==='running')document.getElementById('emergencyBtn')?.setAttribute('aria-pressed','false');}
 function toggleCockpitSound(){state.settings.cockpit_muted=!state.settings.cockpit_muted;stopCabMechanics();stopDriverSound();saveState();showView('driver');}
 function showCockpitSources(){
- showModal('Fahrpult · Bild- und Tonquellen',`<p>Fotorealistische Pultgrafik mit dem integrierten Imagegen-Tool nach der vom Nutzer bereitgestellten Vorlage erzeugt. Weiße Gruppenumrandungen, elfenbeinfarbene Tasterringe und vier Schrauben sind Teil der Grafik. Acht Funktionstaster sind interaktiv, darunter Vollbild. Zwei separate Kontrollleuchten zeigen den Türzustand; zwei Reserve-Drehschalter lassen sich ohne Fahrfunktion drehen; zehn graue Reserveelemente bleiben rein grafisch. Quelle, Arbeitsdatei und Prompt sind in IMAGE_SOURCES.md dokumentiert.</p><p>Mechanischer Tasterdruck, Loslassen und Einrasten des Not-Aus: eigene digitale Synthese, getrennt von Ansagen und Funktionssounds. Notfallbuzzer: eigene Synthese.</p><p>Türen: „Tram doors open and close hiss and beeping“, stephan, Public Domain. <a href="https://commons.wikimedia.org/wiki/File:Tram_doors_open_and_close_hiss_and_beeping.ogg" target="_blank" rel="noopener">Quelle</a>. Ausschnitte, Pegel angepasst, synthetischer Vorwarnton ergänzt.</p><p>Stau: „Audio sound of a busy traffic in Porthacourt“, ElemePodcast, CC BY 4.0, und „Car Horn“, 15HPanska_Ruttner_Jan, CC0. Ausschnitte mit Hupe gemischt. Fahrtende: Windows XP Shutdown, Microsoft, aus dem Winhistory-Archiv, leiser abgemischt. Zurück: bereitgestellter Jingle aus „Back to the Future“, Alan Silvestri. Details und Quellenlinks: AUDIO_SOURCES.md.</p>`, '<button class="primary" onclick="closeModal()">Schließen</button>');
+ const credits=getVehicleBundle().credits||[];
+ showModal('Fahrpult · Bild- und Tonquellen',`${credits.map(text=>`<p>${esc(text)}</p>`).join('')}<p>Fotorealistische Pultgrafik mit dem integrierten Imagegen-Tool nach der vom Nutzer bereitgestellten Vorlage erzeugt. Weiße Gruppenumrandungen, elfenbeinfarbene Tasterringe und vier Schrauben sind Teil der Grafik. Acht Funktionstaster sind interaktiv, darunter Vollbild. Zwei separate Kontrollleuchten zeigen den Türzustand; zwei Reserve-Drehschalter lassen sich ohne Fahrfunktion drehen; zehn graue Reserveelemente bleiben rein grafisch. Quelle, Arbeitsdatei und Prompt sind in IMAGE_SOURCES.md dokumentiert.</p><p>Mechanischer Tasterdruck, Loslassen und Einrasten des Not-Aus: eigene digitale Synthese, getrennt von Ansagen und Funktionssounds. Notfallbuzzer: eigene Synthese.</p><p>Türen: „Tram doors open and close hiss and beeping“, stephan, Public Domain. <a href="https://commons.wikimedia.org/wiki/File:Tram_doors_open_and_close_hiss_and_beeping.ogg" target="_blank" rel="noopener">Quelle</a>. Ausschnitte, Pegel angepasst, synthetischer Vorwarnton ergänzt.</p><p>Stau: „Audio sound of a busy traffic in Porthacourt“, ElemePodcast, CC BY 4.0, und „Car Horn“, 15HPanska_Ruttner_Jan, CC0. Ausschnitte mit Hupe gemischt. Fahrtende: Windows XP Shutdown, Microsoft, aus dem Winhistory-Archiv, leiser abgemischt. Zurück: bereitgestellter Jingle aus „Back to the Future“, Alan Silvestri. Details und Quellenlinks: AUDIO_SOURCES.md.</p>`, '<button class="primary" onclick="closeModal()">Schließen</button>');
 }
 // A separate Web Audio channel keeps short mechanical transients independent of
 // stop announcements and the Android MediaPlayer sequence. No runtime downloads.
 let cabAudioContext=null;
 const cabMechanicalSources=new Set();
-function stopCabMechanics(){for(const s of cabMechanicalSources){try{s.stop();}catch{}}cabMechanicalSources.clear();}
+function stopCabMechanics(){cabMechanicalGeneration++;if(window.AndroidAnnouncements?.stopMechanical)AndroidAnnouncements.stopMechanical();for(const s of cabMechanicalSources){try{s.stop();}catch{}}cabMechanicalSources.clear();}
 function playCabMechanical(kind){
+ const sound=cabMechanicalSound(kind);
+ if(sound&&!sound.startsWith('synth:')){void playCabMechanicalAsset(sound,kind);return;}
+ playCabMechanicalSynth(kind);
+}
+function playCabMechanicalSynth(kind){
  if(kind==='screw'||kind==='ratchet'){playCabScrewSound(kind==='ratchet');return;}
  if(state.settings.cockpit_muted||document.hidden)return;
  try{
@@ -179,6 +183,21 @@ function playCabMechanical(kind){
   const source=ctx.createBufferSource();source.buffer=buffer;source.connect(ctx.destination);cabMechanicalSources.add(source);
   source.onended=()=>cabMechanicalSources.delete(source);source.start();
  }catch{/* A muted/unavailable audio device must not prevent operating the cab. */}
+}
+const cabMechanicalBuffers=new Map();
+let cabMechanicalGeneration=0;
+async function playCabMechanicalAsset(path,kind){
+ if(state.settings.cockpit_muted||document.hidden)return;
+ if(window.AndroidAnnouncements?.playMechanical){AndroidAnnouncements.playMechanical(path,kind);return;}
+ const generation=cabMechanicalGeneration;
+ try{
+  cabAudioContext??=new (window.AudioContext||window.webkitAudioContext)();
+  await cabAudioContext.resume();
+  if(!cabMechanicalBuffers.has(path))cabMechanicalBuffers.set(path,fetch(path).then(r=>{if(!r.ok)throw Error(path);return r.arrayBuffer();}).then(bytes=>cabAudioContext.decodeAudioData(bytes)).catch(error=>{cabMechanicalBuffers.delete(path);throw error;}));
+  const buffer=await cabMechanicalBuffers.get(path);
+  if(generation!==cabMechanicalGeneration||state.settings.cockpit_muted||document.hidden)return;
+  const source=cabAudioContext.createBufferSource();source.buffer=buffer;source.connect(cabAudioContext.destination);cabMechanicalSources.add(source);source.onended=()=>cabMechanicalSources.delete(source);source.start();
+ }catch{if(generation===cabMechanicalGeneration)playCabMechanicalSynth(kind);}
 }
 let cabHeld=null;
 function playCabScrewSound(tightening=false){

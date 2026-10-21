@@ -1,8 +1,10 @@
-# Fahrplan Manager Audio – Version 6.2.6
+# Fahrplan Manager Audio – Version 6.2.7
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
 ## Neu
+
+Version 6.2.7 bereitet modellabhängige Fahrerpulte und Sounds vor. Alle 23 Fahrzeugtypen besitzen ein eigenes erweiterbares Bündel; zunächst erben sie vollständig das bisherige Pult und die bisherigen Sounds. Die Android-App kann in den Einstellungen nach neuen GitHub-Releases suchen, beim Start höchstens einmal täglich prüfen und eine neuere Version mit APK-Download anbieten.
 
 Version 6.2.6 richtet den oberen Streckenstrich der Fahrgastanzeige exakt am weiteren Verlauf aus. Im Vollbild des Fahrpults lässt sich der Streckenverlauf über ein eigenes Symbol weich aus- und wieder einblenden; im Hochformat wird der untere Bereich zusammengefahren. Tastaturbedienung und reduzierte Bewegung werden berücksichtigt.
 
@@ -76,17 +78,58 @@ Die Karte ist schematisch. Haltefolgen stammen aus den offiziellen EVAG-Halteste
 
 ## Installation und Signierung
 
-App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 626.
+App-Kennung: de.meistererwat.fahrplanmanager.audio. Anzeigename: Fahrplan Manager Audio. Mindestversion Android 8.0, Ziel- und Compile-SDK 35, Versioncode 627.
 
 Da der frühere private Signierschlüssel nicht verfügbar ist, verwendet diese Fassung eine eigene App-Kennung und einen neu angelegten Schlüssel. Sie kann neben den bisherigen Fassungen installiert werden. Bestehende Daten über Einstellungen → Daten exportieren/importieren übertragen. Künftige Updates dieser Audio-Fassung müssen denselben neuen Schlüssel verwenden.
 
 Der Release-Schlüssel wurde am 19.10.2026 auf ausdrücklichen Wunsch neu angelegt, weil kein bisheriger Schlüssel mehr vorhanden war. Schlüssel und Passwortdatei liegen ausschließlich im ignorierten `signing`-Ordner. Dieser Ordner muss privat gesichert und für spätere Updates unverändert aufbewahrt werden. Eine externe Sicherung wurde hier nicht angelegt. APKs mit früheren Signaturen lassen sich nicht direkt durch diese APK aktualisieren; Daten vorher exportieren. Ohne ausdrückliche Anweisung keinen neuen Schlüssel für ein Update erzeugen.
 
+### Updates aus der Android-App
+
+Unter **Einstellungen → App-Updates** lassen sich automatische Prüfungen abschalten, manuelle Prüfungen auslösen und verfügbare Updates herunterladen. Die App prüft beim Start nach 1,5 Sekunden, höchstens einmal in 24 Stunden; es gibt keinen Hintergrunddienst und keine Push-Nachrichten. Ein erkannter Hinweis bleibt über App-Neustarts erhalten. Ohne Internet bleiben alle Simulationsfunktionen verfügbar. Die PWA verwendet weiterhin ihren Service Worker und bietet keine Android-APK-Updates an.
+
+Updatequelle ist das öffentliche GitHub-Repository `bratkartoffeln/tram-planer`, Endpunkt `https://api.github.com/repos/bratkartoffeln/tram-planer/releases/latest`. Repository und Endpunkt stehen in `updates.js` beziehungsweise `AppUpdateBridge.java`. Es werden ausschließlich stabile Releases mit Tags wie `6.2.8` oder `v6.2.8` berücksichtigt; die drei Versionsbestandteile werden numerisch verglichen. Private Repositories benötigen eine andere öffentlich erreichbare Updatequelle; Zugangsdaten werden nicht in der App hinterlegt.
+
+Für jede neue Veröffentlichung die mit dem bestehenden Release-Schlüssel signierte APK als **Release-Anhang** mit dem Namen `FahrplanManager_v<VERSION>_release.apk` hochladen. Auch der bestehende manuelle Buildname `FahrplanManager_Tablet_v<VERSION>.apk` wird erkannt. Debug-, Parallel-, Entwurfs- und Vorabversionen werden nicht als Update angeboten. Ein Git-Tag oder ein Actions-Artefakt allein reicht nicht. Bei einer neueren Version ohne passende APK erscheint ein Hinweis, bis der Anhang veröffentlicht und erneut geprüft wurde. Releases werden separat aus der signierten APK erstellt.
+
+**Update herunterladen** öffnet die HTTPS-Adresse des Release-Anhangs im Systembrowser. Nach dem Download die APK öffnen und die Android-Installation bestätigen; gegebenenfalls für den Browser „Unbekannte Apps installieren“ erlauben. Gleiche App-Kennung, gleicher Signierschlüssel und höherer `versionCode` sind für ein reguläres Update nötig. Die neue Prüfung steht erst ab Installation dieser Fassung zur Verfügung. Android-Gerätetest mit einem späteren signierten Release bleibt erforderlich. Technischer Hintergrund: [GitHub-Releases-API](https://docs.github.com/en/rest/releases/releases), [Android-Installationsfreigabe](https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls()).
+
+### Fahrerpult- und Soundbündel erweitern
+
+Die Quelldaten liegen unter `app/src/main/assets/vehicle-bundles/<Typkennung>/bundle.json`; Typkennungen entsprechen `vehicle-types.json`. `default/bundle.json` enthält das bisherige Pult samt Sounds. Jedes Modell erbt zunächst mit `"extends": "default"`. Gemeinsame Familienbündel können als zusätzliche Ordner angelegt und über `extends` von mehreren Varianten verwendet werden. Vererbungszyklen und unbekannte Eltern werden beim Synchronisieren abgewiesen.
+
+Objekte werden feldweise vererbt, Listen vollständig ersetzt. Nur Abweichungen müssen im Modellbündel stehen. Beispiel für `tramlink/bundle.json`, nachdem die referenzierten Medien abgelegt wurden:
+
+```json
+{
+  "id": "tramlink",
+  "extends": "default",
+  "cab": {
+    "image": "vehicle-bundles/tramlink/panel.webp",
+    "buttons": {"doors": {"x": 166, "y": 475}},
+    "colors": {"console": "#30383f"}
+  },
+  "sounds": {
+    "effects": {"door_open": "vehicle-bundles/tramlink/audio/door_open.mp3"},
+    "mechanical": {"down": "vehicle-bundles/tramlink/audio/button_down.mp3"}
+  },
+  "credits": ["Quellen, Urheber, Lizenzen und Bearbeitungen der eigenen Medien angeben."]
+}
+```
+
+Alle Medienpfade gelten relativ zum Asset-Stamm. MP3-Dateien für neue Modelle liegen unter `vehicle-bundles/<Typkennung>/audio/`; Dateinamen verwenden kleine Buchstaben, Ziffern, Bindestriche und Unterstriche. `cab.width` und `cab.height` beschreiben die Bildkoordinaten. `buttons`, `indicators`, `headings`, `spares`, `screws`, `rotaries` und `rotarySprites` steuern die Positionen und Bildausschnitte des bestehenden Pult-Renderers. Die Grafik sollte passende Taster, Schrauben und Drehschalter enthalten. Leere Listen können Reserveelemente, Schrauben oder Überschriften ausblenden; maximal zwei Reserve-Drehschalter werden unterstützt. Fahrfunktionen und Türsperren bleiben im gemeinsamen Renderer.
+
+Effektschlüssel: `door_open`, `door_close`, `emergency`, `traffic`, `passenger`, `finish`, `back`. Mechanische Schlüssel: `down`, `up`, `latch`, `rotary`, `screw`, `ratchet`; deren Standardwerte `synth:<Schlüssel>` verwenden die bisherigen Synthesen. Mechanik spielt unabhängig von Funktionssounds und Ansagen. Haltestellenansagen bleiben streckenabhängig. Eigene Quellenangaben erscheinen über „Bild- & Tonquellen“; bei Übernahme von Standardbestandteilen deren Quellen in IMAGE_SOURCES.md und AUDIO_SOURCES.md beibehalten.
+
+Die Zuordnung verwendet zuerst `vehicleTypeId` der Fahrt, für ältere Pläne die verknüpfte Fahrzeug-ID beziehungsweise das Kürzel. Ein unbekannter oder fehlender Typ nutzt `default`; gelöschte Fahrzeuge behalten über die gespeicherte Typkennung ihr Bündel. Neue Typen sowohl im Fahrzeugkatalog als auch mit eigenem Bündel anlegen.
+
+Nach Änderungen `python tools/sync-assets.py` ausführen. Das prüft Vererbung, Medienpfade, Positionsdaten und Soundzuordnungen, erzeugt `vehicle-bundles-data.js` sowie `vehicle-bundle-assets.json` und spiegelt die Assets nach `web-pwa`. Die generierten Dateien nicht von Hand ändern. Der Service Worker nimmt alle Bündelmanifeste und deren Medien automatisch in den Offline-Cache auf; bei Veröffentlichungen die Cacheversion erhöhen. Android erhält die Bündeldaten ohne Netzwerkabruf über ein lokales Script. Prüfungen: `node tests/vehicle-bundles.cjs`, `node tests/updates.cjs`, `python tests/vehicle-bundles.py` und `node tests/door-motion.cjs`.
+
 ## Bauen und prüfen
 
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.6_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.7_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 

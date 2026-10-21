@@ -5,6 +5,7 @@ import hashlib
 import shutil
 import math
 import re
+from vehicle_bundles import compile_bundles
 from pathlib import Path
 
 project = Path(__file__).resolve().parents[1]
@@ -76,6 +77,7 @@ for vehicle_type in vehicle_catalog['types']:
     if any(key not in vehicle_catalog['sources'] for key in vehicle_type['sources']):
         raise SystemExit('Missing vehicle source: ' + vehicle_type['id'])
 vehicle_catalog['photos'] = vehicle_photos
+compile_bundles(assets, vehicle_type_ids)
 (assets / 'vehicle-types-data.js').write_text(
     "'use strict';\n// Generated from vehicle-types.json and images/vehicles/credits.json.\n"
     + 'window.ERFURT_VEHICLE_CATALOG = Object.freeze('
