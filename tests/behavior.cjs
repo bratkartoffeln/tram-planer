@@ -62,6 +62,9 @@ async function openPage({seed=null,native=true,frozen=true,now=BASE,viewport={wi
     window.__qaExport=null;
     window.AndroidBackup={save:json=>{window.__qaExport=JSON.parse(json);}};
     if(native) window.AndroidAnnouncements={
+      // Native completion keeps the release-sound gate independent of the frozen Web Audio clock.
+      playMechanicalWithCompletion:(path,kind,id)=>queueMicrotask(()=>window.onNativeCabMechanicalEnd(id,true)),
+      stopMechanical:()=>{},
       playEffect:(id,ticket)=>{
         window.__qaEffects.push({name:'Fahrpult: '+id,paths:['audio/effects/'+id+'.mp3']});
         queueMicrotask(()=>window.onNativeDriverSoundEnd(ticket,true));
@@ -95,7 +98,7 @@ async function openPage({seed=null,native=true,frozen=true,now=BASE,viewport={wi
     await page.clock.pauseAt(new Date(now));
   }
   await page.goto(origin+'/index.html',{waitUntil:'load'});
-  await page.locator('#appVersion').filter({hasText:'v6.2.11 Android'}).waitFor();
+  await page.locator('#appVersion').filter({hasText:'v6.2.12 Android'}).waitFor();
   return {context,page};
 }
 const readState = page=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);
@@ -163,7 +166,7 @@ async function testCancellation(label,action,verify) {
   await run('Fahrplan erstellen, Abfahrt verpflichtend vorbereiten, Start und Ansage exakt nach 1 Sekunde',async()=>{
     const {context,page}=await openPage();
     try {
-      const statusVersion=await page.locator('.settings-row').filter({has:page.getByText('Versionsnummer',{exact:true})}).locator('strong').innerText();
+      const statusVersion=await page.evaluate(()=>`v${APP_VERSION} Android`);
       assert.equal(await page.locator('#appVersion').innerText(),statusVersion);
       await noPersonalCode(page);
       await page.locator('#nav button[data-view="new"]').click();
@@ -220,11 +223,11 @@ async function testCancellation(label,action,verify) {
       assert.equal((await readState(page)).active.position,1);
       await page.clock.runFor(119000);
       assert(!(await page.locator('#nextStopBtn').isDisabled()));
-      await page.getByRole('button',{name:/Türen öffnen/}).click();
+      await page.locator('#doorBtn').click();
       assert(await page.locator('#nextStopBtn').isDisabled());
       await page.evaluate(()=>nextStop());
       assert.equal((await readState(page)).active.position,1);
-      await page.getByRole('button',{name:/Türen schließen/}).click();
+      await page.locator('#doorBtn').click();
       assert(!(await page.locator('#nextStopBtn').isDisabled()));
       await screenshot(page,'driver-tablet');
       await page.setViewportSize({width:390,height:844});
@@ -448,7 +451,7 @@ async function testCancellation(label,action,verify) {
       await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
       const cached=await page.evaluate(async()=>{
         const names=await caches.keys();
-        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.11-release'));
+        const cache=await caches.open(names.find(name=>name==='fahrplan-manager-tablet-v6.2.12-single-scroll'));
         return (await cache.keys()).map(request=>new URL(request.url).pathname);
       });
       const required=['/','/index.html','/app.js','/announcements.js','/manifest.webmanifest','/icon-192.png','/icon-512.png','/audio/announcements-data.js','/audio/announcements.json','/audio/catalog.json',...allAudioPaths.map(file=>'/'+file)];
@@ -456,7 +459,7 @@ async function testCancellation(label,action,verify) {
       assert(required.every(file=>cached.includes(file)),'all shell and audio assets must be cached');
       await context.setOffline(true);
       await page.reload({waitUntil:'load'});
-      await page.locator('#appVersion').filter({hasText:'v6.2.11 Android'}).waitFor();
+      await page.locator('#appVersion').filter({hasText:'v6.2.12 Android'}).waitFor();
       assert.equal(await page.evaluate(()=>Object.keys(window.STOP_ANNOUNCEMENTS).length),96);
       const offlineAudio=await page.evaluate(async(audioPaths)=>Promise.all(audioPaths.map(async path=>{
         const response=await fetch(path);

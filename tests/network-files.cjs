@@ -35,11 +35,11 @@ const output=path.resolve(__dirname,'../build/qa-network-files');
   const downloadEvent=page.waitForEvent('download');await page.getByRole('button',{name:'Netzplan exportieren',exact:true}).click();const download=await downloadEvent;
   assert.equal(download.suggestedFilename(),'network-plan.json');const exportedPath=path.join(output,'network-plan.json');await download.saveAs(exportedPath);
   const document=JSON.parse(fs.readFileSync(exportedPath,'utf8'));assert.deepEqual(document.edits,expected);assert.equal(document.format,'fahrplan-manager-network-plan');assert.equal(Object.hasOwn(document,'plans'),false);
-  await page.getByRole('button',{name:'Projektdatei laden',exact:true}).click();assert.deepEqual(await b.evaluate('state.networkEdits'),await b.evaluate('bundledNetworkEdits()'));
-  await page.locator('#networkPlanImport').setInputFiles(exportedPath);await page.getByText('Netzplan importiert. Die Änderung kann rückgängig gemacht werden.',{exact:true}).waitFor();assert.deepEqual(await b.evaluate('state.networkEdits'),expected);
+  await page.getByRole('button',{name:'Projektdatei laden',exact:true}).click();assert.deepEqual(await b.evaluate('state.networkEdits'),expected);await page.locator('.modal .primary').click();assert.deepEqual(await b.evaluate('state.networkEdits'),await b.evaluate('bundledNetworkEdits()'));
+  await page.locator('#networkPlanImport').setInputFiles(exportedPath);await page.locator('.modal .primary').click();await page.getByText('Netzplan importiert. Die Änderung kann rückgängig gemacht werden.',{exact:true}).waitFor();assert.deepEqual(await b.evaluate('state.networkEdits'),expected);
   assert.equal(await b.evaluate('JSON.stringify({plans:state.plans,history:state.history,active:state.active,settings:state.settings,customRoutes:state.customRoutes})'),unrelated);
   await page.getByRole('button',{name:'Rückgängig',exact:true}).click();assert.deepEqual(await b.evaluate('state.networkEdits'),await b.evaluate('bundledNetworkEdits()'));
-  await page.locator('#networkPlanImport').setInputFiles(exportedPath);await page.getByText('Netzplan importiert. Die Änderung kann rückgängig gemacht werden.',{exact:true}).waitFor();
+  await page.locator('#networkPlanImport').setInputFiles(exportedPath);await page.locator('.modal .primary').click();await page.getByText('Netzplan importiert. Die Änderung kann rückgängig gemacht werden.',{exact:true}).waitFor();
   // Reject malformed files atomically, including invalid geometry and styles.
   const invalid=[{...document,schemaVersion:99},{...document,edits:{...document.edits,stops:{Unknown:{x:100,y:100,dx:0,dy:0,name:'Unknown'}}}},{...document,edits:{...document.edits,stops:{Anger:{x:-1,y:100,dx:0,dy:0,name:'Anger'}}}},{...document,edits:{...document.edits,edgeStyles:{[marked]:{color:'red',pattern:'dashed',status:'construction'}}}}];
   for(const payload of ['{broken',...invalid.map(JSON.stringify)]){

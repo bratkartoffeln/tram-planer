@@ -28,32 +28,46 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid
 <link rel="stylesheet" href="shell.css">
 <link rel="stylesheet" href="vehicles.css">
 <link rel="stylesheet" href="cab-layout.css">
+<link rel="stylesheet" href="usability.css">
+<link rel="stylesheet" href="dev-workspace.css">
+<link rel="stylesheet" href="page-scroll.css">
 </head>
 <body>
+<a class="skip-link" href="#view">Zum Inhalt springen</a>
 <div class="shell">
   <aside class="sidebar" id="sidebar">
     <button id="sidebarToggle" class="sidebar-toggle" type="button" onclick="toggleSidebar()" aria-controls="nav" aria-expanded="true" aria-label="Menü einklappen" title="Menü einklappen"><span id="sidebarToggleIcon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="sidebar-toggle-label">Menü einklappen</span></button>
-    <div class="brand"><div><div class="brand-badges"><span class="badge">SWE</span><span class="badge teal">EVAG</span><span class="badge" style="background:var(--gold);color:#19252b">FIKTIV</span></div><h1>FAHRPLAN MANAGER</h1><p>© MeisterErwat · Tablet Edition</p></div></div>
-    <nav class="nav" id="nav">
+    <div class="brand"><div><div class="brand-badges"><span class="badge">SWE</span><span class="badge teal">EVAG</span><span class="badge" style="background:var(--gold);color:#19252b">FIKTIV</span></div><h1>FAHRPLAN MANAGER</h1><p>© MeisterErwat · Deine Simulation</p></div></div>
+    <nav class="nav" id="nav" aria-label="Hauptnavigation">
+<div class="nav-heading">Fahren & planen</div>
       <button data-view="home" onclick="showView('home')" class="active" aria-label="Übersicht" title="Übersicht"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Übersicht</span></button>
       <button data-view="new" onclick="showView('new')" aria-label="Neue Fahrt" title="Neue Fahrt"><span class="nav-icon" aria-hidden="true">＋</span><span class="nav-label">Neue Fahrt</span></button>
+      <button data-view="driver" onclick="openActiveTrip()" aria-label="Aktive Fahrt" title="Aktive Fahrt"><span class="nav-icon" aria-hidden="true">▶</span><span class="nav-label">Aktive Fahrt</span><span id="activeDot" aria-hidden="true"></span></button>
+<div class="nav-heading">Verwalten</div>
       <button data-view="network" onclick="showView('network')" aria-label="Linien & Netz" title="Linien & Netz"><span class="nav-icon" aria-hidden="true">⑂</span><span class="nav-label">Linien & Netz</span></button>
       <button data-view="plans" onclick="showView('plans')" aria-label="Fahrpläne" title="Fahrpläne"><span class="nav-icon" aria-hidden="true">▣</span><span class="nav-label">Fahrpläne</span></button>
       <button data-view="vehicles" onclick="showView('vehicles')" aria-label="Fahrzeuge" title="Fahrzeuge"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">Fahrzeuge</span></button>
-      <button data-view="driver" onclick="openActiveTrip()" aria-label="Aktive Fahrt" title="Aktive Fahrt"><span class="nav-icon" aria-hidden="true">▶</span><span class="nav-label">Aktive Fahrt</span><span id="activeDot" aria-hidden="true"></span></button>
       <button data-view="history" onclick="showView('history')" aria-label="Historie" title="Historie"><span class="nav-icon" aria-hidden="true">◷</span><span class="nav-label">Historie</span></button>
       <button data-view="settings" onclick="showView('settings')" aria-label="Einstellungen" title="Einstellungen"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Einstellungen</span></button>
     </nav>
     <div class="side-bottom">Fiktive Straßenbahn-Simulation.<br>Keine echten Dienstpläne und keine offizielle EVAG/SWE-Anwendung.</div>
   </aside>
+  <button id="menuBackdrop" class="menu-backdrop" type="button" hidden tabindex="-1" aria-label="Menü schließen" onclick="setMobileMenu(false)"></button>
   <main class="main">
-    <div class="topbar"><div class="title-area"><div class="eyebrow">MeisterErwat · Tablet Edition</div><h1 class="page-title" id="pageTitle">Übersicht</h1></div><div class="clock-chip" id="clock">--:--:--</div></div>
-    <div class="content" id="view"></div>
+    <div class="topbar"><div class="title-area"><div class="eyebrow">Deine Straßenbahn-Simulation</div><h1 class="page-title" id="pageTitle" tabindex="-1">Übersicht</h1><p class="page-help" id="pageHelp">Alles für deine nächste Fahrt.</p></div><div class="topbar-tools"><button id="resumeTrip" class="primary" onclick="openActiveTrip()" hidden>▶ Zur Fahrt</button><div class="clock-chip" id="clock" aria-label="Aktuelle Uhrzeit">--:--:--</div></div></div>
+    <div class="content" id="view" tabindex="-1"></div>
   </main>
 </div>
+<nav class="mobile-nav" id="mobileNav" aria-label="Schnellnavigation">
+<button data-view="home" onclick="showView('home')"><span aria-hidden="true">⌂</span><span>Übersicht</span></button>
+<button data-view="plans" onclick="showView('plans')"><span aria-hidden="true">▣</span><span>Fahrpläne</span></button>
+<button data-view="new" onclick="showView('new')"><span aria-hidden="true">＋</span><span>Neu</span></button>
+<button data-view="driver" onclick="openActiveTrip()"><span aria-hidden="true">▶</span><span>Fahrt</span></button>
+<button id="mobileMore" onclick="setMobileMenu(true)" aria-controls="sidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span>Mehr</span></button>
+</nav>
 <button type="button" class="version" id="appVersion" onclick="registerDevVersionClick()"></button>
 <div id="modalRoot"></div>
-<div id="toastRoot"></div>
+<div id="toastRoot" role="status" aria-live="polite"></div>
 <script src="audio/announcements-data.js"></script>
 <script src="announcements.js"></script>
 <script src="erfurt-network.js"></script>
@@ -68,5 +82,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid
 <script src="vehicles.js"></script>
 <script src="vehicle-previews.js"></script>
 <script src="updates.js"></script>
+<script src="usability.js"></script>
+<script src="dev-workspace.js"></script>
 <script src="app.js"></script>
 </body></html>

@@ -2,7 +2,7 @@
 // Edits use stable stop keys: moving/renaming a label never breaks routes,
 // stored trips or their recordings. The overlay is included in JSON backups.
 let networkEditing=false,networkEditTool='move',networkEditSelection=null,networkConnectFrom=null;
-let networkUndo=[];
+let networkUndo=[],networkRedo=[];
 const networkPair=(a,b)=>JSON.stringify([a,b].sort());
 const networkEdgeKey=e=>JSON.stringify([e.line,...[e.from,e.to].sort()]);
 const networkColor=c=>typeof c==='string'&&/^#[0-9a-f]{6}$/i.test(c);
@@ -46,7 +46,7 @@ function applyNetworkEdges(edges){
  }
  return [...result.values()];
 }
-function checkpointNetwork(){networkUndo.push(clone(state.networkEdits));if(networkUndo.length>80)networkUndo.shift();}
+function checkpointNetwork(){networkRedo=[];networkUndo.push(clone(state.networkEdits));if(networkUndo.length>80)networkUndo.shift();}
 // One lane per line, independent of travel direction. Short approaches meet
 // under the station marker; the middle sections of each bundle stay parallel.
 function networkLinkGeometry(edges,positions=networkPositions()){
@@ -113,13 +113,13 @@ async function importNetworkPlan(event){
   if(file.size>NETWORK_PLAN_MAX_BYTES)throw Error('Die Netzplandatei darf höchstens 2 MB groß sein.');
   const edits=parseNetworkPlanDocument(JSON.parse(await file.text()));
   if(!state.settings.dev_mode)return;
-  applyImportedNetworkPlan(edits);showToast('Netzplan importiert. Die Änderung kann rückgängig gemacht werden.');
+  previewNetworkTransfer(edits,'Netzplan importieren · Vorschau','Netzplan importiert. Die Änderung kann rückgängig gemacht werden.');
  }catch(error){showToast(error instanceof SyntaxError?'Die Datei enthält kein gültiges JSON.':error.message||'Die Netzplandatei konnte nicht gelesen werden.');}
  finally{input.value='';}
 }
 function loadProjectNetworkPlan(){
  if(!state.settings.dev_mode)return;
- try{applyImportedNetworkPlan(parseNetworkPlanDocument(window.BUNDLED_NETWORK_PLAN));showToast('Netzplan aus der Projektdatei geladen.');}catch(error){showToast(error.message);}
+ try{previewNetworkTransfer(parseNetworkPlanDocument(window.BUNDLED_NETWORK_PLAN),'Projekt-Netzplan laden · Vorschau','Netzplan aus der Projektdatei geladen.');}catch(error){showToast(error.message);}
 }
 function networkEditAllowed(){return state.settings.dev_mode===true&&networkEditing;}
 function toggleNetworkEditor(){
@@ -135,15 +135,17 @@ function setNetworkEditTool(tool){
 }
 function renderNetworkEditorTools(){
  const host=document.getElementById('networkEditorTools');if(!host)return;
- host.innerHTML=networkEditAllowed()?`<div class="network-editor-tools"><div class="actions" role="group" aria-label="Netzplan-Werkzeuge">${[['move','Punkte & Namen'],['connect','Gleis verbinden'],['remove','Gleis entfernen']].map(([id,label])=>`<button class="small" aria-pressed="${networkEditTool===id}" onclick="setNetworkEditTool('${id}')">${label}</button>`).join('')}<button class="small" onclick="undoNetworkEdit()" ${networkUndo.length?'':'disabled'}>Rückgängig</button><button class="small" onclick="resetNetworkEdits()">Original wiederherstellen</button></div><p role="status">${networkEditTool==='connect'?(networkConnectFrom?'Zweiten Haltestellenpunkt wählen.':'Zwei Haltestellenpunkte nacheinander wählen, um ein Gleis anzulegen.'):networkEditTool==='remove'?'Verbindung auswählen und unten entfernen. Bei überlappenden Linien die gewünschte Verbindung in der Liste wählen.':'Punkte mit Maus oder Touch ziehen. Zum Verschieben eines Namens direkt den Text ziehen. Anklicken öffnet genaue Werte und die Beschriftung.'} Änderungen werden automatisch lokal gespeichert.</p></div>`:'';
+ host.innerHTML=networkEditAllowed()?`<div class="network-editor-tools"><div class="actions" role="group" aria-label="Netzplan-Werkzeuge">${[['move','Punkte & Namen'],['connect','Gleis verbinden'],['remove','Gleis entfernen']].map(([id,label])=>`<button class="small" aria-pressed="${networkEditTool===id}" onclick="setNetworkEditTool('${id}')">${label}</button>`).join('')}<button class="small" onclick="undoNetworkEdit()" ${networkUndo.length?'':'disabled'}>Rückgängig</button><button class="small" onclick="redoNetworkEdit()" ${networkRedo.length?'':'disabled'}>Wiederholen</button><button class="small" onclick="resetNetworkEdits()">Original wiederherstellen</button></div><p role="status">${networkEditTool==='connect'?(networkConnectFrom?'Zweiten Haltestellenpunkt wählen.':'Zwei Haltestellenpunkte nacheinander wählen, um ein Gleis anzulegen.'):networkEditTool==='remove'?'Verbindung auswählen und unten entfernen. Bei überlappenden Linien die gewünschte Verbindung in der Liste wählen.':'Punkte mit Maus oder Touch ziehen. Zum Verschieben eines Namens direkt den Text ziehen. Anklicken öffnet genaue Werte und die Beschriftung.'} Änderungen werden automatisch lokal gespeichert.</p></div>`:'';
  if(state.settings.dev_mode)host.innerHTML+=`<div class="network-editor-tools network-plan-files"><div class="actions"><button class="small" onclick="exportNetworkPlan()">Netzplan exportieren</button><button class="small" onclick="document.getElementById('networkPlanImport').click()">Netzplan importieren</button><button class="small" onclick="loadProjectNetworkPlan()">Projektdatei laden</button><input id="networkPlanImport" type="file" accept="application/json,.json" class="hidden" onchange="importNetworkPlan(event)"></div><p>Positionen, Beschriftungen, Gleise, Farben und Abschnittsmarkierungen als Datei speichern oder laden.</p><details><summary>Netzplan im Projekt hinterlegen</summary><p>Die exportierte Datei als <code>app/src/main/assets/network-plan.json</code> ablegen und <code>python tools/sync-assets.py</code> ausführen. Danach die App neu laden und bei vorhandenen lokalen Anpassungen „Projektdatei laden“ wählen. Die PWA-Kopie liegt unter <code>web-pwa/network-plan.json</code>.</p></details></div>`;
  renderNetworkEditInspector();
 }
 function refreshNetworkEditor(){renderNetworkMap();renderNetworkEditorTools();}
 function undoNetworkEdit(){
  if(!networkEditAllowed()||!networkUndo.length)return;
+ networkRedo.push(clone(state.networkEdits));
  state.networkEdits=networkUndo.pop();networkEditSelection=null;networkConnectFrom=null;saveState();refreshNetworkEditor();
 }
+function redoNetworkEdit(){if(!networkEditAllowed()||!networkRedo.length)return;networkUndo.push(clone(state.networkEdits));state.networkEdits=networkRedo.pop();networkEditSelection=null;networkConnectFrom=null;saveState();refreshNetworkEditor();}
 function resetNetworkEdits(){
  if(!networkEditAllowed())return;
  showModal('Originalnetz wiederherstellen','Alle eigenen Positionen, Namen, Gleise und Farben des Netzplans zurücksetzen?',`<button onclick="closeModal()">Abbrechen</button><button class="danger" onclick="confirmResetNetwork()">Zurücksetzen</button>`);
@@ -230,8 +232,8 @@ function bindNetworkEditor(svg){
  svg.onpointerdown=e=>{
   if(!networkEditAllowed()||networkEditTool!=='move'||e.button!==0)return;
   const g=e.target.closest('.network-node');if(!g)return;
-  drag={key:g.dataset.name,label:e.target.matches('text'),start:point(e),initial:{...networkPositions()[g.dataset.name]},moved:false};
-  svg.setPointerCapture(e.pointerId);e.preventDefault();
+  drag={key:g.dataset.name,label:e.target.matches('text'),start:point(e),initial:{...networkPositions()[g.dataset.name]},moved:false,capture:g};
+  g.setPointerCapture(e.pointerId);e.preventDefault();
  };
  svg.onpointermove=e=>{
   if(!drag||!networkEditAllowed())return;
@@ -244,8 +246,8 @@ function bindNetworkEditor(svg){
   state.networkEdits.stops[drag.key]=v;networkEditSelection={stop:drag.key};updateGeometry(drag.key);
  };
  const finish=e=>{
-  if(!drag)return;const {moved,key}=drag;drag=null;
-  if(svg.hasPointerCapture(e.pointerId))svg.releasePointerCapture(e.pointerId);
+  if(!drag)return;const {moved,key,capture}=drag;drag=null;
+  if(capture.hasPointerCapture(e.pointerId))capture.releasePointerCapture(e.pointerId);
   if(moved){suppressClick=e.type==='pointerup';saveState();renderNetworkEditorTools();}
   else if(e.type==='pointerup'&&networkEditAllowed()){
    // Pointer capture retargets the following click to the SVG. Select the

@@ -18,7 +18,7 @@ async function run(){
  socket=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);
  await new Promise(r=>socket.addEventListener('open',r,{once:true}));socket.onmessage=e=>{const r=JSON.parse(e.data);if(r.id){const p=pending.get(r.id);pending.delete(r.id);r.error?p.reject(r.error):p.resolve(r.result);}};
  await cdp('Page.enable');await cdp('Runtime.enable');await cdp('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
- await cdp('Page.navigate',{url:origin});for(let i=0;i<100;i++){if(await evaluate("typeof state!=='undefined' && !!document.querySelector('#view .hero')"))break;await delay(100);}
+ await cdp('Page.navigate',{url:origin});for(let i=0;i<100;i++){if(await evaluate("typeof state!=='undefined' && !!document.querySelector('#routeSearch')"))break;await delay(100);}
  assert.equal(await evaluate("Object.keys(ROUTES).length"),24);
  assert.equal(await evaluate("ERFURT_NETWORK.routes.EF4R.stops.includes('Lange Brücke')"),true);
  assert.equal(await evaluate("ERFURT_NETWORK.routes.EF6R.stops[1]"),'Milchinselstraße');
@@ -66,6 +66,11 @@ async function run(){
  const original=await evaluate('clone(lineDraft)');
  assert.equal(await evaluate('document.getElementById("lineUndoButton").disabled'),true);
  const dragTo=async(target,touch=false,cancel=false)=>{
+  // Touch emulation changes coarse-pointer control sizes above the map.
+  // Measure after that layout change, using the document's scroll position.
+  if(touch){await cdp('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await evaluate('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');}
+  await evaluate("document.querySelector('#lineMapSvg .draft-node circle').scrollIntoView({block:'center',inline:'center'})");
+  await evaluate('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
   const coords=await evaluate(`(()=>{const svg=document.getElementById('lineMapSvg'),g=svg.querySelector('.draft-node circle');g.scrollIntoView({block:'center',inline:'center'});const r=g.getBoundingClientRect(),p=svg.createSVGPoint();p.x=${target.x};p.y=${target.y};const end=p.matrixTransform(svg.getScreenCTM());return {x:r.x+r.width/2,y:r.y+r.height/2,tx:end.x,ty:end.y}})()`);
   if(touch){await cdp('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:coords.x,y:coords.y,id:1}]});await cdp('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:coords.tx,y:coords.ty,id:1}]});await cdp('Input.dispatchTouchEvent',{type:cancel?'touchCancel':'touchEnd',touchPoints:[]});await cdp('Emulation.setTouchEmulationEnabled',{enabled:false});}
   else{await cdp('Input.dispatchMouseEvent',{type:'mousePressed',x:coords.x,y:coords.y,button:'left',clickCount:1});await cdp('Input.dispatchMouseEvent',{type:'mouseMoved',x:coords.tx,y:coords.ty,button:'left',buttons:1});await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',x:coords.tx,y:coords.ty,button:'left',clickCount:1});}
@@ -135,7 +140,7 @@ async function run(){
  // Confirm service worker caches the new modules for an offline restart.
  await evaluate("navigator.serviceWorker.ready.then(()=>true)");
  await delay(1200);
- assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.11-release').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
+ assert.equal(await evaluate("caches.open('fahrplan-manager-tablet-v6.2.12-single-scroll').then(async c=>!!(await c.match('./line-editor.js'))&&!!(await c.match('./erfurt-network.js')))"),true);
  await cdp('Network.enable');await cdp('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
  await cdp('Page.reload');await delay(600);assert.equal(await evaluate('Object.keys(ROUTES).length'),26);
  await evaluate("showView('network')");assert.equal(await evaluate('!!document.getElementById("lineMapSvg")'),true);

@@ -69,7 +69,9 @@ const root=path.resolve(__dirname,'../app/src/main/assets'),output=path.resolve(
   await page.locator('#doorBtn').click();assert.deepEqual(await b.evaluate('mechanical'),['down','up']);
   await page.locator('#emergencyBtn').click();assert.equal(await page.locator('#emergencyBtn').getAttribute('aria-pressed'),'true');assert.deepEqual(await b.evaluate('mechanical'),['down','up','latch']);await page.getByRole('button',{name:'Abbrechen',exact:true}).click();assert.equal(await page.locator('#emergencyBtn').getAttribute('aria-pressed'),'false');
   await page.locator('#doorBtn').focus();await page.keyboard.press('Space');assert.deepEqual((await b.evaluate('mechanical')).slice(-2),['down','up']);
-  assert.deepEqual((await b.evaluate('actualMechanical')).map(d=>Math.round(d*1000)),[65,45,160,65,45]);assert.equal(await b.evaluate('cabAudioContext.state'),'running');
+  // Press/release use recorded assets; keyboard activation must play the same pair.
+  const durations=(await b.evaluate('actualMechanical')).map(d=>Math.round(d*1000));
+  assert.equal(durations.length,5);assert(durations[0]>0&&durations[1]>0);assert.equal(durations[2],160);assert.deepEqual(durations.slice(3).sort(),durations.slice(0,2).sort());assert.equal(await b.evaluate('cabAudioContext.state'),'running');
   await b.evaluate('state.settings.cockpit_muted=true');const soundCount=await b.evaluate('actualMechanical.length');await page.locator('#doorBtn').click();assert.equal(await b.evaluate('actualMechanical.length'),soundCount);await b.evaluate('state.settings.cockpit_muted=false');
   await page.locator('.cab-console').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(output,'cab-desktop.png')});
   for(const width of [390,768]){await page.setViewportSize({width,height:900});await b.evaluate("showView('driver')");assert.equal(await b.evaluate('document.documentElement.scrollWidth<=innerWidth'),true);await page.locator('.cab-console').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(output,'cab-'+width+'.png')});}

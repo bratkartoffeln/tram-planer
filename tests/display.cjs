@@ -28,7 +28,9 @@ const root=path.resolve(__dirname,'../app/src/main/assets'),output=path.resolve(
   const visibleLayout=async()=>{
    const photo=await page.locator('.cab-stage').boundingBox(),route=await page.locator('#driverRouteMap').boundingBox();
    const viewport=page.viewportSize();assert(photo.width>100&&photo.height>50);assert(route.width>150&&route.height>80);
-   for(const box of [photo,route]){assert(box.x>=0&&box.y>=0);assert(box.x+box.width<=viewport.width+1);assert(box.y+box.height<=viewport.height+1);}
+   const scroll=await b.evaluate('({x:scrollX,y:scrollY,height:document.documentElement.scrollHeight})');
+   for(const box of [photo,route]){assert(box.x+scroll.x>=0&&box.y+scroll.y>=0);assert(box.x+box.width<=viewport.width+1);assert(box.y+scroll.y+box.height<=scroll.height+1);}
+   assert.equal(await page.locator('#driverRouteMap').evaluate(e=>e.scrollHeight<=e.clientHeight+2),true);
    assert.equal(await b.evaluate('document.documentElement.scrollWidth<=innerWidth'),true);
    if(viewport.width>760)assert(photo.x+photo.width<=route.x);
    else assert(photo.y+photo.height<=route.y);
@@ -49,19 +51,15 @@ const root=path.resolve(__dirname,'../app/src/main/assets'),output=path.resolve(
    await page.screenshot({path:path.join(output,`fullscreen-${viewport.width}.png`)});
   }
   await page.locator('#cabFullscreenBtn').tap({force:true}).catch(()=>page.locator('#cabFullscreenBtn').click());assert.equal(await b.evaluate('cabFullscreen'),false);
-  // On small screens collapsing removes the navigation strip but leaves an expand control.
-  await page.locator('#nav').waitFor({state:'hidden'});assert(await page.locator('#sidebarToggle').isVisible());await page.locator('#sidebarToggle').click();await page.locator('#nav').waitFor({state:'visible'});
-  await page.waitForTimeout(350);
-  const mobileHeight=await page.locator('#sidebar').evaluate(e=>e.getBoundingClientRect().height);
-  await page.locator('#sidebarToggle').click();await page.waitForTimeout(70);
-  const movingHeight=await page.locator('#sidebar').evaluate(e=>e.getBoundingClientRect().height);assert(movingHeight>60&&movingHeight<mobileHeight);
-  assert.equal(await page.locator('#nav').evaluate(e=>e.inert),true);
-  // Reverse an in-progress transition and leave the menu expanded.
-  await page.locator('#sidebarToggle').click();await page.waitForTimeout(350);assert.equal(await page.locator('#nav').evaluate(e=>e.inert),false);assert(await page.locator('#nav').isVisible());
+  // The permanent mobile bar opens the complete menu independently of desktop collapse.
+  assert(await page.locator('#mobileNav').isVisible());assert.equal(await page.locator('#sidebar').evaluate(e=>e.inert),true);
+  await page.locator('#mobileMore').click();await page.waitForTimeout(300);assert(await page.locator('#nav').isVisible());assert.equal(await page.locator('#sidebar').evaluate(e=>e.inert),false);
+  await page.locator('#sidebarToggle').click();await page.waitForTimeout(300);assert.equal(await page.locator('#sidebar').evaluate(e=>e.inert),true);assert(await page.locator('#mobileNav').isVisible());
+  await page.locator('#mobileMore').click();await page.keyboard.press('Escape');await page.waitForTimeout(300);assert.equal(await b.evaluate('mobileMenuOpen'),false);
   await page.setViewportSize({width:1366,height:900});await b.evaluate("delete window.AndroidDisplay;document.documentElement.requestFullscreen=()=>Promise.reject(new DOMException('Fullscreen unavailable','NotAllowedError'))");
   await page.locator('#cabFullscreenBtn').click();await page.waitForTimeout(50);assert.equal(await b.evaluate('cabFullscreen'),true);assert.equal(await b.evaluate('document.fullscreenElement'),null);await visibleLayout();await page.keyboard.press('Escape');assert.equal(await b.evaluate('cabFullscreen'),false);
   await b.evaluate("window.AndroidDisplay={setImmersive:enabled=>displayCalls.push(enabled)};state.active.position=state.active.plan.stops.length-1;showView('driver')");await page.locator('#cabFullscreenBtn').click();assert(await page.locator('#nextStopBtn').isDisabled());await page.getByRole('button',{name:'Fahrt beenden',exact:true}).click();assert.equal(await b.evaluate('cabFullscreen'),false);assert.equal(await b.evaluate('state.active'),null);assert.equal(await b.evaluate('displayCalls.at(-1)'),false);
-  await b.evaluate('closeModal()');await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#sidebarToggle').click();
+  await b.evaluate('closeModal();state.settings.sidebar_collapsed=false;updateShell()');await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#sidebarToggle').click();
   assert.equal(await page.locator('.shell').evaluate(e=>getComputedStyle(e).transitionDuration),'0s');
   assert.equal(await page.locator('#sidebar').evaluate(e=>e.getBoundingClientRect().width),64);
   assert.equal(b.errors.length,0);fs.writeFileSync(path.join(output,'result.json'),JSON.stringify({passed:true,widths:{normal:normalWidth,collapsed:collapsedWidth,fullscreen:fullWidth},checks:['persistent collapsible navigation with accessible icons','animated desktop width and mobile height','rapid transition reversal','hidden mobile navigation inert','reduced motion','larger cab after collapsing','real browser fullscreen and button exit','Escape and Android Back exit','native immersive bridge','responsive portrait and landscape with visible route','active stop follows resize','denied API fallback','trip unchanged by display changes','finishing exits fullscreen']},null,2));console.log('Display checks passed: '+output);

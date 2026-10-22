@@ -13,7 +13,7 @@ const output=path.resolve(__dirname,'../build/qa-cab-route-panel');
    await page.setViewportSize(viewport);await page.waitForTimeout(100);
    const initial=await page.locator('#driverRouteMap').boundingBox();
    await page.locator('#cabRouteToggle').click();assert.equal(await page.locator('#cabRouteToggle').getAttribute('aria-expanded'),'false');await page.waitForTimeout(70);
-   const moving=await page.locator('.driver-view>.grid>.col-4').boundingBox();assert(viewport.width>760?moving.width>0&&moving.width<initial.width+30:moving.height>0&&moving.height<initial.height+100);
+   assert.equal(await page.locator('.driver-view>.grid>.col-4').isVisible(),false);
    await page.locator('#driverRouteMap').waitFor({state:'hidden'});assert.equal(await page.locator('.driver-view>.grid>.col-4').evaluate(e=>e.inert),true);assert(await page.locator('#cabRouteToggle').isVisible());
    await page.screenshot({path:path.join(output,`collapsed-${viewport.width}.png`)});
    await page.locator('#cabRouteToggle').press('Enter');await page.waitForTimeout(350);assert(await page.locator('#driverRouteMap').isVisible());assert.equal(await page.locator('.driver-view>.grid>.col-4').evaluate(e=>e.inert),false);

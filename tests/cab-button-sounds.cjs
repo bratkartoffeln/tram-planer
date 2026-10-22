@@ -12,7 +12,7 @@ const down='vehicle-bundles/default/audio/push-button.mp3',up='vehicle-bundles/d
    assert.deepEqual(await b.evaluate('[vehicleBundlePreview.sounds.mechanical.down,vehicleBundlePreview.sounds.mechanical.up]'),[down,up]);
    const result=await b.evaluate(`(()=>{const nodes=[...document.querySelectorAll('.vehicle-bundle-modal .cab-button:not(.cab-emergency),.vehicle-bundle-modal .cab-spare,.vehicle-bundle-modal .cab-accessory-button')];return nodes.map(n=>{buttonCalls=[];const latching=cabButtonLatches(n);pressRelease(n);const first=[...buttonCalls];if(latching)n.click();const on=n.classList.contains('is-on');cabLayoutRefresh();pressRelease(n);if(latching)n.click();return {id:n.id,calls:[...buttonCalls],first,latching,on,off:!n.classList.contains('is-on')}})})()`);
    for(const {id,calls,first,latching,on,off} of result){
-    const cycle=[{path:down,kind:'down'},{path:up,kind:'up'}];
+    const cycle=id==='cabFullscreenBtn'&&!latching?[{path:down,kind:'down'}]:[{path:down,kind:'down'},{path:up,kind:'up'}];
     assert.deepEqual(calls,latching?cycle:[...cycle,...cycle],type+' standard '+id);
     if(latching){assert.deepEqual(first,[{path:down,kind:'down'}],type+' standard latch '+id);assert.equal(on,true);assert.equal(off,true);}
    }
@@ -27,6 +27,16 @@ const down='vehicle-bundles/default/audio/push-button.mp3',up='vehicle-bundles/d
   // Choosing momentary explicitly overrides a naturally latching panel button.
   await b.evaluate(`openVehicleBundlePreview('tramlink');vehicleBundlePreview=clone(vehicleBundlePreview);const n=document.querySelector('.cab-accessory-button');vehicleBundlePreview.cab.layout??={};vehicleBundlePreview.cab.layout['actuation-'+cabControlKey(n)]={mode:'momentary'};applyCabLayoutToStage(n.closest('.cab-stage'),vehicleBundlePreview);buttonCalls=[];pressRelease(n)`);
   assert.deepEqual(await b.evaluate('buttonCalls'),[{path:down,kind:'down'},{path:up,kind:'up'}]);
+  // Fullscreen has one press sound; mouse, touch and keyboard release stay silent,
+  // including saved custom release sounds. Other controls retain both sounds.
+  await b.evaluate(`vehicleBundlePreview=clone(vehicleBundlePreview);vehicleBundlePreview.cab.layout??={};vehicleBundlePreview.cab.layout['actuation-fullscreen']={release:'mechanical:rotary'};applyCabLayoutToStage(document.querySelector('.vehicle-bundle-modal .cab-stage'),vehicleBundlePreview)`);
+  for(const pointerType of ['mouse','touch']){
+   await b.evaluate(`(()=>{buttonCalls=[];const n=document.getElementById('cabFullscreenBtn');n.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,button:0,pointerType:${JSON.stringify(pointerType)}}));document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,button:0,pointerType:${JSON.stringify(pointerType)}}))})()`);
+   assert.deepEqual(await b.evaluate('buttonCalls'),[{path:down,kind:'down'}],pointerType+' fullscreen release must be silent');
+   await b.evaluate("document.getElementById('cabFullscreenBtn').click()");await b.delay(30);assert.deepEqual(await b.evaluate('buttonCalls'),[{path:down,kind:'down'}],pointerType+' fullscreen action must not add a second click');
+  }
+  await b.evaluate(`(()=>{buttonCalls=[];const n=document.getElementById('cabFullscreenBtn');n.dispatchEvent(new KeyboardEvent('keydown',{bubbles:true,key:' '}));n.dispatchEvent(new KeyboardEvent('keyup',{bubbles:true,key:' '}))})()`);
+  assert.deepEqual(await b.evaluate('buttonCalls'),[{path:down,kind:'down'}],'keyboard fullscreen release must be silent');
   // Explicit actuation choices and mute still override the defaults.
   await b.evaluate(`openVehicleBundlePreview('combino-basic');vehicleBundlePreview=clone(vehicleBundlePreview);vehicleBundlePreview.cab.layout={'actuation-spare-0':{press:'mechanical:rotary',release:'none'}};applyCabLayoutToStage(document.querySelector('.vehicle-bundle-modal .cab-stage'),vehicleBundlePreview);buttonCalls=[];pressRelease(document.querySelector('[data-cab-reserve="spare-0"]'))`);
   assert.deepEqual(await b.evaluate('buttonCalls'),[{path:'vehicle-bundles/default/audio/switch.mp3',kind:'rotary'}]);
