@@ -12,7 +12,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),session=req
    await b.evaluate(`openVehicleBundlePreview(${JSON.stringify(type)});document.querySelector('.cab-stage').scrollIntoView({block:'center'});screwSounds=[]`);
    const screws=await b.evaluate(`(()=>{const p=vehicleBundlePreview.cab,s=document.querySelector('.cab-stage').getBoundingClientRect();return [...document.querySelectorAll('.cab-screw')].map((n,i)=>{const r=n.getBoundingClientRect(),face=n.querySelector('.cab-screw-face').getBoundingClientRect(),top=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return {id:n.id,hit:!!top&&n.contains(top),cap:face.width/s.width*p.width,expected:p.screws[i][3]||p.screwCap||54}})})()`);
    assert.equal(screws.length,await b.evaluate('vehicleBundlePreview.cab.screws.length'),type);
-   for(const s of screws){assert(s.hit,type+' blocked '+s.id);assert(Math.abs(s.cap-s.expected)<.1,type+' screw crop '+s.id);}
+   for(const s of screws){assert(s.expected>18,type+' tiny screw must not have an interactive overlay: '+s.id);assert(s.hit,type+' blocked '+s.id);assert(Math.abs(s.cap-s.expected)<.1,type+' screw crop '+s.id);}
    count+=screws.length;
    await b.evaluate(`document.querySelectorAll('.cab-screw').forEach(n=>n.dispatchEvent(new MouseEvent('dblclick',{bubbles:true})))`);
    assert.equal(await b.evaluate('vehiclePreviewLooseScrews.size'),screws.length,type);

@@ -8,7 +8,7 @@ const VEHICLE_PREVIEW_SOUNDS={door_open:'Türen öffnen',door_close:'Türen schl
 const VEHICLE_PREVIEW_MECHANICS={down:'Taster drücken',up:'Taster loslassen',latch:'Not-Aus einrasten',rotary:'Drehschalter',screw:'Schraube lösen',ratchet:'Schraube eindrehen'};
 function vehicleCabThumbnail(type,vehicle=null){
  const bundle=getVehicleBundle({vehicleTypeId:type.id}),info=vehicleBundleInfo(bundle);
- return `<div class="vehicle-cab-preview"><img src="${esc(bundle.cab.image)}" alt="Frontales Schalterpanel für ${esc(type.name)}" width="${bundle.cab.width}" height="${bundle.cab.height}" loading="lazy"><p><strong>${esc(info.title)}</strong><br><small>${esc(info.variant)}</small></p><button type="button" class="small" data-cab-preview="${esc(type.id)}" onclick="openVehicleBundlePreview('${type.id}'${vehicle?",'"+vehicle.id+"'":''})">Fahrpult & Sounds${vehicle?' · '+esc(vehicle.code):' ausprobieren'}</button></div>`;
+ return `<div class="vehicle-cab-preview"><img src="${esc(bundle.cab.image)}" alt="Frontales Schalterpanel für ${esc(type.name)}" width="${bundle.cab.width}" height="${bundle.cab.height}" loading="lazy"><p><strong>${esc(info.title)}</strong><br><small>${esc(info.variant)}</small></p><span class="vehicle-layout-scope">${vehicle?'Fahrzeuglayout · nur '+esc(vehicle.code):'Typvorlage · Ausgangslayout für '+esc(type.name)}</span><button type="button" class="small" data-cab-preview="${esc(type.id)}" onclick="openVehicleBundlePreview('${type.id}'${vehicle?",'"+vehicle.id+"'":''})">Fahrpult & Sounds${vehicle?' · '+esc(vehicle.code):' ausprobieren'}</button></div>`;
 }
 function openVehicleBundlePreview(typeId,vehicleId=null){
  const type=vehicleType(typeId);if(!type)return;
@@ -64,6 +64,9 @@ async function previewVehicleCabAction(action){
  if(!vehicleBundlePreview||state.settings.cockpit_muted)return;
  const labels={next:'Beispielansage Anger',back:'Zurück',doors:vehiclePreviewDoorsOpen?'Türen schließen':'Türen öffnen',passenger:'Fahrgastanzeige',fullscreen:'Vollbild · Tastenklick',traffic:'Stau',finish:'Fahrtende',emergency:'Notfall'};
  if(!Object.hasOwn(labels,action))return;
+ // The physical press already played its actuation tone. Fullscreen itself
+ // adds no second click after release, and must not interrupt the press tone.
+ if(action==='fullscreen'){if(activity?.sound)await playCabReserveSound(activity.sound,vehicleBundlePreview);const status=document.getElementById('vehicleSoundStatus');if(status)status.textContent='Hörprobe beendet.';return;}
  stopVehiclePreviewSound();
  const ticket=vehiclePreviewTicket,bundle=vehicleBundlePreview,status=document.getElementById('vehicleSoundStatus');
  const button=document.querySelector(`[data-preview-action="${action}"]`),opening=!vehiclePreviewDoorsOpen;
@@ -72,7 +75,6 @@ async function previewVehicleCabAction(action){
  if(action==='emergency')button?.setAttribute('aria-pressed','true');
  let completed;
  if(action==='next'){playCabReserveSound(activity?.sound,bundle);completed=await playStopAnnouncementPreview('Anger');}
- else if(action==='fullscreen'){if(activity?.sound)await playCabReserveSound(activity.sound,bundle);else playCabMechanical('down',bundle);completed=true;}
  else completed=await playDriverSound(action==='doors'?(opening?'door_open':'door_close'):action,bundle,activity);
  if(ticket!==vehiclePreviewTicket||bundle!==vehicleBundlePreview)return;
  button?.classList.remove('is-sound-playing');if(action==='emergency')button?.setAttribute('aria-pressed','false');

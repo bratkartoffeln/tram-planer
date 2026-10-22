@@ -12,6 +12,13 @@ let networkZoom=null;
 let networkServiceMode='current';
 function resizeNetworkMap(){const svg=document.getElementById('lineMapSvg');if(!svg)return;const scale=networkZoom??svg.parentElement.clientWidth/1100;svg.style.width=1100*scale+'px';svg.style.height=1080*scale+'px';}
 function zoomNetwork(factor){const svg=document.getElementById('lineMapSvg');if(!svg)return;networkZoom=factor==='fit'?null:Math.max(.2,Math.min(3,(networkZoom??svg.parentElement.clientWidth/1100)*factor));resizeNetworkMap();}
+function bindNetworkPagePan(svg){
+ let pan=null,suppressClick=false;
+ svg.addEventListener('pointerdown',event=>{suppressClick=false;if(event.pointerType!=='touch'||event.target.closest('.draft-node,.network-node,.network-link'))return;pan={id:event.pointerId,x:event.clientX,y:event.clientY,left:scrollX,top:scrollY,moved:false};svg.setPointerCapture(event.pointerId);event.preventDefault();});
+ svg.addEventListener('pointermove',event=>{if(!pan||pan.id!==event.pointerId)return;pan.moved ||= Math.hypot(event.clientX-pan.x,event.clientY-pan.y)>4;if(pan.moved){event.preventDefault();window.scrollTo(pan.left+pan.x-event.clientX,pan.top+pan.y-event.clientY);}});
+ const finish=event=>{if(!pan||pan.id!==event.pointerId)return;suppressClick=pan.moved;pan=null;if(svg.hasPointerCapture(event.pointerId))svg.releasePointerCapture(event.pointerId);};svg.addEventListener('pointerup',finish);svg.addEventListener('pointercancel',finish);
+ svg.addEventListener('click',event=>{if(suppressClick){suppressClick=false;event.preventDefault();event.stopImmediatePropagation();}},true);
+}
 window.addEventListener('resize',()=>{if(currentView==='network')resizeNetworkMap();});
 function setNetworkServiceMode(mode){networkServiceMode=mode==='regular'?'regular':'current';renderNetworkMap();renderNetworkEditorTools();}
 function networkConnections(mode=networkServiceMode){
@@ -134,17 +141,18 @@ function renderNetworkMap(){
  const svg=host.querySelector('svg');
  const point=e=>{const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());};
  resizeNetworkMap();
- if(networkEditing&&state.settings.dev_mode){bindNetworkEditor(svg);return;}
+ if(networkEditing&&state.settings.dev_mode){bindNetworkEditor(svg);bindNetworkPagePan(svg);return;}
  let dragging=null,suppressClick=false;
  const snap=p=>Object.keys(pts).filter(n=>Math.hypot(pts[n].x-p.x,pts[n].y-p.y)<=18).sort((a,b)=>Math.hypot(pts[a].x-p.x,pts[a].y-p.y)-Math.hypot(pts[b].x-p.x,pts[b].y-p.y))[0];
  const preview=s=>{const g=svg.querySelector('[data-index="'+dragging.i+'"]');g.querySelector('circle').setAttribute('cx',s.x);g.querySelector('circle').setAttribute('cy',s.y);g.querySelector('text').setAttribute('x',s.x);g.querySelector('text').setAttribute('y',s.y+4);const stops=lineDraft.stops.map((stop,i)=>i===dragging.i?s:stop);svg.querySelector('#draftPolyline').setAttribute('points',path(stops));};
- svg.onpointerdown=e=>{suppressClick=false;const g=e.target.closest('.draft-node');if(e.button!==0||!g||!lineDraft)return;dragging={i:Number(g.dataset.index),x:e.clientX,y:e.clientY,moved:false};svg.setPointerCapture(e.pointerId);e.preventDefault();};
+ svg.onpointerdown=e=>{suppressClick=false;const g=e.target.closest('.draft-node');if(e.button!==0||!g||!lineDraft)return;dragging={i:Number(g.dataset.index),x:e.clientX,y:e.clientY,moved:false,capture:g};g.setPointerCapture(e.pointerId);e.preventDefault();};
  svg.onpointermove=e=>{if(!dragging)return;dragging.moved ||= Math.hypot(e.clientX-dragging.x,e.clientY-dragging.y)>4;if(!dragging.moved)return;const name=snap(point(e));preview(name?pts[name]:lineDraft.stops[dragging.i]);};
- const finish=e=>{if(!dragging)return;const d=dragging;suppressClick=d.moved;if(svg.hasPointerCapture(e.pointerId))svg.releasePointerCapture(e.pointerId);const name=e.type==='pointerup'&&d.moved?snap(point(e)):null;dragging=null;if(name){const p=pts[name],s=lineDraft.stops[d.i];if(s.name!==name||s.x!==p.x||s.y!==p.y){checkpointLine();Object.assign(s,{name,x:p.x,y:p.y});refreshLineDraft();return;}}renderNetworkMap();};
+ const finish=e=>{if(!dragging)return;const d=dragging;suppressClick=d.moved;if(d.capture.hasPointerCapture(e.pointerId))d.capture.releasePointerCapture(e.pointerId);const name=e.type==='pointerup'&&d.moved?snap(point(e)):null;dragging=null;if(name){const p=pts[name],s=lineDraft.stops[d.i];if(s.name!==name||s.x!==p.x||s.y!==p.y){checkpointLine();Object.assign(s,{name,x:p.x,y:p.y});refreshLineDraft();return;}}renderNetworkMap();};
  svg.onpointerup=finish;svg.onpointercancel=finish;
  const append=n=>{if(!lineDraft||suppressClick)return;checkpointLine();const p=pts[n];lineDraft.stops.push({name:n,x:p.x,y:p.y,travel:lineDraft.stops.length?2:0});refreshLineDraft();};
  svg.querySelectorAll('.network-node').forEach(g=>{g.onclick=()=>append(g.dataset.name);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();suppressClick=false;append(g.dataset.name);}};});
  svg.onclick=()=>{suppressClick=false;};
+ if(lineDraft)bindNetworkPagePan(svg);
 }
 function saveLineDraft(){
  const d=lineDraft;

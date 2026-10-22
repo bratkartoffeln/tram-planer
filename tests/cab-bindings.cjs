@@ -58,7 +58,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),session=req
   assert.equal(await b.evaluate('document.getElementById("cabLayoutIconSize").value'),'80');
   await b.cdp('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await b.evaluate('openCabReserveMenu("reserve-0")');
-  assert.equal(await b.evaluate('(()=>{const r=document.getElementById("cabReserveMenu").getBoundingClientRect();return r.x>=0&&r.right<=innerWidth&&r.y>=0&&r.bottom<=innerHeight})()'),true);
+  assert.equal(await b.evaluate('(()=>{const n=document.querySelector(".cab-layout-tools"),r=n.getBoundingClientRect();return r.x>=0&&r.right<=innerWidth&&n.scrollWidth<=n.clientWidth&&n.scrollHeight<=n.clientHeight+2&&getComputedStyle(n).maxHeight==="none"})()'),true);
   await b.screenshot('assignment-mobile.png');
   assert.equal(b.errors.length,0);console.log('Cab bindings: context menu, touch selection, button/lever/4 rotary positions, disabled guards, icon size, text backgrounds, undo, persistence and compiled driver actions passed.');
  }finally{await b.close();}

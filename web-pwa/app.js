@@ -1,5 +1,5 @@
 'use strict';
-const APP_VERSION='6.2.11';
+const APP_VERSION='6.2.12';
 const STOP_W2D=['Wiesenhügel','Färberwaidweg','Abzweig Wiesenhügel','Blücherstraße','Sozialversicherungszentrum','Am Schwemmbach','Stadion Ost','Tschaikowskistraße','Robert-Koch-Straße','Hauptbahnhof','Anger','Fischmarkt/Rathaus','Domplatz'];
 const STOP_D2W=[...STOP_W2D].reverse();
 const STOP_L3D=['Melchendorf Betriebshof','Melchendorf','Abzweig Wiesenhügel','Blücherstraße','Sozialversicherungszentrum','Am Schwemmbach','Stadion Ost','Tschaikowskistraße','Robert-Koch-Straße','Hauptbahnhof','Anger','Fischmarkt/Rathaus','Domplatz'];
@@ -93,18 +93,20 @@ function applyTheme(){document.body.classList.toggle('dark',!!state.settings.dar
 function updateShell(){
  const collapsed=state.settings.sidebar_collapsed===true;
  document.body.classList.toggle('sidebar-collapsed',collapsed);
- document.getElementById('nav').inert=collapsed&&window.matchMedia('(max-width:900px)').matches;
+ document.getElementById('nav').inert=false;
  const toggle=document.getElementById('sidebarToggle');
- toggle.setAttribute('aria-expanded',String(!collapsed));
+ toggle.setAttribute('aria-expanded',String(compactScreen()?mobileMenuOpen:!collapsed));
  toggle.setAttribute('aria-label',collapsed?'Menü ausklappen':'Menü einklappen');
  toggle.title=collapsed?'Menü ausklappen':'Menü einklappen';
- toggle.querySelector('.sidebar-toggle-label').textContent=collapsed?'Menü':'Menü einklappen';
+ toggle.querySelector('.sidebar-toggle-label').textContent=compactScreen()?'Menü schließen':collapsed?'Menü':'Menü einklappen';
+ if(compactScreen()){toggle.setAttribute('aria-label','Menü schließen');toggle.title='Menü schließen';}
  document.getElementById('clock').textContent=nowClock();
  document.getElementById('appVersion').textContent=`v${APP_VERSION} Android`;
  document.getElementById('activeDot').textContent=state.active?'●':'';
- document.querySelectorAll('#nav button[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===currentView||(currentView==='detail'&&b.dataset.view==='plans')));
+ syncNavigation();
 }
 function toggleSidebar(){
+ if(compactScreen()){setMobileMenu(!mobileMenuOpen);return;}
  state.settings.sidebar_collapsed=!state.settings.sidebar_collapsed;saveState();updateShell();
  if(currentView==='network')resizeNetworkMap();
  if(currentView==='driver')queueCabRouteLayout();
@@ -118,6 +120,8 @@ sidebarLayoutObserver.observe(document.getElementById('sidebar'));
 window.matchMedia('(max-width:900px)').addEventListener('change',updateShell);
 function titleFor(v){return ({network:'Linien & Netz',home:'Übersicht',new:'Neue Fahrt erstellen',plans:'Meine Fahrpläne',vehicles:'Fahrzeuge',detail:'Fahrplan',driver:'Fahrer-Modus',history:'Fahrt-Historie',settings:'Einstellungen'})[v]||'Fahrplan Manager'}
 function showView(v){
+ const viewChanged=v!==currentView;
+ setMobileMenu(false);
  stopVehicleBundlePreview();
  if(v==='new'&&currentView!=='new'&&!editingPlanId&& !window.draftRoute){draftStops=[];}
  if(v!=='new'&&currentView==='new'){editingPlanId=null;draftStops=[];}
@@ -127,7 +131,7 @@ function showView(v){
  if(v!=='driver')cancelStopAnnouncement();
  currentView=v;applyTheme();updateShell();
  document.getElementById('pageTitle').textContent=titleFor(v);
- document.getElementById('modalRoot').innerHTML='';
+ if(document.getElementById('modalRoot').innerHTML)closeModal();
  const el=document.getElementById('view');
  el.classList.toggle('network-view',v==='network');
  el.classList.toggle('driver-view',v==='driver');
@@ -140,21 +144,27 @@ function showView(v){
  else if(v==='driver')renderDriver(el);
  else if(v==='history')renderHistory(el);
  else if(v==='settings')renderSettings(el);
+ if(v!=='driver'&&v!=='vehicles')enhanceView(v,el);
+ document.getElementById('pageHelp').textContent=({home:'Alles für deine nächste Fahrt.',new:'Strecke und Fahrzeug wählen, Zeiten festlegen, speichern.',plans:'Fahrplan öffnen, Abfahrt wählen und losfahren.',network:'Strecken entdecken und dein Netz gestalten.',vehicles:'Dein Fuhrpark, Fahrzeugtypen und Fahrpulte.',detail:'Abfahrtszeit festlegen und die Fahrt starten.',driver:'Fahrstatus, Türen und Haltestellen im Blick.',history:'Deine Fahrten und Ereignisse zum Nachlesen.',settings:'Darstellung, Datensicherung und Anpassungen.'})[v]||'';
+ if(viewChanged){window.scrollTo(0,0);document.getElementById('pageTitle').focus({preventScroll:true});}
  updateShell();
 }
 function openActiveTrip(){if(!state.active){showView('home');showToast('Starte zuerst eine Fahrt.');return}if(state.active.status==='suspended'){showModal('Fahrt angehalten','Deine Fahrt ist pausiert. Möchtest du sie fortsetzen?',`<button class="ghost" onclick="closeModal()">Später</button><button class="primary" onclick="closeModal();resumeActive()">Fahrt fortsetzen</button>`);return}showView('driver')}
 function card(content,extra=''){return `<section class="card ${extra}">${content}</section>`}
 function renderHome(el){
- const active=state.active;const latest=state.history.slice().sort((a,b)=>(b.at||0)-(a.at||0))[0];
+ const active=state.active;
  el.innerHTML=`<div class="grid">
- ${`<section class="card hero col-12"><div class="eyebrow" style="color:#a8edf1">DEIN FAHRERCOCKPIT</div><h2>Deine Strecke.<br>Dein Fahrplan.</h2><p>Erstelle eigene Fahrten, beobachte Verspätung und Verfrühung in Echtzeit und nutze das Pausensystem — auf deinem Tablet, auch offline.</p><div class="actions"><button class="primary" onclick="showView('new')">＋ Neue Fahrt erstellen</button>${active?`<button onclick="openActiveTrip()">▶ ${active.status==='suspended'?'Fahrt fortsetzen':'Zur aktiven Fahrt'}</button>`:''}</div></section>`}
- <div class="col-4">${card(`<div class="stat"><strong>${state.plans.length}</strong><span>Gespeicherte Fahrpläne</span></div>`)}</div>
- <div class="col-4">${card(`<div class="stat"><strong>${state.history.filter(h=>h.type==='FAHRT').length}</strong><span>Fahrten in der Historie</span></div>`)}</div>
- <div class="col-4">${card(`<div class="stat"><strong>${state.history.filter(h=>h.type==='NOTFALL').length}</strong><span>Notfallmeldungen</span></div>`)}</div>
- <div class="col-7">${card(`<h2>Strecken-Vorlagen</h2><p class="muted">Keine Beispiel-Fahrten werden automatisch gespeichert. Wähle eine Vorlage zum Erstellen.</p>${Object.entries(ROUTES).map(([id,r])=>`<div class="route-card"><div><div class="route-name">${esc(r.name)}</div><div class="muted" style="font-size:.82rem;margin-top:5px">${r.stops.length} Haltestellen · Linie ${esc(r.line)}</div></div><div class="actions"><span class="route-code">${esc(routeLabel(id))}</span><button class="small" onclick="startDraftWithRoute('${id}')">Verwenden</button></div></div>`).join('')}`)}</div>
- <div class="col-5">${card(`<h2>Systemstatus</h2><div class="settings-row"><span>Aktive Fahrt</span><strong>${active?(active.status==='suspended'?'Angehalten':'Läuft'):'Keine'}</strong></div><div class="settings-row"><span>Design</span><strong>${state.settings.dark_mode?'Darkmode':'Hell'}</strong></div><div class="settings-row"><span>Versionsnummer</span><strong>v${APP_VERSION} Android</strong></div>${latest?`<div style="margin-top:15px"><div class="muted" style="font-size:.78rem">Letzter Historieneintrag</div><strong>${esc(latest.title||latest.type)}</strong><div class="muted" style="font-size:.8rem">${esc(fmtDate(latest.at))}</div></div>`:''}<div class="notice" style="margin-top:15px">Fiktive Simulation — keine echten EVAG-/SWE-Dienstplandaten.</div>` )}</div>
+ <section class="card dashboard-hero col-12"><div><div class="eyebrow">${active?'DEINE AKTIVE FAHRT':'BEREIT FÜR DIE NÄCHSTE RUNDE?'}</div><h2>${active?esc(active.plan.routeName):'Dein Fahrplan. Deine Fahrt.'}</h2><p>${active?'Linie '+esc(active.plan.line)+' · Tram '+esc(active.plan.tram)+' · '+(active.status==='suspended'?'Fahrt angehalten':esc(active.plan.stops[active.position].name)):'Wähle eine Strecke, erstelle deinen Fahrplan und nimm im Fahrpult Platz. Auch offline.'}</p></div><div class="actions">${active?'<button class="primary" onclick="openActiveTrip()">▶ Fahrt '+(active.status==='suspended'?'fortsetzen':'öffnen')+'</button>':'<button class="primary" onclick="showView(\'new\')">＋ Fahrplan erstellen</button>'}<button class="${active?'ghost':''}" onclick="showView('plans')">Meine Fahrpläne →</button></div></section>
+ <div class="col-12 dashboard-stats">${[['plans',state.plans.length,'Fahrpläne'],['vehicles',state.vehicles.length,'Fahrzeuge'],['history',state.history.filter(h=>h.type==='FAHRT').length,'Fahrten']].map(([view,count,label])=>'<button class="card stat" onclick="showView(\''+view+'\')"><strong>'+count+'</strong><span>'+label+'</span></button>').join('')}</div>
+ <section class="col-12"><div class="section-heading"><div><h2 style="margin:0">Was möchtest du tun?</h2><p class="muted">Deine wichtigsten Wege auf einen Blick.</p></div></div><div class="quick-links">
+ <button class="quick-link" onclick="showView('new')"><span aria-hidden="true">＋</span><strong>Fahrt planen</strong><small>Strecke, Fahrzeug und Haltezeiten festlegen.</small></button>
+ <button class="quick-link" onclick="showView('vehicles')"><span aria-hidden="true">▤</span><strong>Fahrzeug auswählen</strong><small>Fuhrpark verwalten und Fahrpulte entdecken.</small></button>
+ <button class="quick-link" onclick="showView('network')"><span aria-hidden="true">⑂</span><strong>Linien & Netz öffnen</strong><small>Das Streckennetz ansehen und bearbeiten.</small></button></div></section>
+ <section class="card col-8"><div class="section-heading"><div><h2>Strecke auswählen</h2><p class="muted">Starte deinen Fahrplan mit einer Vorlage.</p></div><span class="pill">${Object.keys(ROUTES).length} Strecken</span></div><div class="list-search"><label for="routeSearch">Strecken durchsuchen</label><input type="search" id="routeSearch" placeholder="Haltestelle, Linie oder Routencode …" oninput="filterCards('routeSearch','routeResults','.route-card','routeCount')"><p class="muted search-count" id="routeCount" role="status">Alle Strecken · weitere durch Scrollen</p></div><div class="route-library" id="routeResults" tabindex="0" aria-label="Streckenvorlagen">${Object.entries(ROUTES).map(([id,r])=>'<div class="route-card"><div><span class="route-code">Linie '+esc(r.line)+'</span><div class="route-name">'+esc(r.name)+'</div><small class="muted">'+r.stops.length+' Haltestellen · '+esc(routeLabel(id))+'</small></div><button onclick="startDraftWithRoute(\''+id+'\')">Auswählen →</button></div>').join('')}</div></section>
+ <section class="card col-4"><h2>So geht’s los</h2><ol class="getting-started"><li><strong>Fahrplan erstellen</strong><p>Wähle eine Strecke und dein Fahrzeug. Passe die Fahr- und Pausenzeiten an.</p></li><li><strong>Abfahrt wählen</strong><p>Öffne den gespeicherten Fahrplan und lege die Startzeit fest.</p></li><li><strong>Fahrt starten</strong><p>Bediene Türen und Haltestellen direkt oder über das Fahrpult.</p></li></ol><div class="notice">Fiktive Simulation · keine echten EVAG-/SWE-Dienstplandaten.</div></section>
  </div>`;
 }
+
 function startDraftWithRoute(id){editingPlanId=null;window.draftRoute=id;draftStops=allRouteStops(id);showView('new')}
 function planHasActiveTrip(id){return state.active?.plan?.id===id&&state.active.status!=='finished';}
 function editPlan(id){
@@ -177,7 +187,8 @@ function renderNew(el){
  }
  syncPlanVehicleChoice();refreshDraftTimes();
 }
-function renderStopEditorHTML(){return draftStops.map((s,i)=>`<div class="stop-editor"><div class="stop-editor-top"><span class="stop-number">${i+1}</span><span class="stop-label">${esc(s.name)}</span><span class="time-text" id="arr_${i}">--:--</span></div><div class="stop-editor-fields"><div class="field"><label>Fahrzeit ${i===0?'(Start)':'(Min.)'}</label><input class="travel-input" data-index="${i}" type="number" min="0" max="240" value="${Number(s.travel)||0}" ${i===0?'readonly':''} onchange="pullDraftValues();refreshDraftTimes()" oninput="pullDraftValues();refreshDraftTimes()"></div><div class="field"><label>Pause (Min.)</label><input class="pause-input" data-index="${i}" type="number" min="0" max="240" value="${i===0?0:(Number(s.pause)||0)}" ${i===0?'readonly title="Start-Halt: keine Pause in dieser Version"':''} onchange="pullDraftValues();refreshDraftTimes()" oninput="pullDraftValues();refreshDraftTimes()"></div></div></div>`).join('')}
+function renderStopEditorHTML(){return draftStops.map((s,i)=>`<details class="stop-editor" ${i===1?'open':''}><summary class="stop-editor-top"><span class="stop-number">${i+1}</span><span class="stop-label">${esc(s.name)}<small class="stop-timing" id="stopTiming_${i}">${i===0?'Start':Number(s.travel)+' Min. Fahrt · '+Number(s.pause)+' Min. Pause'}</small></span><span class="time-text" id="arr_${i}">--:--</span></summary><div class="stop-editor-fields"><div class="field"><label for="travel_${i}">Fahrzeit ${i===0?'(Start)':'(Min.)'}</label><input id="travel_${i}" class="travel-input" data-index="${i}" type="number" min="0" max="240" value="${Number(s.travel)||0}" ${i===0?'readonly':''} onchange="pullDraftValues();refreshDraftTimes()" oninput="pullDraftValues();refreshDraftTimes()"></div><div class="field"><label for="pause_${i}">Pause (Min.)</label><input id="pause_${i}" class="pause-input" data-index="${i}" type="number" min="0" max="240" value="${i===0?0:(Number(s.pause)||0)}" ${i===0?'readonly':''} onchange="pullDraftValues();refreshDraftTimes()" oninput="pullDraftValues();refreshDraftTimes()"></div></div></details>`).join('')}
+
 function pullDraftValues(){document.querySelectorAll('.travel-input').forEach(e=>{const i=Number(e.dataset.index);if(draftStops[i])draftStops[i].travel=Math.max(0,Number(e.value)||0)});document.querySelectorAll('.pause-input').forEach(e=>{const i=Number(e.dataset.index);if(draftStops[i])draftStops[i].pause=i===0?0:Math.max(0,Number(e.value)||0)})}
 function routeChanged(){const id=document.getElementById('routeSelect').value;pullDraftValues();window.draftRoute=id;draftStops=allRouteStops(id);const li=document.getElementById('lineInput');if(li)li.value=ROUTES[id].line;const old=document.getElementById('stopEditor');if(old)old.innerHTML=renderStopEditorHTML();refreshDraftTimes();}
 function refreshDraftTimes(){
@@ -186,6 +197,7 @@ function refreshDraftTimes(){
   if(index>0)minutes+=Number(stop.travel)||0;
   const label=document.getElementById('arr_'+index);
   if(label)label.textContent=index===0?'Start':`+${minutes} Min.`;
+  const timing=document.getElementById('stopTiming_'+index);if(timing)timing.textContent=index===0?'Start':Number(stop.travel)+' Min. Fahrt · '+Number(stop.pause)+' Min. Pause';
   if(index<draftStops.length-1)minutes+=Number(stop.pause)||0;
  });
 }
@@ -298,17 +310,14 @@ function etaEpoch(){
  if(!active)return Date.now();
  return calcSchedule(active.plan,active.startedAtEpoch)[active.position]+activeDelayMin()*60000;
 }
-function renderDriver(el){const a=state.active;if(!a){el.innerHTML=card(`<h2>Keine aktive Fahrt</h2><p class="muted">Öffne einen gespeicherten Fahrplan und starte die Fahrt.</p><button class="primary" onclick="showView('plans')">Fahrpläne öffnen</button>`);return}const p=a.plan;const stop=p.stops[a.position];const arrival=calcSchedule(p,a.startedAtEpoch)[a.position];const pause=currentPauseSeconds();el.innerHTML=`<div class="cab-fullscreen-status" id="cabFullscreenStatus" aria-label="Fahrtstatus"></div><div class="grid"><div class="col-8">${card(`<div class="actions" style="justify-content:space-between"><span class="pill">LINIE ${esc(p.line)} · TRAM ${esc(p.tram)}</span><span class="pill" id="runClock">${nowClock()}</span></div><div style="margin-top:23px"><div class="eyebrow">AKTUELLER HALT</div><div class="driver-station" id="currentStop">${esc(stop.name)}</div><p class="muted" style="margin:8px 0 15px">${esc(p.stops[0].name)} → ${esc(p.stops[p.stops.length-1].name)}</p><div class="actions"><span class="pill">Ankunft ${fmtTime(arrival)}</span><span class="pill" id="durationText">Fahrtdauer 00:00</span></div><div style="margin-top:16px"><span id="delayStatus" class="status ${statusClass(activeDelayMin())}">${statusText(activeDelayMin())}</span></div><div id="etaRow" class="notice ${state.settings.show_eta?'':'hidden'}" style="margin-top:13px">Geschätzte Ankunft: <strong id="etaText">${fmtTime(etaEpoch())}</strong></div><div id="pauseNotice" class="notice ${pause>0?'':'hidden'}" style="margin-top:13px">⏸️ Planmäßige Pause — noch <strong id="pauseText">${Math.floor(pause/60)}:${String(pause%60).padStart(2,'0')}</strong>. Nächster Halt ist bis zum Ende gesperrt.</div></div><div style="margin-top:20px"><div style="height:8px;background:var(--line);border-radius:999px;overflow:hidden"><div id="progressBar" style="height:100%;width:${(a.position/(p.stops.length-1))*100}%;background:var(--teal);transition:width .2s"></div></div><p class="muted" id="positionText">Haltestelle ${a.position+1} von ${p.stops.length}</p></div>` )}</div><div class="col-4">${card(`<h2>Streckenverlauf</h2><p class="muted">Ankunftszeiten aus deinem Fahrplan. Die aktuelle Zeitabweichung steht oben.</p><div class="route-progress" id="driverRouteMap">${renderRouteMapHTML(a)}</div>` )}${card(`<div class="settings-row"><span>Abfahrt</span><strong>${esc(a.departure)}</strong></div><div class="settings-row"><span>Ziel</span><strong>${esc(p.stops[p.stops.length-1].name)}</strong></div><button style="width:100%;margin-top:9px" onclick="showView('home')">Zur Übersicht</button>` )}</div><div class="col-12 cab-panel-row">${renderCabControls(a,pause)}</div></div>`;updateDriverLive();applyCabLayoutToStage(el.querySelector('.cab-stage'),getVehicleBundle(a.plan))}
+function renderDriver(el){renderDriverContent(el);enhanceView('driver',el);}
+function renderDriverContent(el){const a=state.active;if(!a){el.innerHTML=card(`<h2>Keine aktive Fahrt</h2><p class="muted">Öffne einen gespeicherten Fahrplan und starte die Fahrt.</p><button class="primary" onclick="showView('plans')">Fahrpläne öffnen</button>`);return}const p=a.plan;const stop=p.stops[a.position];const arrival=calcSchedule(p,a.startedAtEpoch)[a.position];const pause=currentPauseSeconds();el.innerHTML=`<div class="cab-fullscreen-status" id="cabFullscreenStatus" aria-label="Fahrtstatus"></div><div class="grid"><div class="col-8">${card(`<div class="actions" style="justify-content:space-between"><span class="pill">LINIE ${esc(p.line)} · TRAM ${esc(p.tram)}</span><span class="pill" id="runClock">${nowClock()}</span></div><div style="margin-top:23px"><div class="eyebrow">AKTUELLER HALT</div><div class="driver-station" id="currentStop">${esc(stop.name)}</div><p class="muted" style="margin:8px 0 15px">${esc(p.stops[0].name)} → ${esc(p.stops[p.stops.length-1].name)}</p><div class="actions"><span class="pill">Ankunft ${fmtTime(arrival)}</span><span class="pill" id="durationText">Fahrtdauer 00:00</span></div><div style="margin-top:16px"><span id="delayStatus" class="status ${statusClass(activeDelayMin())}">${statusText(activeDelayMin())}</span></div><div id="etaRow" class="notice ${state.settings.show_eta?'':'hidden'}" style="margin-top:13px">Geschätzte Ankunft: <strong id="etaText">${fmtTime(etaEpoch())}</strong></div><div id="pauseNotice" class="notice ${pause>0?'':'hidden'}" style="margin-top:13px">⏸️ Planmäßige Pause — noch <strong id="pauseText">${Math.floor(pause/60)}:${String(pause%60).padStart(2,'0')}</strong>. Nächster Halt ist bis zum Ende gesperrt.</div></div><div style="margin-top:20px"><div style="height:8px;background:var(--line);border-radius:999px;overflow:hidden"><div id="progressBar" style="height:100%;width:${(a.position/(p.stops.length-1))*100}%;background:var(--teal);transition:width .2s"></div></div><p class="muted" id="positionText">Haltestelle ${a.position+1} von ${p.stops.length}</p></div>` )}</div><div class="col-4">${card(`<h2>Streckenverlauf</h2><p class="muted">Ankunftszeiten aus deinem Fahrplan. Die aktuelle Zeitabweichung steht oben.</p><div class="route-progress" id="driverRouteMap">${renderRouteMapHTML(a)}</div>` )}${card(`<div class="settings-row"><span>Abfahrt</span><strong>${esc(a.departure)}</strong></div><div class="settings-row"><span>Ziel</span><strong>${esc(p.stops[p.stops.length-1].name)}</strong></div><button style="width:100%;margin-top:9px" onclick="showView('home')">Zur Übersicht</button>` )}</div><div class="col-12 cab-panel-row">${renderCabControls(a,pause)}</div></div>`;updateDriverLive();applyCabLayoutToStage(el.querySelector('.cab-stage'),getVehicleBundle(a.plan))}
 function renderRouteMapHTML(a){const p=a.plan;const t=calcSchedule(p,a.startedAtEpoch);const d=activeDelayMin();return p.stops.map((s,i)=>`<div class="route-stop ${i===a.position?'current':''} ${i<a.position?'visited':''}"><span class="route-dot"></span><div class="route-stop-name">${esc(s.name)}<small>${i===a.position?'Aktueller Halt':i<a.position?'Bereits passiert':'Noch bevorstehend'}</small></div><div class="route-stop-time">${fmtTime(t[i])}${i===a.position?`<small style="color:var(--${d>0?'red':d<0?'green':'teal'})">${esc(timeDeltaText(d))}</small>`:''}</div></div>`).join('')}
 function followCurrentRouteStop(map,trip){
- const key=trip.id+':'+trip.position;
- if(map.dataset.followedStop===key)return;
- const row=map.querySelector('.route-stop.current');
- if(!row)return;
- const top=row.getBoundingClientRect().top-map.getBoundingClientRect().top+map.scrollTop;
- map.scrollTop=Math.max(0,top-(map.clientHeight-row.offsetHeight)/2);
- map.dataset.followedStop=key;
+ // The complete route grows with the document. Live updates never move the page.
+ map.dataset.followedStop=trip.id+':'+trip.position;
 }
+
 function updateDriverLive(){if(!state.active||currentView!=='driver')return;updateCabFullscreenStatus();const a=state.active;const p=a.plan;const stop=p.stops[a.position];const now=Date.now();const d=activeDelayMin(now);const clock=document.getElementById('runClock');if(clock)clock.textContent=nowClock();const st=document.getElementById('currentStop');if(st)st.textContent=stop.name;const label=document.getElementById('delayStatus');if(label){label.className='status '+statusClass(d);label.textContent=statusText(d)}const eta=document.getElementById('etaText');if(eta)eta.textContent=fmtTime(etaEpoch());const started=a.actualStartEpoch||a.startedAtEpoch;const elapsed=Math.max(0,Math.floor((now-started)/1000));const dur=document.getElementById('durationText');if(dur)dur.textContent=`Fahrtdauer ${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;const left=currentPauseSeconds(now);const pn=document.getElementById('pauseNotice');if(pn)pn.classList.toggle('hidden',left<=0);const pt=document.getElementById('pauseText');if(pt)pt.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;const nb=document.getElementById('nextStopBtn');if(nb){nb.cabDefaultDisabled=left>0||a.doorsOpen||a.position>=p.stops.length-1;nb.disabled=nb.cabDefaultDisabled;const stage=nb.closest('.cab-stage'),bundle=getVehicleBundle();applyCabButtonBindings(stage,cabLayoutMerge(bundle.cab.layout,cabLayoutSaved(bundle.cab)));}const pb=document.getElementById('progressBar');if(pb)pb.style.width=(a.position/(p.stops.length-1))*100+'%';const pos=document.getElementById('positionText');if(pos)pos.textContent=`Haltestelle ${a.position+1} von ${p.stops.length}`;const map=document.getElementById('driverRouteMap');if(map){map.innerHTML=renderRouteMapHTML(a);followCurrentRouteStop(map,a)}}
 function tick(){updatePassengerDisplay();document.getElementById('clock').textContent=nowClock();if(state.active&&state.active.status==='running'){if(state.active.pauseEndEpoch&&Date.now()>=state.active.pauseEndEpoch){state.active.pauseEndEpoch=null;saveState();showToast('Planmäßige Pause beendet — weiterfahren möglich.')}if(currentView==='driver')updateDriverLive();}updateShell()}
 function nextStop(){
@@ -451,10 +460,10 @@ function importData(event){
  reader.onerror=()=>showToast('Die Sicherungsdatei konnte nicht gelesen werden.');
  reader.readAsText(file);
 }
-function showModal(title,body,footer){document.getElementById('modalRoot').innerHTML=`<div class="modal-backdrop" role="presentation" onclick="if(event.target===this)closeModal()"><div class="modal" role="dialog" aria-modal="true"><h2>${title}</h2><div>${body}</div><div class="modal-footer">${footer||'<button class="primary" onclick="closeModal()">Schließen</button>'}</div></div></div>`}
-function closeModal(){stopVehicleBundlePreview();resetCabEmergency();stopDriverSound();passengerDisplayResizeObserver?.disconnect();passengerDisplayResizeObserver=null;document.getElementById('modalRoot').innerHTML=''}
+function showModal(title,body,footer){captureDialogPageScroll();if(!document.querySelector('#modalRoot .modal'))modalReturnFocus=document.activeElement;document.getElementById('modalRoot').innerHTML=`<div class="modal-backdrop" role="presentation" onclick="if(event.target===this)closeModal()"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" tabindex="-1"><button class="modal-close ghost" onclick="closeModal()" aria-label="Dialog schließen">✕</button><h2 id="dialogTitle">${title}</h2><div>${body}</div><div class="modal-footer">${footer||'<button class="primary" onclick="closeModal()">Schließen</button>'}</div></div></div>`;document.querySelector('#modalRoot .modal').focus();document.querySelector('.shell').inert=true;document.getElementById('mobileNav').inert=true;document.getElementById('appVersion').inert=true;window.scrollTo(0,0);queuePageTextareas();}
+function closeModal(){stopVehicleBundlePreview();resetCabEmergency();stopDriverSound();passengerDisplayResizeObserver?.disconnect();passengerDisplayResizeObserver=null;document.getElementById('modalRoot').innerHTML='';document.querySelector('.shell').inert=false;document.getElementById('appVersion').inert=false;document.getElementById('mobileNav').inert=false;if(modalReturnFocus?.isConnected)modalReturnFocus.focus({preventScroll:true});modalReturnFocus=null;restoreDialogPageScroll();}
 
-function appBack(){if(document.getElementById('modalRoot').innerHTML){closeModal();return}if(cabFullscreen){setCabFullscreen(false);return}if(currentView==='driver'){showView('home')}else if(currentView==='detail'){showView('plans')}else showView('home')}
+function appBack(){if(mobileMenuOpen){setMobileMenu(false);return}if(cabLayoutAllowed()&&document.getElementById('cabReserveMenu')){closeCabReserveMenu();setCabInspectorTab('appearance');return}if(cabLayoutAllowed()&&cabLayoutEditor.pendingImport){cancelCabTransfer();return}if(document.getElementById('modalRoot').innerHTML){closeModal();return}if(cabFullscreen){setCabFullscreen(false);return}if(currentView==='driver'){showView('home')}else if(currentView==='detail'){showView('plans')}else showView('home')}
 window.appBack=appBack;
 applyTheme();saveState();showView('home');setInterval(tick,1000);
 setTimeout(()=>checkForAppUpdate(),1500);

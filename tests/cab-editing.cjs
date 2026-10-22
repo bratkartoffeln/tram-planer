@@ -62,7 +62,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),session=req
   await b.evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
   await b.evaluate('document.querySelector(".cab-symbol-picker").scrollIntoView({block:"center"})');
   assert.equal(await b.evaluate('document.getElementById("cabReserveMenu").scrollWidth<=document.getElementById("cabReserveMenu").clientWidth'),true);
-  assert.equal(await b.evaluate('(()=>{const rect=document.getElementById("cabReserveMenu").getBoundingClientRect();return rect.x>=0&&rect.right<=innerWidth&&rect.y>=0&&rect.bottom<=innerHeight})()'),true);
+  assert.equal(await b.evaluate('(()=>{const n=document.querySelector(".cab-layout-tools"),rect=n.getBoundingClientRect();return rect.x>=0&&rect.right<=innerWidth&&n.scrollWidth<=n.clientWidth&&n.scrollHeight<=n.clientHeight+2&&getComputedStyle(n).maxHeight==="none"})()'),true);
   await b.screenshot('symbol-picker-mobile-dark.png');
   // Free labels and mechanical settings survive reopening with Dev mode disabled.
   await b.evaluate('closeModal();state.settings.dev_mode=false');

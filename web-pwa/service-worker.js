@@ -1,9 +1,9 @@
 'use strict';
 const CACHE_PREFIX = 'fahrplan-manager-tablet-';
-const CACHE = CACHE_PREFIX + 'v6.2.11-kt4dc-lamps';
+const CACHE = CACHE_PREFIX + 'v6.2.12-single-scroll';
 const ASSETS = [
   './', './index.html', './app.js', './announcements.js', './erfurt-network.js', './line-editor.js', './network-editor.js', './network-plan.json', './network-plan-data.js',
-  './cab-layout.js', './cab-layout.css', './cockpit.js', './cockpit.css', './shell.css', './images/tram-cockpit.jpg', './images/credits.json', './images/cab-panel-photoreal.webp', './audio/effects/catalog.json',
+  './cab-layout.js', './cab-layout.css', './cockpit.js', './cockpit.css', './shell.css', './usability.css', './usability.js', './dev-workspace.js', './dev-workspace.css', './page-scroll.css', './images/tram-cockpit.jpg', './images/credits.json', './images/cab-panel-photoreal.webp', './audio/effects/catalog.json',
   './vehicles.js', './vehicle-previews.js', './vehicles.css', './vehicle-types.json', './vehicle-types-data.js', './images/vehicles/credits.json',
   './vehicle-bundles.js', './vehicle-bundles-data.js', './vehicle-bundle-assets.json', './updates.js',
   ...['door_open','door_close','door_closed','emergency','traffic','passenger','finish','back'].map(id=>'./audio/effects/'+id+'.mp3'),

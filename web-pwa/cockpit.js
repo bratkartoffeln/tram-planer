@@ -362,7 +362,7 @@ function playCabScrewSound(tightening=false){
 function releaseCabButton(){
  if(!cabHeld)return;const button=cabHeld,gate=cabHoldSoundGate;cabHoldSoundGate=null;
  button.classList.remove('is-down');
- const sound=!cabHeldLatching?playCabActuation(button,'release','up',!button.classList.contains('cab-emergency')):null;
+ const sound=!cabHeldLatching&&button.dataset.cabControl!=='fullscreen'?playCabActuation(button,'release','up',!button.classList.contains('cab-emergency')):null;
  if(gate)void Promise.resolve(sound).then(completed=>gate.resolve(completed!==false),()=>gate.resolve(false));
  if(cabHeldLatching&&button.dataset.cabMode==='latching')syncCabModeVisual(button);cabHeld=null;cabHeldLatching=false;
 }

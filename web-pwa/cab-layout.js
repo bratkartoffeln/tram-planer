@@ -123,7 +123,8 @@ function cabLayoutSaved(panel,scope=cabLayoutScope(panel)){
 function cabLayoutPersist(){
  const editor=cabLayoutEditor;if(!editor)return;
  try{let all={};try{all=JSON.parse(localStorage.getItem(CAB_LAYOUT_STORAGE)||'{}');}catch{}if(!all||typeof all!=='object'||Array.isArray(all))all={};all[cabLayoutStorageKey(editor.panel,editor.scope)]=editor.draft;localStorage.setItem(CAB_LAYOUT_STORAGE,JSON.stringify(all));}
- catch{showToast('Lokales Speichern fehlgeschlagen. Bitte das Layout exportieren.');}
+ catch{cabWorkspaceSaved(false);showToast('Lokales Speichern fehlgeschlagen. Bitte das Layout exportieren.');return;}
+ cabWorkspaceSaved(true);
 }
 function mountCabLayoutEditor(bundle){
  const stage=document.querySelector('.vehicle-bundle-modal .cab-stage');if(!stage)return;
@@ -132,6 +133,7 @@ function mountCabLayoutEditor(bundle){
  const entries=cabLayoutEntries(stage,bundle.cab);
  cabLayoutEditor={bundle,panel:bundle.cab,scope:cabLayoutScope(bundle.cab),stage,entries,draft:cabLayoutSaved(bundle.cab),history:[],active:false,selected:entries[0]?.key,drag:null};
  stage.closest('.cab-console').insertAdjacentHTML('afterend','<section class="cab-layout-tools" aria-label="Fahrpult-Layouteditor"><button type="button" id="cabLayoutToggle" aria-pressed="false" onclick="toggleCabLayoutEditor()">Layout bearbeiten</button><div id="cabLayoutTools" hidden></div></section>');
+ mountCabWorkspace(cabLayoutEditor);
  cabLayoutRefresh();
  const observer=new ResizeObserver(()=>cabLayoutRefresh());observer.observe(stage);cabLayoutEditor.observer=observer;
 }
@@ -164,6 +166,8 @@ function cabLayoutRefresh(){
  cabLayoutForegroundOutlines(editor);
  const undo=document.getElementById('cabLayoutUndo');if(undo)undo.disabled=!editor.history.length;
  const json=document.getElementById('cabLayoutJson');if(json)json.value=JSON.stringify(cabLayoutExportData(),null,2);
+ queuePageTextareas();
+ refreshCabWorkspace();
 }
 function toggleCabLayoutEditor(){
  const editor=cabLayoutEditor;if(!editor||!state.settings.dev_mode)return;
@@ -172,6 +176,7 @@ function toggleCabLayoutEditor(){
  const tools=document.getElementById('cabLayoutTools');tools.hidden=!editor.active;
  if(editor.active){tools.innerHTML=`<p>Text anklicken zum Schreiben, ziehen zum Verschieben. Rechtsklick oder langes Berühren öffnet die Einstellungen des Bedienelements. Pfeiltasten verschieben um einen Pultpixel, mit Umschalt um zehn. Die Anpassung wird separat gespeichert für: <strong>${esc(editor.scope.vehicleId?editor.scope.vehicleCode:vehicleType(editor.scope.typeId)?.name||editor.scope.typeId)}</strong>.</p><div class="actions"><button type="button" id="cabLayoutUndo" onclick="undoCabLayout()">Rückgängig</button><button type="button" onclick="resetCabLayout()">Projektlayout laden</button><button type="button" onclick="exportCabLayout()">Layout exportieren</button></div><div id="cabLayoutProperties"></div><details><summary>JSON-Vorschau & Übernahme ins Projekt</summary><p>Der Export enthält <code>cab.layout</code> für das angegebene Fahrzeugbündel. Diesen Abschnitt in dessen <code>bundle.json</code> übernehmen und die Assets synchronisieren. Die Fahrzeugzuordnung steht im Export. Layouts verschiedener Fahrzeuge und Fahrzeugtypen bleiben unabhängig, auch bei identischem Pult.</p><textarea id="cabLayoutJson" readonly aria-label="Layout-JSON"></textarea></details>`;cabLayoutProperties();}
  if(editor.active){document.getElementById('cabLayoutProperties').insertAdjacentHTML('afterend','<div id="cabReserveTools"></div>');cabReserveTools();}
+ if(editor.active)prepareCabWorkspaceTools();
  cabLayoutRefresh();
 }
 function cabLayoutEntryValue(editor,entry){
@@ -190,8 +195,9 @@ function cabLayoutProperties(){
  if(entry.key.startsWith('heading-'))fields.insertAdjacentHTML('afterend','<button type="button" class="small" onclick="deleteFreeCabLabel()">Beschriftung löschen</button>');
  if(entry.icon)fields.insertAdjacentHTML('beforeend',`<label>Symbolgröße (Pultpixel)<input id="cabLayoutIconSize" type="number" min="4" max="200" step="0.5" value="${Number(value.iconSize.toFixed(1))}" onchange="editCabLayout('iconSize',this.value)"></label>`);
  else fields.insertAdjacentHTML('beforeend',`<label>Texthintergrund<select id="cabLayoutBackgroundMode" onchange="editCabLayout('background',this.value==='transparent'?'transparent':document.getElementById('cabLayoutBackground').value);cabLayoutProperties()"><option value="transparent" ${!value.background||value.background==='transparent'?'selected':''}>Transparent</option><option value="color" ${value.background&&value.background!=='transparent'?'selected':''}>Farbe</option></select></label><label>Hintergrundfarbe<input id="cabLayoutBackground" type="color" value="${/^#[0-9a-f]{6}$/i.test(value.background||'')?value.background:'#222222'}" onchange="editCabLayout('background',this.value);cabLayoutProperties()"></label>`);
+ addCabPropertyReset();
 }
-function selectCabLayout(key){if(!cabLayoutAllowed()||!cabLayoutEditor.entries.some(entry=>entry.key===key))return;cabLayoutEditor.selected=key;cabLayoutRefresh();cabLayoutProperties();}
+function selectCabLayout(key){if(!cabLayoutAllowed()||!cabLayoutEditor.entries.some(entry=>entry.key===key))return;selectCabWorkspaceElement(key);}
 function cabReserveTools(){
  const host=document.getElementById('cabReserveTools');if(!host||!cabLayoutAllowed())return;
  const buttons=[...cabLayoutEditor.stage.querySelectorAll('.cab-button,[data-cab-reserve],.cab-screw')];
@@ -218,7 +224,7 @@ function deleteFreeCabLabel(key=cabLayoutEditor?.selected){
  if(!cabLayoutAllowed()||!key?.startsWith('heading-')||!cabLayoutEditor.entries.some(entry=>entry.key===key))return;
  const editor=cabLayoutEditor;cabLayoutRemember(clone(editor.draft));editor.draft[key]={...editor.draft[key],hidden:true};editor.selected=null;cabLayoutPersist();closeCabReserveMenu();cabLayoutRefresh();document.getElementById('cabLayoutProperties').innerHTML='';
 }
-function closeCabReserveMenu(){document.getElementById('cabReserveMenu')?.remove();}
+function closeCabReserveMenu(){document.getElementById('cabReserveMenu')?.remove();if(cabLayoutEditor){cabLayoutEditor.pendingControl=false;refreshCabWorkspace();}}
 function mountCabSymbolPicker(menu){
  const select=menu.querySelector('#cabReserveIcon');if(!select)return;select.hidden=true;select.setAttribute('aria-hidden','true');select.tabIndex=-1;
  const picker=document.createElement('div');picker.className='cab-symbol-picker';picker.setAttribute('role','group');picker.setAttribute('aria-label','Symbol auswählen');
@@ -246,6 +252,8 @@ function openCabControlMenu(key,x,y){
 }
 function positionCabControlMenu(menu,x,y,focus=true){
  arrangeCabControlMenu(menu);
+ annotateCabSoundTests(menu);
+ if(dockCabControlMenu(menu,focus))return;
  menu.style.left=Math.max(8,Math.min(x??(innerWidth-menu.offsetWidth)/2,innerWidth-menu.offsetWidth-8))+'px';menu.style.top=Math.max(8,Math.min(y??40,innerHeight-menu.offsetHeight-8))+'px';if(focus)menu.querySelector('select')?.focus();
 }
 function arrangeCabControlMenu(menu){
@@ -323,17 +331,18 @@ function previewCabBindingSound(sound,standard='down'){
  if(!cabLayoutAllowed()||!Object.hasOwn(CAB_LAYOUT_SOUNDS,sound))return;
  stopVehiclePreviewSound();if(sound!=='none')playCabReserveSound(sound||'mechanical:'+standard,cabLayoutEditor.bundle);
 }
-function cabLayoutRemember(snapshot){cabLayoutEditor.history.push(snapshot);if(cabLayoutEditor.history.length>100)cabLayoutEditor.history.shift();}
+function cabLayoutRemember(snapshot){cabLayoutEditor.redo=[];cabLayoutEditor.history.push(snapshot);if(cabLayoutEditor.history.length>100)cabLayoutEditor.history.shift();}
 function editCabLayout(field,value){
  if(!cabLayoutAllowed())return;const editor=cabLayoutEditor,key=editor.selected;
  if(['x','y','fontSize','iconSize'].includes(field))value=Number(value);
+ if(['x','y'].includes(field)&&editor.selection?.size>1){const before=clone(editor.draft),origins=cabWorkspaceOrigins(),origin=origins[key];if(!origin)return;moveCabWorkspaceSelection(field==='x'?value:origin.x,field==='y'?value:origin.y,origins);const after=clone(editor.draft);editor.draft=before;commitCabWorkspaceDraft(after);return;}
  const draft=clone(editor.draft);draft[key]={...draft[key],[field]:value};
  if(!cabLayoutValid(draft,editor.panel)){showToast('Ungültiger Layoutwert.');cabLayoutProperties();return;}
  if(JSON.stringify(draft)===JSON.stringify(editor.draft))return;
  const typing=field==='text'&&document.activeElement?.id==='cabLayoutText'?document.activeElement:null;
  if(!typing||editor.typingNode!==typing)cabLayoutRemember(clone(editor.draft));editor.typingNode=typing;editor.draft=draft;cabLayoutPersist();cabLayoutRefresh();
 }
-function undoCabLayout(){if(!cabLayoutAllowed()||!cabLayoutEditor.history.length)return;cabLayoutEditor.draft=cabLayoutEditor.history.pop();cabLayoutPersist();cabLayoutRefresh();cabLayoutProperties();}
+function undoCabLayout(){if(!cabLayoutAllowed()||!cabLayoutEditor.history.length)return;cabLayoutEditor.redo??=[];cabLayoutEditor.redo.push(clone(cabLayoutEditor.draft));cabLayoutEditor.draft=cabLayoutEditor.history.pop();cabLayoutPersist();cabLayoutRefresh();cabLayoutProperties();}
 function resetCabLayout(){if(!cabLayoutAllowed())return;cabLayoutRemember(clone(cabLayoutEditor.draft));cabLayoutEditor.draft={};cabLayoutPersist();cabLayoutRefresh();cabLayoutProperties();}
 function cabLayoutExportData(){
  const editor=cabLayoutEditor;if(!editor)return null;
@@ -389,20 +398,22 @@ function startCabLayoutTouch(event){
 window.addEventListener('pointerdown',event=>{
  cabLayoutSuppressClickUntil=0;
  if(!event.target.closest('#cabReserveMenu'))closeCabReserveMenu();
- if(!cabLayoutAllowed()||!event.target.closest('.vehicle-bundle-modal .cab-stage'))return;
+ if(!cabLayoutAllowed()||!event.target.closest('.vehicle-bundle-modal .cab-stage')||cabLayoutEditor.pan)return;
+ if(event.pointerType==='touch'&&!event.target.closest('[data-cab-layout-key],.cab-button,[data-cab-reserve],.cab-screw,.cab-rotary'))return;
  event.preventDefault();event.stopImmediatePropagation();if(event.button!==0)return;
  startCabLayoutTouch(event);
  const node=event.target.closest('[data-cab-layout-key]');if(!node)return;
- selectCabLayout(node.dataset.cabLayoutKey);node.focus({preventScroll:true});
+ if(event.shiftKey){selectCabWorkspaceElement(node.dataset.cabLayoutKey,true);return;}
+ selectCabWorkspaceElement(node.dataset.cabLayoutKey,false,false);node.focus({preventScroll:true});
  const editor=cabLayoutEditor,entry=editor.entries.find(item=>item.key===editor.selected),value=cabLayoutEntryValue(editor,entry);
- editor.drag={pointer:event.pointerId,node,clientX:event.clientX,clientY:event.clientY,x:value.x,y:value.y,before:clone(editor.draft),moved:false};node.setPointerCapture(event.pointerId);
+ editor.drag={pointer:event.pointerId,node,clientX:event.clientX,clientY:event.clientY,x:value.x,y:value.y,origins:cabWorkspaceOrigins(),before:clone(editor.draft),moved:false};node.setPointerCapture(event.pointerId);
 },true);
 window.addEventListener('pointermove',event=>{
  if(cabLayoutTouch?.pointer===event.pointerId&&Math.hypot(event.clientX-cabLayoutTouch.x,event.clientY-cabLayoutTouch.y)>10)clearCabLayoutTouch();
  const editor=cabLayoutEditor,drag=editor?.drag;if(!cabLayoutAllowed()||!drag||event.pointerId!==drag.pointer)return;
  if(!drag.moved&&Math.hypot(event.clientX-drag.clientX,event.clientY-drag.clientY)<3)return;drag.moved=true;
  event.preventDefault();event.stopImmediatePropagation();const rect=editor.stage.getBoundingClientRect();
- editor.draft[editor.selected]={...editor.draft[editor.selected],x:Math.max(0,Math.min(editor.panel.width,drag.x+(event.clientX-drag.clientX)/rect.width*editor.panel.width)),y:Math.max(0,Math.min(editor.panel.height,drag.y+(event.clientY-drag.clientY)/rect.height*editor.panel.height))};cabLayoutRefresh();
+ moveCabWorkspaceSelection(drag.x+(event.clientX-drag.clientX)/rect.width*editor.panel.width,drag.y+(event.clientY-drag.clientY)/rect.height*editor.panel.height,drag.origins);cabLayoutRefresh();
 },true);
 function cabLayoutEndDrag(event){
  if(cabLayoutTouch?.pointer===event.pointerId){const opened=cabLayoutTouch.opened;clearCabLayoutTouch();if(opened){cabLayoutSuppressClickUntil=performance.now()+400;event.preventDefault();event.stopImmediatePropagation();return;}}
@@ -412,7 +423,8 @@ function cabLayoutEndDrag(event){
  else if(JSON.stringify(editor.draft)!==JSON.stringify(drag.before)){cabLayoutRemember(drag.before);cabLayoutPersist();}
  if(drag.node.hasPointerCapture(drag.pointer))drag.node.releasePointerCapture(drag.pointer);
  cabLayoutRefresh();cabLayoutProperties();
- if(event.type==='pointerup'&&!drag.moved&&!editor.entries.find(entry=>entry.key===editor.selected)?.icon){const field=document.getElementById('cabLayoutText');field?.focus({preventScroll:true});field?.select();}
+ if(event.type==='pointerup'&&!drag.moved&&!editor.entries.find(entry=>entry.key===editor.selected)?.icon){setCabInspectorTab('appearance');const field=document.getElementById('cabLayoutText');field?.focus({preventScroll:true});field?.select();}
+ else if(event.type==='pointerup'&&!drag.moved&&editor.inspectorTab==='function'){const key=cabSelectedControlKey();if(key)openCabControlMenu(key);}
 }
 window.addEventListener('pointerup',cabLayoutEndDrag,true);window.addEventListener('pointercancel',cabLayoutEndDrag,true);
 window.addEventListener('click',event=>{if(performance.now()<cabLayoutSuppressClickUntil||cabLayoutAllowed()&&event.target.closest('.vehicle-bundle-modal .cab-stage')){event.preventDefault();event.stopImmediatePropagation();}},true);
@@ -420,12 +432,13 @@ window.addEventListener('dblclick',event=>{if(cabLayoutAllowed()&&event.target.c
 window.addEventListener('keydown',event=>{
  if(!cabLayoutAllowed())return;
  if(event.key==='Escape'&&document.getElementById('cabReserveMenu')){event.preventDefault();event.stopImmediatePropagation();closeCabReserveMenu();return;}
+ if(event.key==='Escape'&&cabLayoutEditor.pendingImport){event.preventDefault();event.stopImmediatePropagation();cancelCabTransfer();return;}
  if(event.target.closest('.vehicle-bundle-modal .cab-stage')&&['Enter',' '].includes(event.key)&&!event.target.closest('[data-cab-layout-key]')){event.preventDefault();event.stopImmediatePropagation();return;}
- if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='z'&&!event.target.matches('input,textarea,select')){event.preventDefault();event.stopImmediatePropagation();undoCabLayout();return;}
+ if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='z'&&!event.target.matches('input,textarea,select')){event.preventDefault();event.stopImmediatePropagation();if(event.shiftKey)redoCabLayout();else undoCabLayout();return;}
  const node=event.target.closest('[data-cab-layout-key]');if(!node)return;
  if(['Enter',' '].includes(event.key)){event.preventDefault();event.stopImmediatePropagation();selectCabLayout(node.dataset.cabLayoutKey);return;}
  if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key))return;
- event.preventDefault();event.stopImmediatePropagation();cabLayoutEditor.selected=node.dataset.cabLayoutKey;
+ event.preventDefault();event.stopImmediatePropagation();cabLayoutEditor.selected=node.dataset.cabLayoutKey;if(!cabLayoutEditor.selection?.has(cabLayoutEditor.selected))cabLayoutEditor.selection=new Set([cabLayoutEditor.selected]);
  const entry=cabLayoutEditor.entries.find(item=>item.key===cabLayoutEditor.selected),value=cabLayoutEntryValue(cabLayoutEditor,entry),field=event.key==='ArrowLeft'||event.key==='ArrowRight'?'x':'y';
  const delta=(event.key==='ArrowLeft'||event.key==='ArrowUp'?-1:1)*(event.shiftKey?10:1),limit=field==='x'?cabLayoutEditor.panel.width:cabLayoutEditor.panel.height;
  editCabLayout(field,Math.max(0,Math.min(limit,value[field]+delta)));cabLayoutProperties();

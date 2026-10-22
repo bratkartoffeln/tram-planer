@@ -1,12 +1,28 @@
-# Fahrplan Manager Audio – Version 6.2.11
+# Fahrplan Manager Audio – Version 6.2.12
 
 Offlinefähige Android-App und PWA zur Fahrplansimulation. © MeisterErwat.
 
+Die gesamte Oberfläche verwendet den Hauptscrollbalken der Seite. Dialoge und das mobile Bereichsmenü erscheinen als eigene Seitenansichten; Eigenschaften, Streckenverläufe, Vorlagen, Haltestellenlisten, Mehrfachauswahl und Importvorschauen besitzen keine eigenen Scrollbereiche. Auch im Vollbild bleibt der komplette Inhalt über die Hauptseite erreichbar. Beim Schließen eines Dialogs oder Menüs wird die vorherige Seitenposition wiederhergestellt. Mehrzeilige Text- und JSON-Felder wachsen mit ihrem Inhalt. Vergrößerte Pulte und Karten werden über die Hauptseite erreicht und verschoben. Prüfung: `node tests/page-scroll.cjs`.
+
 ## Neu
 
-Alle sichtbaren Pultschrauben lassen sich per Doppelklick oder Doppeltippen heraus- und wieder hineinschrauben, einschließlich der Befestigungen an Instrumenten, Lampen, Tasterfassungen und Beschriftungsschildern. Kleine Schrauben verwenden eigene Kopfgrößen. Die vier bisherigen Eckschrauben behalten ihre Positionen und Zuordnungen. Dies gilt in der Fahrzeugvorschau und im Fahrbetrieb für alle Pulte. Prüfung: `node tests/cab-all-screws.cjs`.
+Version 6.2.12 überarbeitet die gemeinsame Oberfläche für Browser und APK: kompakte Startübersicht, feste Smartphone-Navigation mit vollständigem Bereichsmenü, Suche in Strecken, Fahrplänen, Fahrzeugen und Historie, klarer Ablauf zum Fahrtstart und große direkte Fahrtaktionen. Maus, Touch und Tastatur werden unterstützt; Dialoge führen den Fokus und schließen mit Escape beziehungsweise Android-Zurück. Routencodes sind in den Einstellungen aufklappbar.
+
+Im Dev-Modus öffnet **Fahrpult & Sounds** einen gemeinsamen Arbeitsbereich: Unter dem Pult liegen **Position & Aussehen** und **Funktion & Sounds** im normalen Seitenfluss, ohne eingebettete Scrollfenster. Die Kopfzeile nennt ausdrücklich das einzelne Fahrzeug oder die Typvorlage und zeigt **Bearbeiten**, **Ausprobieren** sowie den lokalen Speicherstatus. Ein aktiver Dev-Modus wird auch außerhalb des Editors angezeigt.
+
+**Ausrichten & Mehrfachauswahl** bietet Raster (10 Pultpixel), Einrasten, Hilfslinien, Gruppenverschiebung, gemeinsame Ausrichtung und gleichmäßige Verteilung. Mehrfachauswahl erfolgt mit Umschalt oder über die Elementliste. Zoom, **Ganzes Pult anzeigen** und **Pult verschieben** erleichtern Maus- und Touchbedienung. **Rückgängig** und **Wiederholen** unterstützen Strg/Cmd+Z, Strg/Cmd+Umschalt+Z sowie Strg/Cmd+Y. Einzelne Eigenschaften lassen sich auf den Projektstandard zurücksetzen.
+
+Unter **Datei & Projektlayout** lassen sich Einzel- und Sammelexporte für das gerade geöffnete Ziel importieren. Das Dateiformat, Fahrzeug beziehungsweise Typ, Pultbild, Abmessungen und Eigenschaften werden geprüft. Eine Vorschau zeigt Ziel und Änderungen, bevor lokale Anpassungen ersetzt werden; auch **Projektlayout laden** zeigt diese Vorschau. Die Übernahme ist rückgängig machbar. Drücken, Loslassen und Funktionssound haben getrennte Hörproben; **Kein Ton** bleibt ausdrücklich wählbar. Der Vollbildtaster bleibt beim Loslassen stumm. Auch Netzplanimport und Laden der Projektdatei zeigen vor der Übernahme eine Vorschau; der Netzeditor bietet Wiederholen.
+
+Im Fahrtmodus bleiben aktueller Halt, Türstatus, Türbedienung und **Nächster Halt** beim Scrollen erreichbar. Weitere Aktionen lassen sich aufklappen. Das Pult lässt sich vergrößern und wieder vollständig einpassen. Die Fahrplanerstellung zeigt eine kompakte, aufklappbare Haltestellenliste und kann Fahrzeiten beziehungsweise Pausen gesammelt setzen. Prüfung: `node tests/dev-workspace.cjs`.
+
+Die gemeinsame Oberfläche wird mit `node tests/usability.cjs` bei 360, 390, 768, 900, 1024 und 1440 Pixel Breite geprüft. Der Test umfasst echte Maus-/Touch-Eingaben, Suchfilter, Fahrplanerstellung, Fahrtaktionen mit Tür-/Pausensperren, Dialogfokus, Darkmode, Vollbild, Android-Zurück, lokale `file://`-Assets und den Offline-Neustart der PWA. Bildschirmaufnahmen und Ergebnis liegen unter `build/qa-usability/`.
+
+Größere Pultschrauben lassen sich per Doppelklick oder Doppeltippen heraus- und wieder hineinschrauben. Die winzigen zusätzlichen Schraubenelemente mit Kopfgrößen von 8 bis 18 Bildpunkten an Tasterringen, kleinen Beschriftungsschildern und Instrumenten sind entfernt, einschließlich ihrer Klickflächen, Schraubgeräusche und Animationen. Die übrigen Schrauben behalten ihre Positionen und Zuordnungen. Dies gilt in der Fahrzeugvorschau und im Fahrbetrieb für alle Pulte. Prüfung: `node tests/cab-all-screws.cjs`.
 
 Die Türkontrolllampen beleuchten ihre Umgebung mit einem weichen grünen beziehungsweise gelborangen Lichtschein und einer dezenten Reflexion. Die fotografierte Oberflächenstruktur bleibt sichtbar; beim Türlauf blinkt der Lichtschein synchron mit der offenen Türanzeige. Ausgeschaltete Lampen erzeugen keinen Lichtschein.
+
+Der Vollbildtaster spielt beim Loslassen keinen zusätzlichen Ton, auch bei Bedienung per Touch oder Tastatur. Die übrigen Taster behalten ihre Druck- und Loslasstöne. Prüfung: `node tests/cab-button-sounds.cjs`.
 
 Version 6.2.11 übernimmt die exportierten Fahrzeuglayouts, erweitert den Layouteditor auf vorbelegte Funktionstasten und führt neue Standard-Bedienklänge sowie eigene Tramlink-Türklänge ein. Tastende Bedienelemente spielen den Loslasston vor ihren Folgesounds; einrastende Drucktasten wechseln zwischen Druck- und Loslasston. Die automatischen Browsertests bleiben stumm.
 
@@ -177,7 +193,7 @@ Automatische Browsertests starten grundsätzlich mit `--mute-audio`: Es ist kein
 
 Alle ausgelieferten Audioeffekte liegen als MP3 vor; auch Wiedergabepfade, Android-Prüfung und Offline-Cache nutzen MP3. Der Zurück-Taster verwendet den nachträglich im Projekt bereitgestellten Back-to-the-Future-Jingle. `node tools/preview.cjs` startet die lokale PWA-Vorschau unter `http://127.0.0.1:4173`. Nach einem Debug-Build liegt die installierbare Test-APK unter `app/build/outputs/apk/debug/app-debug.apk`.
 
-Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.11_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
+Nach `:app:assembleRelease` signiert `powershell -File tools/sign-release.ps1` die APK mit dem vorhandenen privaten Schlüssel aus `signing`. Ergebnis: `app/build/outputs/apk/release/FahrplanManager_v6.2.12_release.apk`. Das Skript erzeugt niemals selbst einen neuen Schlüssel.
 
 Android Studio oder JDK 17, Gradle 8.7 und Android SDK 35 verwenden. gradle :app:assembleRelease erzeugt eine unsignierte Release-APK; anschließend mit dem separat verwahrten Schlüssel signieren. gradle :app:assembleDebug erzeugt eine Test-APK. GitHub Actions prüft den Debug-Build ohne private Release-Schlüssel.
 

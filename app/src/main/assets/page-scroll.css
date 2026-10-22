@@ -1,0 +1,46 @@
+/* The document owns scrolling. Content panels grow instead of scrolling inside it. */
+html{overflow:auto;scrollbar-gutter:stable}body,body.menu-open,body.cab-fullscreen,body:has(.modal-backdrop){overflow:visible!important}
+.sidebar{position:relative;top:auto;height:auto;min-height:100dvh;overflow:visible;align-self:stretch}
+.sidebar-toggle{order:-1;margin-top:0}
+.route-library,.line-stops,.route-progress,.driver-view #driverRouteMap,.network-view .network-map,.network-map,
+.cab-workspace .cab-layout-tools,.cab-workspace .cab-panel-viewport,.cab-panel-viewport,
+#cabMultiSelection,.cab-change-list,.cab-reserve-menu,.cab-workspace .cab-docked-menu{
+ max-height:none!important;overflow:visible!important;overscroll-behavior:auto;}
+.cab-workspace-modal .cab-workspace,.is-cab-editing .cab-workspace{grid-template-columns:minmax(0,1fr)!important}
+.cab-workspace .cab-console,.cab-inspector-tabs,.cab-workspace #cabSharedElement,.cab-workspace .cab-docked-menu>.actions{position:static}
+.cab-workspace .cab-layout-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cab-workspace .cab-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cab-workspace .cab-menu-card{grid-column:auto!important}.cab-workspace .cab-menu-appearance{grid-column:1/-1!important}
+.cab-workspace .cab-layout-tools{height:auto;min-height:0}.cab-workspace .cab-panel-viewport{height:auto}
+.cab-stage{min-width:0!important}.cab-scroll-hint{display:none!important}
+.cab-layout-tools textarea,textarea{max-height:none;overflow:hidden;resize:none;white-space:pre-wrap;overflow-wrap:anywhere}
+.network-map{border:0}.network-map svg{max-width:none}
+.network-map.is-editing svg,.network-map.is-line-editing svg{touch-action:none}
+.network-map.is-editing .network-node,.network-map.is-editing .network-node *,.network-map.is-editing .network-stop-label,.network-map.is-line-editing .draft-node,.network-map.is-line-editing .draft-node *{touch-action:none}
+/* A dialog replaces the current page visually, and uses the same document scrollbar. */
+body:has(.modal-backdrop)>.shell,body:has(.modal-backdrop)>.mobile-nav,body:has(.modal-backdrop)>#appVersion,body:has(.modal-backdrop)>.skip-link{display:none!important}
+.modal-backdrop{position:relative;inset:auto;display:block;min-height:100dvh;padding:16px;background:var(--bg)}
+.modal,.modal.vehicle-bundle-modal,.modal.cab-workspace-modal,.modal.passenger-modal{max-height:none!important;height:auto;overflow:visible!important;margin:0 auto;box-shadow:var(--shadow)}
+.modal-close,.cab-workspace-modal .modal-close{position:fixed;top:max(12px,env(safe-area-inset-top,0px));right:max(20px,env(safe-area-inset-right,0px));z-index:1002;background:var(--panel);box-shadow:var(--shadow)}
+.modal>h2{padding-right:52px}.modal-footer{position:static}
+/* The mobile menu is also a page, with no drawer scrollbar. */
+@media(max-width:900px){
+ body:not(.menu-open) .sidebar{display:none}
+ .menu-open .shell{min-height:100dvh;background:var(--nav)}
+ .menu-open .sidebar,.menu-open.sidebar-collapsed .sidebar{position:relative;inset:auto;width:100%;height:auto;min-height:100dvh;overflow:visible;transform:none;visibility:visible}
+ .menu-open .main,.menu-open .mobile-nav,.menu-open #menuBackdrop,.menu-open #appVersion{display:none!important}
+ .cab-workspace .cab-menu-grid,.cab-workspace .cab-layout-fields{grid-template-columns:minmax(0,1fr)}
+ .cab-workspace .cab-menu-card,.cab-workspace .cab-layout-text{grid-column:1/-1!important}
+ .modal-backdrop{padding:12px}.modal-close,.cab-workspace-modal .modal-close{right:max(18px,env(safe-area-inset-right,0px))}
+}
+/* Fullscreen still removes browser chrome, while the complete route stays on the page. */
+.cab-fullscreen .main{position:relative;inset:auto;overflow:visible;height:auto;min-height:100dvh}
+.cab-fullscreen .driver-view{display:block;height:auto;min-height:0}
+.cab-fullscreen .cab-fullscreen-status{position:sticky;top:4px;z-index:12;margin-bottom:12px}
+.cab-fullscreen .driver-view>.grid{grid-template-rows:auto;min-height:0;align-items:start}
+.cab-fullscreen .driver-view>.grid>.col-4,.cab-fullscreen .driver-view>.grid>.col-4>.card:first-child,.cab-fullscreen .cab-console{height:auto;overflow:visible;min-height:0}
+.cab-fullscreen .cab-panel-viewport{display:block;container-type:normal;height:auto;min-height:0;overflow:visible}
+.cab-fullscreen .cab-stage{width:100%!important;min-width:0!important}
+.cab-fullscreen.cab-route-collapsed .driver-view>.grid{grid-template-columns:minmax(0,1fr);grid-template-rows:auto;grid-template-areas:'console'}
+.cab-fullscreen.cab-route-collapsed .driver-view>.grid>.col-4{display:none}
+@media(max-width:760px) and (orientation:portrait){.cab-fullscreen .driver-view>.grid{grid-template-rows:auto auto}}
